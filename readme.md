@@ -53,6 +53,7 @@ chmod +x install.sh
 
 # Run the installer
 ./install.sh
+```
 
 🔬 What the Installation Script Does
 
