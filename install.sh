@@ -65,6 +65,7 @@ cp -r .config ~/
 cp -r .cache ~/
 cp -r .local ~/
 cp .Xresources ~/
+cp .xprofile ~/ 
 
 # Copy picom config if exists
 echo "Copying picom configuration..."
