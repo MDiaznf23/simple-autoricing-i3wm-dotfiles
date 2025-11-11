@@ -10,7 +10,6 @@ if ! command -v yay &> /dev/null && ! command -v paru &> /dev/null; then
     cd /tmp/yay && makepkg -si --noconfirm
     cd -
 fi
-
 AUR_HELPER=$(command -v yay || command -v paru)
 
 # Backup existing configs
@@ -28,7 +27,7 @@ sudo pacman -S --needed --noconfirm \
     i3-wm i3status i3lock polybar alacritty pcmanfm rofi picom feh scrot xclip \
     brightnessctl xsettingsd base-devel git \
     python python-pip python-pipx fish \
-    jq bc dunst \
+    jq bc dunst
 
 # Install fonts
 echo "Installing fonts..."
@@ -67,6 +66,20 @@ cp -r .cache ~/
 cp -r .local ~/
 cp .Xresources ~/
 
+# Copy picom config if exists
+echo "Copying picom configuration..."
+if [ -d "picom" ]; then
+    mkdir -p ~/.config
+    cp -r picom ~/.config/
+    echo "Picom config copied to ~/.config/picom"
+elif [ -d ".config/picom" ]; then
+    mkdir -p ~/.config
+    cp -r .config/picom ~/.config/
+    echo "Picom config copied to ~/.config/picom"
+else
+    echo "Warning: Picom directory not found"
+fi
+
 # Move wallpapers to Pictures
 echo "Moving wallpapers..."
 if [ -d "Wallpapers" ]; then
@@ -94,7 +107,7 @@ if [ -f ~/.Xresources ]; then
 fi
 
 # Create necessary directories if they don't exist
-mkdir -p ~/.config/{i3,polybar,rofi,dunst,alacritty}
+mkdir -p ~/.config/{i3,polybar,rofi,dunst,alacritty,picom}
 mkdir -p ~/.local/share
 mkdir -p ~/.cache
 
