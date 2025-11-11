@@ -6,7 +6,7 @@ This setup is built on the foundation of `pywal` and `wpgtk` to generate and app
 
 **Clean Desktop:**
 ![Desktop Clean](./Screenshot/screenshot_20251111_195421.png)
-![Desktop Busy](./Screenshot/screenshot_20251111_195448.png)
+![Desktop Busy](./Screenshot/screenshot_20251111_201706.png)
 ![Rofi Launcher](./Screenshot/screenshot_20251111_195624.png)
 ---
 
