@@ -4,9 +4,10 @@ This is my personal collection of dotfiles for **i3wm** on Arch Linux. The prima
 
 This setup is built on the foundation of `pywal` and `wpgtk` to generate and apply color schemes on the fly.
 
-**(It is highly recommended to add a screenshot of your desktop here!)**
-![Desktop Preview](https://github.com/MDiaznf23/simple-autoricing-i3wm-dotfiles/blob/main/path/to/your/screenshot.png)
-
+**Clean Desktop:**
+![Desktop Clean](./Screenshot/screenshot_20251111_195421.png)
+![Desktop Busy](./Screenshot/screenshot_20251111_195448.png)
+![Rofi Launcher](./Screenshot/screenshot_20251111_195624.png)
 ---
 
 ## About This Configuration
