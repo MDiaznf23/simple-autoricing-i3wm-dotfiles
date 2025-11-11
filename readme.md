@@ -1,95 +1,260 @@
-# Simple Auto-Ricing i3wm Dotfiles
+# 🎨 Simple Auto-Ricing i3wm Dotfiles
 
-This is my personal collection of dotfiles for **i3wm** on Arch Linux. The primary goal is to create a minimal, functional, and aesthetically pleasing environment with an automated color-theming (ricing) setup based on the current wallpaper.
+<div align="center">
 
-This setup is built on the foundation of `pywal` and `wpgtk` to generate and apply color schemes on the fly.
+**Minimal, functional, and aesthetically pleasing i3wm environment with automated color theming**
 
-**Clean Desktop:**
-![Desktop Clean](./Screenshot/screenshot_20251111_195421.png)
-![Desktop Busy](./Screenshot/screenshot_20251111_201706.png)
-![Rofi Launcher](./Screenshot/screenshot_20251111_195624.png)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Arch Linux](https://img.shields.io/badge/Arch-Linux-1793D1?logo=arch-linux&logoColor=fff)](https://archlinux.org/)
+[![i3wm](https://img.shields.io/badge/WM-i3-orange)](https://i3wm.org/)
+
+</div>
+
 ---
 
-## About This Configuration
+## 📸 Screenshots
 
-These dotfiles represent a **simplified and modernized** take on more complex auto-ricing scripts. This configuration is heavily inspired by the [chameleon-lizard/autorice](https://github.com/chameleon-lizard/autorice) repository but makes several key changes:
+<table>
+  <tr>
+    <td><img src="./Screenshot/screenshot_20251111_195421.png" alt="Clean Desktop"/><br/><sub><b>Clean Desktop</b></sub></td>
+    <td><img src="./Screenshot/screenshot_20251111_201706.png" alt="Busy Desktop"/><br/><sub><b>Busy Desktop</b></sub></td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center"><img src="./Screenshot/screenshot_20251111_195624.png" alt="Rofi Launcher"/><br/><sub><b>Rofi Application Launcher</b></sub></td>
+  </tr>
+</table>
 
-* **Shell:** Uses **Fish** as the default shell instead of Zsh.
-* **Python:** Uses `pipx` to install Python utilities (`pywal`, `wpgtk`) in isolated environments, which is safer and cleaner than `pip --user`.
-* **Minimalism:** The package list is curated to be more lightweight.
-* **Widgets:** Includes **Eww** (Elkowar's Wacky Widgets) for modern, modular widgets.
+---
 
-## Key Components
+## ✨ Features
 
-This setup is built from the following main components:
+- 🎨 **Automatic Color Theming** - Dynamic color schemes generated from your wallpaper using `pywal` and `wpgtk`
+- 🐚 **Modern Shell Experience** - Fish shell with enhanced productivity features
+- 🪟 **Tiling Window Management** - Efficient workspace management with i3wm
+- 🎯 **Lightweight & Fast** - Minimal resource usage with carefully selected components
+- 🔧 **Easy Installation** - Automated setup script for quick deployment
+- 🎨 **Customizable Widgets** - Modern UI elements powered by Eww
 
-| Component | Application |
-| :--- | :--- |
-| **Window Manager** | `i3-wm` |
-| **Status Bar** | `Polybar` |
-| **Terminal Emulator** | `Alacritty` |
-| **Default Shell** | `Fish` |
-| **Theming Engine** | `pywal` & `wpgtk` |
-| **Application Launcher**| `Rofi` |
-| **Compositor** | `Picom` |
-| **Widgets** | `Eww` (Elkowar's Wacky Widgets) |
-| **File Manager** | `PCManFM` |
-| **Wallpaper Manager** | `feh` |
-| **Utilities** | `scrot`, `brightnessctl`, `xclip` |
+---
+
+## 🧩 Components
+
+| Category | Application | Description |
+| :--- | :--- | :--- |
+| **Window Manager** | `i3-wm` | Tiling window manager |
+| **Status Bar** | `Polybar` | Highly customizable status bar |
+| **Terminal Emulator** | `Alacritty` | GPU-accelerated terminal |
+| **Default Shell** | `Fish` | User-friendly command line shell |
+| **Theming Engine** | `pywal` & `wpgtk` | Automatic color scheme generation |
+| **Application Launcher** | `Rofi` | Fast application launcher and switcher |
+| **Compositor** | `Picom` | Lightweight compositor for transparency and effects |
+| **Widgets** | `Eww` | Elkowar's Wacky Widgets for system monitoring |
+| **File Manager** | `PCManFM` | Lightweight file manager |
+| **Wallpaper Manager** | `feh` | Fast and light image viewer |
+| **Utilities** | Various | `scrot`, `brightnessctl`, `xclip`, and more |
+
+---
+
+## 📋 Prerequisites
+
+- **Operating System**: Arch Linux or derivatives (EndeavourOS, Manjaro, CachyOS, etc.)
+- **Display Server**: X11 (Xorg)
+- **AUR Helper**: `yay` or `paru` (will be installed automatically if not present)
+- **Internet Connection**: Required for package downloads
 
 ---
 
 ## ⚡ Installation
 
-**Warning:** This script is designed exclusively for **Arch Linux** and its derivatives (e.g., EndeavourOS, CachyOS). It will install packages, change your default shell, and overwrite existing configuration files. Please review the script and proceed at your own risk.
-
-### 1. Clone the Repository
+### Quick Install
 
 ```bash
-git clone [https://github.com/MDiaznf23/simple-autoricing-i3wm-dotfiles.git](https://github.com/MDiaznf23/simple-autoricing-i3wm-dotfiles.git)
+# Clone the repository
+git clone https://github.com/MDiaznf23/simple-autoricing-i3wm-dotfiles.git
 cd simple-autoricing-i3wm-dotfiles
 
-# Make the script executable
+# Make the installation script executable
 chmod +x install.sh
 
 # Run the installer
 ./install.sh
 ```
 
-🔬 What the Installation Script Does
+### ⚠️ Important Warning
 
-The install.sh script automates the entire setup process:
+**This installation script will:**
+- Install multiple packages from official repositories and AUR
+- Change your default shell to Fish
+- **Backup and overwrite** existing configuration files in `~/.config`
+- Modify your `~/.Xresources` file
+- Install Python packages using `pipx`
 
-    AUR Helper Check: Checks if yay or paru is installed. If not, it will clone and install yay.
+**Please review the script before running and ensure you have backups of important configurations.**
 
-    Backup: Creates a time-stamped backup of your existing ~/.config, ~/.cache, ~/.local, and ~/.Xresources directories/files into ~/dotfiles_backup_....
+---
 
-    Install Pacman Packages: Installs all necessary system packages from the official repositories (e.g., i3-wm, polybar, alacritty, rofi, fish, python-pipx).
+## 🔧 What the Installation Does
 
-    Install AUR Packages: Uses the yay or paru helper to install eww from the AUR.
+The `install.sh` script performs the following operations:
 
-    Set Default Shell: Changes the user's default shell to fish using chsh.
+### 1. **System Preparation**
+   - Checks for AUR helper (`yay` or `paru`)
+   - Installs `yay` if neither is present
+   - Updates system package database
 
-    Install Python Packages: Uses pipx to safely install pywal and wpgtk.
+### 2. **Backup Creation**
+   - Creates timestamped backup directory: `~/dotfiles_backup_YYYYMMDD_HHMMSS`
+   - Backs up:
+     - `~/.config/` directory
+     - `~/.cache/` directory
+     - `~/.local/` directory
+     - `~/.Xresources` file
 
-    Setup wpgtk: Runs the wpg-install.sh setup scripts.
+### 3. **Package Installation**
+   - **Official Repositories**: Installs core packages (i3-wm, polybar, alacritty, rofi, fish, etc.)
+   - **AUR**: Installs `eww` (Elkowar's Wacky Widgets)
 
-    Copy Dotfiles: Copies the .config, .cache, .local, and .Xresources files from this repository to your home directory.
+### 4. **Shell Configuration**
+   - Changes default shell to Fish using `chsh`
+   - Configures Fish shell environment
 
-    Set Permissions: Makes all necessary scripts (like autostart, polybar launcher, and rofi scripts) executable.
+### 5. **Python Environment**
+   - Installs Python packages via `pipx`:
+     - `pywal` - Color scheme generator
+     - `wpgtk` - Wallpaper and theming manager
+   - Runs `wpg-install.sh` setup scripts
 
-    Load Xresources: Merges the new .Xresources file into the X server's database.
+### 6. **Dotfiles Deployment**
+   - Copies configuration files to appropriate locations:
+     - `~/.config/` - Application configurations
+     - `~/.cache/` - Cache files
+     - `~/.local/` - Local user data
+     - `~/.Xresources` - X11 resources
 
-🚀 Post-Installation
+### 7. **Permissions & Final Setup**
+   - Makes scripts executable:
+     - Autostart scripts
+     - Polybar launcher
+     - Rofi menus
+   - Merges `.Xresources` into X server database
 
-After the script finishes, you must log out of your current session and log back in. Select i3 from your display manager's session menu.
+---
 
-Your new terminal will automatically use the fish shell.
+## 🚀 Post-Installation
 
-Credits & Inspiration
+After successful installation:
 
-This setup would not be possible without the work of others. It is heavily inspired by and is a simplification of the dotfiles found in the chameleon-lizard/autorice repository.
+1. **Log Out** of your current session
+2. **Select i3** from your display manager's session menu
+3. **Log In** to start your new environment
+4. Your terminal will automatically use the **Fish shell**
 
-License
+### First Launch Tips
 
-This project is licensed under the MIT License.
+- **Mod Key**: The default modifier key is `Super` (Windows key)
+- **Open Terminal**: `Mod + Enter`
+- **Application Launcher**: `Mod + d` (opens Rofi)
+- **Close Window**: `Mod + Shift + q`
+- **Reload Configuration**: `Mod + Shift + r`
+
+For a complete list of keybindings, check `~/.config/i3/config`
+
+---
+
+## 🎨 Customization
+
+### Changing Wallpapers
+
+Use `wpgtk` to manage wallpapers and color schemes:
+
+```bash
+wpg
+```
+
+Select a wallpaper, and the color scheme will automatically update across all applications.
+
+### Modifying Keybindings
+
+Edit the i3 configuration file:
+
+```bash
+nano ~/.config/i3/config
+```
+
+After making changes, reload i3 with `Mod + Shift + r`
+
+### Customizing Polybar
+
+Edit the Polybar configuration:
+
+```bash
+nano ~/.config/polybar/config.ini
+```
+
+Restart Polybar to apply changes.
+
+---
+
+## 🆘 Troubleshooting
+
+### Issue: Fonts not displaying correctly
+**Solution**: Install additional fonts:
+```bash
+sudo pacman -S ttf-font-awesome ttf-jetbrains-mono nerd-fonts-complete
+```
+
+### Issue: Transparency not working
+**Solution**: Ensure Picom is running:
+```bash
+picom --config ~/.config/picom/picom.conf &
+```
+
+### Issue: Wallpaper not changing
+**Solution**: Manually set wallpaper with feh:
+```bash
+feh --bg-scale /path/to/your/wallpaper.jpg
+```
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to:
+- Report bugs
+- Suggest new features
+- Submit pull requests
+- Share your customizations
+
+---
+
+## 📜 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Credits & Inspiration
+
+This setup is heavily inspired by and simplified from:
+- [chameleon-lizard/autorice](https://github.com/chameleon-lizard/autorice) - Original auto-ricing concept
+- The Arch Linux and r/unixporn communities
+- All the developers of the amazing tools used in this setup
+
+---
+
+## 📞 Support
+
+If you encounter any issues or have questions:
+- Open an issue on [GitHub](https://github.com/MDiaznf23/simple-autoricing-i3wm-dotfiles/issues)
+- Check the [Arch Wiki](https://wiki.archlinux.org/) for general Linux help
+- Visit [r/i3wm](https://reddit.com/r/i3wm) for i3-specific questions
+
+---
+
+<div align="center">
+
+**Made with ❤️ for the Arch Linux community**
+
+If you found this helpful, consider giving it a ⭐
+
+</div>
