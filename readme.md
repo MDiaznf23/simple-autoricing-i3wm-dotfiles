@@ -20,7 +20,7 @@
     <td><img src="./Screenshot/screenshot_20251111_201706.png" alt="Busy Desktop"/><br/><sub><b>Busy Desktop</b></sub></td>
   </tr>
   <tr>
-    <td colspan="2" align="center"><img src="./Screenshot/screenshot_20251111_203602.png" alt="Rofi Launcher"/><br/><sub><b>Rofi Application Launcher</b></sub></td>
+    <td colspan="2" align="center"><img src="./Screenshot/screenshot_20251111_203805.png" alt="Rofi Launcher"/><br/><sub><b>Rofi Application Launcher</b></sub></td>
   </tr>
 </table>
 
