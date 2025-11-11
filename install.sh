@@ -103,6 +103,15 @@ chmod +x ~/.config/Scripts/* 2>/dev/null || echo "Warning: Scripts directory not
 chmod +x ~/.config/dunst/* 2>/dev/null || echo "Warning: Scripts doesn't exist"
 find ~/.config/rofi -type f -name "*.sh" -exec chmod +x {} \; 2>/dev/null || echo "Warning: rofi scripts not found"
 
+# Create wpg wrapper
+echo "Creating wpg wrapper..."
+sudo tee /usr/local/bin/wpg-post-wrapper > /dev/null << 'EOF'
+#!/bin/bash
+$HOME/.config/wpg/wpg-post.sh "$@"
+EOF
+sudo chmod +x /usr/local/bin/wpg-post-wrapper
+echo "wpg-post-wrapper created"
+
 # Merge Xresources
 if [ -f ~/.Xresources ]; then
     xrdb -merge ~/.Xresources
