@@ -29,13 +29,23 @@ sudo pacman -S --needed --noconfirm \
     brightnessctl xsettingsd base-devel git \
     python python-pip python-pipx fish \
     jq bc dunst \
-    firefox
+
+# Install fonts
+echo "Installing fonts..."
+sudo pacman -S --needed --noconfirm \
+    noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra \
+    ttf-jetbrains-mono ttf-fira-code ttf-dejavu \
+    ttf-liberation \
+    ttf-font-awesome
 
 # Install AUR packages
 echo "Installing AUR packages..."
 $AUR_HELPER -S --needed --noconfirm \
     eww \
-    firefox-esr-bin
+    firefox-esr-bin \
+    ttf-jetbrains-mono-nerd \
+    ttf-iosevka-nerd \
+    ttf-twemoji
 
 # Set fish as default shell
 echo "Setting fish as default shell..."
