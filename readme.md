@@ -28,12 +28,12 @@
 
 ## ✨ Features
 
-- 🎨 **Automatic Color Theming** - Dynamic color schemes generated from your wallpaper using `pywal` and `wpgtk`
-- 🐚 **Modern Shell Experience** - Fish shell with enhanced productivity features
-- 🪟 **Tiling Window Management** - Efficient workspace management with i3wm
-- 🎯 **Lightweight & Fast** - Minimal resource usage with carefully selected components
-- 🔧 **Easy Installation** - Automated setup script for quick deployment
-- 🎨 **Customizable Widgets** - Modern UI elements powered by Eww
+- **Automatic Color Theming** - Dynamic color schemes generated from your wallpaper using `pywal` and `wpgtk`
+- **Modern Shell Experience** - Fish shell with enhanced productivity features
+- **Tiling Window Management** - Efficient workspace management with i3wm
+- **Lightweight & Fast** - Minimal resource usage with carefully selected components
+- **Easy Installation** - Automated setup script for quick deployment
+- **Customizable Widgets** - Modern UI elements powered by Eww
 
 ---
 
@@ -122,7 +122,6 @@ The `install.sh` script performs the following operations:
    - Installs Python packages via `pipx`:
      - `pywal` - Color scheme generator
      - `wpgtk` - Wallpaper and theming manager
-   - Runs `wpg-install.sh` setup scripts
 
 ### 6. **Dotfiles Deployment**
    - Copies configuration files to appropriate locations:
@@ -130,6 +129,7 @@ The `install.sh` script performs the following operations:
      - `~/.cache/` - Cache files
      - `~/.local/` - Local user data
      - `~/.Xresources` - X11 resources
+     - `~/.xprofile` - X Profile
 
 ### 7. **Permissions & Final Setup**
    - Makes scripts executable:
@@ -168,7 +168,14 @@ For a complete list of keybindings, check `~/.config/i3/config`
 Use `wpgtk` to manage wallpapers and color schemes:
 
 ```bash
-wpg
+# For Apply Wallpaper
+wpg -s dark_mountain.jpg
+
+# For add theme wallpaper (Directory Wallpaper must be complete)
+wpg -a  ~/Pictures/Wallpapers/grass.jpg 
+
+# For Delete 
+wpg -d dark_mountain.jpg
 ```
 
 Select a wallpaper, and the color scheme will automatically update across all applications.
@@ -188,7 +195,7 @@ After making changes, reload i3 with `Mod + Shift + r`
 Edit the Polybar configuration:
 
 ```bash
-nano ~/.config/polybar/config.ini
+nano ~/.config/polybar/config
 ```
 
 Restart Polybar to apply changes.
