@@ -16,11 +16,11 @@
 
 <table>
   <tr>
-    <td><img src="./Screenshot/screenshot_20251111_195421.png" alt="Clean Desktop"/><br/><sub><b>Clean Desktop</b></sub></td>
+    <td><img src="./Screenshot/screenshot_20251111_203200.png" alt="Clean Desktop"/><br/><sub><b>Clean Desktop</b></sub></td>
     <td><img src="./Screenshot/screenshot_20251111_201706.png" alt="Busy Desktop"/><br/><sub><b>Busy Desktop</b></sub></td>
   </tr>
   <tr>
-    <td colspan="2" align="center"><img src="./Screenshot/screenshot_20251111_195624.png" alt="Rofi Launcher"/><br/><sub><b>Rofi Application Launcher</b></sub></td>
+    <td colspan="2" align="center"><img src="./Screenshot/screenshot_20251111_203006.png" alt="Rofi Launcher"/><br/><sub><b>Rofi Application Launcher</b></sub></td>
   </tr>
 </table>
 
