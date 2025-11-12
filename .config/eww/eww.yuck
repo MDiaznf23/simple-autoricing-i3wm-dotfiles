@@ -178,6 +178,7 @@
 ;; ----------------------------------------
 ;; WIDGET MEDIA PLAYER
 ;; ----------------------------------------
+
 (defwidget media_player []
   (box :class "media-player-container"
        :orientation "v"
@@ -206,7 +207,7 @@
            :min 0
            :max media_length_sec
            :value media_position
-           :onchange "playerctl position {}")
+           :onchange "playerctl -p '${active_player}' position {}")
            
     (box :class "media-time"
          :orientation "h"
@@ -225,18 +226,18 @@
          :spacing 15
 
   (button :class "media-btn"
-          :onclick "playerctl previous"
+          :onclick "playerctl -p '${active_player}' previous"
    (box :width 40 :height 40 :halign "center" :valign "center"
     (label :text "󰒮" :style "font-size: 28px;")))
       
   (button :class "media-btn-play"
-          :onclick "playerctl play-pause"
+          :onclick "playerctl -p '${active_player}' play-pause"
    (box :width 40 :height 40 :halign "center" :valign "center"
     (label :text {media_status == "Playing" ? "󰏤" : "󰐊"}
 	   :style "font-size: 32px;")))  
       
   (button :class "media-btn"
-          :onclick "playerctl next"
+          :onclick "playerctl -p '${active_player}' next"
    (box :width 40 :height 40 :halign "center" :valign "center"
     (label :text "󰒭" :style "font-size: 28px;")))) 
 ))
