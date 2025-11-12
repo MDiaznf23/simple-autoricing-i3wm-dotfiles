@@ -109,6 +109,28 @@
   :initial "0"
   "df -h / | awk 'NR==2 {print $2}'")
 
+(defpoll clock_time
+  :interval "1s"
+  "date +'%H:%M'")
+
+(defpoll clock_date
+  :interval "1h"
+  "date +'%A, %B %d'")
+
+;; ---------------------------------------------------
+;; WIDGET CLOCK AND DATE (TAMPILAN)
+;; ---------------------------------------------------
+;; Mendefinisikan struktur widget-nya.
+
+(defwidget desktop_clock []
+  (box :class "clock-container"
+       :orientation "vertical"
+       :space-evenly false
+       :valign "center"
+       :halign "center"
+    (label :class "time-label" :text clock_time)
+    (label :class "date-label" :text clock_date)))
+
 ;; ------------------------------------
 ;; WIDGET CALENDAR
 ;; -------------------------------------
@@ -464,7 +486,7 @@
     
     ;; Memory
     (metric_bar 
-        :icon ""
+        :icon "󰍛"
         :label "Memory"
         :value "${MEM_USAGE_GB} / ${MEM_TOTAL}"
         :usage_text "${MEM_USAGE_PERC}% Used"
@@ -521,3 +543,17 @@
   :windowtype "dialog"
   :wm-ignore false
   (performance_widget))
+
+(defwindow clock
+  :monitor 0                             
+  :geometry (geometry :x "0%"            
+                      :y "20%"           
+                      :width "100%"        
+                      :height "10%"
+                      :anchor "top center")
+  
+  :stacking "bg"                         
+  :wm-ignore true
+  :windowtype "desktop"                       
+                                         
+  (desktop_clock))                       
