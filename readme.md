@@ -163,6 +163,18 @@ For a complete list of keybindings, check `~/.config/i3/config`
 
 ## 🎨 Customization
 
+### Quick Wallpaper Selector
+
+<div align="center">
+<img src="./Screenshot/wpg-selector.png" alt="WPG Wallpaper Selector" width="600"/>
+<br/>
+<sub><b>Interactive Wallpaper Selector</b></sub>
+</div>
+
+Launch interactive wallpaper selector with keybinding:
+- **Keybinding**: `Mod + Shift + b` (or your preferred key if you want to modify it)
+- Opens wpg's wallpaper picker GUI based on rofi
+
 ### Changing Wallpapers
 
 Use `wpgtk` to manage wallpapers and color schemes:
