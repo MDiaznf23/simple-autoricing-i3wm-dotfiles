@@ -46,6 +46,19 @@ $AUR_HELPER -S --needed --noconfirm \
     ttf-iosevka-nerd \
     ttf-twemoji
 
+# Install custom fonts
+echo "Installing custom fonts..."
+FONT_DIR="$HOME/.local/share/fonts"
+if [ -d "fonts" ]; then
+    mkdir -p "$FONT_DIR"
+    cp -rf fonts/* "$FONT_DIR"
+    echo "Updating font cache..."
+    fc-cache -fv
+    echo "Custom fonts installed to $FONT_DIR"
+else
+    echo "Warning: fonts directory not found"
+fi
+
 # Set fish as default shell
 echo "Setting fish as default shell..."
 sudo chsh -s $(which fish) $USER
