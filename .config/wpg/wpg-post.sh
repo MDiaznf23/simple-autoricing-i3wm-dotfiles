@@ -14,11 +14,6 @@ bash ~/.config/dunst/generate-dunstrc.sh &
 # Reload eww setelah pywal generate warna baru
 eww reload &
 
-# Restart conky untuk update warna
-killall conky
-sleep 0.5
-~/.config/conky/conky-wal.sh &
-
 pgrep -x xsettingsd > /dev/null || xsettingsd &
 
 # Reload i3 config
