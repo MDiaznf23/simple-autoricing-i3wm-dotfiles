@@ -1,4 +1,4 @@
-# 🎨 Simple Auto-Ricing i3wm Dotfiles
+# 🎨 Simple Auto-Ricing i6wm Dotfiles
 
 <div align="center">
 
