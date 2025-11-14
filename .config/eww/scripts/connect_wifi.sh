@@ -24,7 +24,7 @@ prompt_password() {
     local password=""
     if command -v rofi &> /dev/null; then
         password=$(rofi -dmenu -password \
-            -p "ðŸ” $SSID" \
+            -p " $SSID" \
             -theme ~/.config/rofi/wifi-password.rasi 2>/dev/null \
             -mesg "Enter WiFi Password")
     elif command -v zenity &> /dev/null; then
