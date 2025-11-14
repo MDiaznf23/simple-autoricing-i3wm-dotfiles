@@ -11,8 +11,7 @@
 (defpoll bluetooth_devices_listen :interval "2s"
   :initial "[]"
   `~/.config/eww/scripts/scan_bluetooth.sh`)
-
-;; Pindahkan bluetooth_status poll ke sini 
+ 
 (defpoll bluetooth_status :interval "1s"
   :initial "no"
   `bluetoothctl show | grep "Powered:" | awk '{print $2}' || echo "no"`)
