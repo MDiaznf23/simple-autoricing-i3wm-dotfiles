@@ -1,0 +1,25 @@
+/* Penting: Set background window menjadi transparan */
+window {
+  background-color: transparent;
+}
+
+.clock-container {
+  /* Tidak perlu style khusus, tapi bisa untuk spacing */
+}
+
+.time-label {
+  font-family: "JetBrainsMono Nerd Font"; /* Ganti dengan font Anda */
+  font-size: 7.5rem; /* Ukuran font besar untuk jam */
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.9); /* Warna putih dengan sedikit transparansi */
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Bayangan agar terbaca */
+}
+
+.date-label {
+  font-family: "JetBrainsMono Nerd Font"; /* Ganti dengan font Anda */
+  font-size: 2rem; /* Ukuran font lebih kecil untuk tanggal */
+  font-weight: normal;
+  color: rgba(255, 255, 255, 0.8); /* Warna putih */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3); /* Bayangan tipis */
+  margin-top: -10px; /* Tarik sedikit ke atas agar lebih dekat ke jam */
+}
