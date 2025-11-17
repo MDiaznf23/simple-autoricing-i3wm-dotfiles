@@ -25,7 +25,7 @@ mkdir -p $BACKUP_DIR
 echo "Installing system packages..."
 sudo pacman -S --needed --noconfirm \
     i3-wm i3status i3lock polybar alacritty pcmanfm rofi picom feh scrot xclip \
-    brightnessctl playerctl lm_sensors imagemagick xsettingsd base-devel git \
+    brightnessctl firefox playerctl lm_sensors imagemagick xsettingsd base-devel git \
     python python-pip python-pipx fish redshift \
     jq bc dunst
 
@@ -41,7 +41,6 @@ sudo pacman -S --needed --noconfirm \
 echo "Installing AUR packages..."
 $AUR_HELPER -S --needed --noconfirm \
     eww \
-    firefox-esr-bin \
     ttf-jetbrains-mono-nerd \
     ttf-iosevka-nerd \
     ttf-twemoji
