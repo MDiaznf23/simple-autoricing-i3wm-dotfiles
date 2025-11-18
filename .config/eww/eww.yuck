@@ -11,7 +11,8 @@
 (defpoll bluetooth_devices_listen :interval "2s"
   :initial "[]"
   `~/.config/eww/scripts/scan_bluetooth.sh`)
- 
+
+;; Pindahkan bluetooth_status poll ke sini 
 (defpoll bluetooth_status :interval "1s"
   :initial "no"
   `bluetoothctl show | grep "Powered:" | awk '{print $2}' || echo "no"`)
@@ -29,6 +30,10 @@
 (defpoll wifi_ssid :interval "2s"
   :initial ""
   `nmcli -t -f active,ssid dev wifi | grep '^yes' | cut -d':' -f2 || echo "Not Connected"`)
+
+(defpoll media_cover :interval "1s"
+  :initial ""
+  `~/.config/eww/scripts/get_cover.sh`)
 
 (deflisten active_player
   :initial ""
@@ -49,22 +54,6 @@
 (defpoll media_player :interval "1s"
   :initial ""
   `playerctl -p "$(playerctl -l 2>/dev/null | grep -v kdeconnect | head -n1)" metadata --format "{{ playerName }}" 2>/dev/null || echo ""`)
-
-(deflisten media_position 
-  :initial "0"
-  `playerctl -F position 2>/dev/null || echo "0"`)
-
-(defpoll media_length_pretty :interval "5s"
-  :initial "0:00"
-  `playerctl -p "$(playerctl -l 2>/dev/null | grep -v kdeconnect | head -n1)" metadata --format "{{ duration(mpris:length) }}" 2>/dev/null || echo "0:00"`)
-
-(deflisten media_position_pretty 
-  :initial "0:00"
-  `while true; do playerctl -p "$(playerctl -l 2>/dev/null | grep -v kdeconnect | head -n1)" metadata --format "{{ duration(position) }}" 2>/dev/null || echo "0:00"; sleep 0.5; done`)
-  
-(defpoll media_length_sec :interval "5s"
-  :initial "100"
-  `playerctl -p "$(playerctl -l 2>/dev/null | grep -v kdeconnect | head -n1)" metadata mpris:length 2>/dev/null | awk '{print int($1/1000000)}' || echo "100"`)
 
 ;; Polls sistem
 (defpoll volume_level :interval "500ms" 
@@ -94,7 +83,7 @@
 
 (defpoll CPU_TEMP :interval "2s" 
   :initial "0"
-  "sensors | grep -i 'core 0' | awk '{print $3}' | tr -d '+°C' | cut -d. -f1 || cat /sys/class/hwmon/hwmon*/temp1_input 2>/dev/null | head -1 | awk '{printf \"%.0f\", $1/1000}' || echo '0'")
+  "sensors | grep -i 'core 0' | awk '{print $3}' | tr -d '+Â°C' | cut -d. -f1 || cat /sys/class/hwmon/hwmon*/temp1_input 2>/dev/null | head -1 | awk '{printf \"%.0f\", $1/1000}' || echo '0'")
 
 ;; CPU Usage
 (defpoll CPU_USAGE :interval "2s" 
@@ -300,43 +289,37 @@
        :orientation "v"
        :space-evenly false
        :spacing 0
-    
-    (box :class "media-info"
-         :orientation "v"
-         :space-evenly false
-         :hexpand true
-         :halign "start"
-      (label :class "media-player-name"
-             :text media_player
-             :visible {media_player != ""}
-             :xalign 0)
-      (label :class "media-title"
-             :text media_title
-             :limit-width 40
-             :xalign 0)
-      (label :class "media-artist"
-             :text media_artist
-             :limit-width 40
-             :xalign 0))
-    
-    (scale :class "media-progress"
-           :min 0
-           :max media_length_sec
-           :value media_position
-           :onchange "playerctl -p '${active_player}' position {}")
+      
+  (box :class "media-info"
+     :orientation "h"
+     :space-evenly false
+     :spacing 12
+  
+  ;; Bagian label (kiri)
+  (box :orientation "v"
+       :space-evenly false
+       :hexpand true
+       :halign "start"
+    (label :class "media-player-name"
+           :text media_player
+           :visible {media_player != ""}
+           :xalign 0)
+    (label :class "media-title"
+           :text media_title
+           :limit-width 40
+           :xalign 0)
+    (label :class "media-artist"
+           :text media_artist
+           :limit-width 40
+           :xalign 0))
+  
+  ;; Cover art (kanan)
+  (image :class "media-cover"
+         :path media_cover
+         :image-width 60
+         :image-height 60
+         :visible {media_cover != ""}))
            
-    (box :class "media-time"
-         :orientation "h"
-         :space-evenly false
-      (label :class "media-time-pos"
-             :text media_position_pretty
-             :halign "start"
-             :hexpand true)
-      (label :class "media-time-len"
-             :text media_length_pretty
-             :halign "end"
-             :hexpand true))
-    
     (box :class "media-controls"
          :halign "center"
          :spacing 15

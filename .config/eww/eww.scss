@@ -39,7 +39,7 @@
   padding: 5px;
 }
 .media-info {
-  margin-bottom: 10px;
+  margin-bottom: 0px;
 }
 .media-player-name {
   font-size: 12px;
@@ -79,16 +79,8 @@
   color: $color15;
 }
 
-/* Progress Bar Media */
-.media-progress trough {
-  min-height: 6px;
-  border-radius: 3px;
-  background: $color0;
-}
-.media-progress highlight {
-  min-height: 6px;
-  border-radius: 3px;
-  background: $color4;
+.media-cover {
+  border-radius: 0px;
 }
 
 /* --- 2. Quick Toggles --- */
@@ -302,7 +294,6 @@
   margin-bottom: 8px;
 }
 
-/* Individual WiFi Network Item */
 .wifi-network-item {
   background-color: $background;
   border-radius: 8px;
@@ -369,8 +360,8 @@
 
 @keyframes spin {
     to { -gtk-icon-transform: rotate(1turn); }
-}
 
+}
 /*-----------------------------------*/
 
 /* Bluetooth Expanded Panel */
