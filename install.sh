@@ -24,7 +24,7 @@ mkdir -p $BACKUP_DIR
 # Install system packages from official repos
 echo "Installing system packages..."
 sudo pacman -S --needed --noconfirm \
-    i3-wm i3status i3lock polybar alacritty pcmanfm rofi picom feh scrot xclip \
+    i3-wm i3status i3lock polybar alacritty pcmanfm rofi picom feh scrot xclip conky\
     brightnessctl firefox playerctl lm_sensors imagemagick xsettingsd base-devel git \
     python python-pip python-pipx fish redshift \
     jq bc dunst

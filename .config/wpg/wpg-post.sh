@@ -2,6 +2,7 @@
 
 # Kill proses lama dengan benar
 pkill -x xsettingsd
+pkill -x conky
 killall -q polybar
 
 # Tunggu proses benar-benar mati
@@ -27,5 +28,10 @@ eww reload &
 
 # Reload i3 config
 i3-msg reload &
+
+# Start conky jika ada config
+if [ -f ~/.config/conky/conky.conf ]; then
+    conky -c ~/.config/conky/conky.conf &
+fi
 
 exit 0
