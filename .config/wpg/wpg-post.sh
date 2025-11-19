@@ -30,8 +30,6 @@ eww reload &
 i3-msg reload &
 
 # Start conky jika ada config
-if [ -f ~/.config/conky/conky.conf ]; then
-    conky -c ~/.config/conky/conky.conf &
-fi
+~/.config/conky/conky-wal.sh &
 
 exit 0

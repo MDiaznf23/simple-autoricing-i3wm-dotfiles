@@ -32,13 +32,13 @@ conky.config = {
     draw_outline = false,
     draw_graph_borders = false,
 
-    minimum_width = 500,
+    minimum_width = 200,
     minimum_height = 200,
 }
 
 conky.text = [[
-\${alignc}\${font JetBrainsMono Nerd Font:bold:size=40}\${time %H:%M}\${font}
-\${voffset -30}\${alignc}\${font JetBrainsMono Nerd Font:normal:size=20}\${time %A, %B %d}\${font}
+\${alignc}\${font JetBrainsMono Nerd Font:bold:size=55}\${time %H:%M}\${font}
+\${voffset -40}\${alignc}\${font JetBrainsMono Nerd Font:normal:size=14}\${time %A, %B %d}\${font}
 ]]
 EOF
 )
