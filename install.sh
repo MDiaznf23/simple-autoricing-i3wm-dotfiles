@@ -44,7 +44,8 @@ $AUR_HELPER -S --needed --noconfirm \
     mpdris2 \
     ttf-jetbrains-mono-nerd \
     ttf-iosevka-nerd \
-    ttf-twemoji
+    ttf-twemoji \
+    fonts-kalam 
 
 # Install custom fonts
 echo "Installing custom fonts..."
