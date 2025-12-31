@@ -477,10 +477,10 @@
     :orientation "v" 
     :spacing 0
     :space-evenly false
-    (slider_row :icon_left "󰃞"
+    (slider_row :icon_left "󰃞 "
                 :value brightness_level
                 :onchange "brightnessctl s {}%")
-    (slider_row :icon_left "󰕾"
+    (slider_row :icon_left "󰕾 "
                 :value volume_level
                 :onchange "pactl set-sink-volume @DEFAULT_SINK@ {}%")
 ))
