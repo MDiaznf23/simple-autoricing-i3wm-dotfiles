@@ -9,9 +9,10 @@
     origin = top-right
     offset = 15x52
     
-    frame_width = 0
+    frame_width = 2
+    frame_color = "#293847"
     separator_height = 2
-    separator_color = "#736047"
+    separator_color = "#2b2925"
     
     corner_radius = 8
     padding = 12
@@ -26,19 +27,19 @@
     max_icon_size = 48
 
 [urgency_low]
-    background = "#090503CC"
-    foreground = "#c9baa7"
-    highlight = "#736047"
+    background = "#000000CC"
+    foreground = "#9a9a9a"
+    highlight = "#2b2925"
     timeout = 5
 
 [urgency_normal]
-    background = "#090503CC"
-    foreground = "#c9baa7"
-    highlight = "#94622F"
+    background = "#000000CC"
+    foreground = "#9a9a9a"
+    highlight = "#293847"
     timeout = 10
 
 [urgency_critical]
-    background = "#736047CC"
-    foreground = "#090503"
-    highlight = "#090503"
+    background = "#2b2925CC"
+    foreground = "#000000"
+    highlight = "#000000"
     timeout = 0

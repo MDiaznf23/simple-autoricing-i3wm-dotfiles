@@ -1,0 +1,89 @@
+/* ~/.config/rofi/keybinds.rasi */
+
+@import "~/.cache/wal/colors-rofi-dark.rasi"
+
+* {
+    font: "JetBrains Mono Nerd Font 10";
+    background-color: transparent;
+    text-color: @foreground;
+    margin: 0px;
+    padding: 0px;
+}
+
+window {
+    width: 900px; /* Lebar agar muat command panjang */
+    location: center;
+    anchor: center;
+    border: 2px solid;
+    border-color: @selected-active-background; /* Warna aksen dari wal */
+    border-radius: 12px;
+    background-color: @background; /* Background utama */
+    padding: 20px;
+}
+
+mainbox {
+    children: [ inputbar, listview ];
+    spacing: 15px;
+    background-color: transparent;
+}
+
+/* Bagian Pencarian */
+inputbar {
+    children: [ prompt, entry ];
+    background-color: @active-background;
+    border-radius: 8px;
+    padding: 2px; /* Padding luar */
+}
+
+prompt {
+    background-color: @selected-normal-background;
+    text-color: @background;
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin: 5px;
+}
+
+entry {
+    placeholder: "Search Keybinding...";
+    placeholder-color: @foreground;
+    padding: 10px;
+    vertical-align: 0.5;
+}
+
+/* Bagian Daftar Keybind */
+listview {
+    columns: 1;
+    lines: 10; /* Menampilkan 10 baris */
+    scrollbar: false;
+    spacing: 5px;
+    margin: 10px 0px 0px 0px;
+}
+
+element {
+    padding: 10px 15px;
+    border-radius: 6px;
+    orientation: horizontal;
+    spacing: 10px;
+}
+
+element normal.normal {
+    background-color: transparent;
+    text-color: @foreground;
+}
+
+element selected.normal {
+    background-color: @selected-normal-background; /* Highlight saat dipilih */
+    text-color: @background;
+    border: 0px;
+}
+
+element-text {
+    background-color: transparent;
+    text-color: inherit;
+    vertical-align: 0.5;
+}
+
+element-icon {
+    size: 20px;
+    background-color: transparent;
+}

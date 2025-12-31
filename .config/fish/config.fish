@@ -16,4 +16,3 @@ set -gx MOZ_DISABLE_RDD_SANDBOX 1
 fish_add_path ~/.local/bin
 fish_add_path ~/.local/bin
 cat ~/.cache/wal/sequences &
-set -gx QT_QPA_PLATFORMTHEME qt5ct

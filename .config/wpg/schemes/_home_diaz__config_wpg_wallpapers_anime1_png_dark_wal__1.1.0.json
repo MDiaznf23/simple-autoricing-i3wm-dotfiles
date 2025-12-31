@@ -1,0 +1,28 @@
+{
+    "wallpaper": "/home/diaz/.config/wpg/wallpapers/anime1.png",
+    "alpha": "100",
+
+    "special": {
+        "background": "#0F292E",
+        "foreground": "#cadbe9",
+        "cursor": "#cadbe9"
+    },
+    "colors": {
+        "color0": "#0F292E",
+        "color1": "#3377C2",
+        "color2": "#3C86B7",
+        "color3": "#588CB2",
+        "color4": "#60A6D4",
+        "color5": "#70ACD3",
+        "color6": "#8CB6D4",
+        "color7": "#cadbe9",
+        "color8": "#8d99a3",
+        "color9": "#3377C2",
+        "color10": "#3C86B7",
+        "color11": "#588CB2",
+        "color12": "#60A6D4",
+        "color13": "#70ACD3",
+        "color14": "#8CB6D4",
+        "color15": "#cadbe9"
+    }
+}

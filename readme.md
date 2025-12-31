@@ -1,4 +1,4 @@
-# 🎨 Simple Auto-Ricing i3wm Dotfiles
+# Simple Auto-Ricing i3wm Dotfiles
 
 <div align="center">
 
@@ -12,30 +12,30 @@
 
 ---
 
-## 📸 Screenshots
+## Screenshots
 
 <table>
   <tr>
-    <td><img src="./Screenshot/screenshot_20251111_203200.png" alt="Clean Desktop"/><br/><sub><b>Clean Desktop</b></sub></td>
-    <td><img src="./Screenshot/screenshot_20251111_201706.png" alt="Busy Desktop"/><br/><sub><b>Busy Desktop</b></sub></td>
+    <td><img src="./Screenshot/clean-desktop.png" alt="Clean Desktop"/><br/><sub><b>Clean Desktop</b></sub></td>
+    <td><img src="./Screenshot/busy-desktop.png" alt="Busy Desktop"/><br/><sub><b>Busy Desktop</b></sub></td>
   </tr>
   <tr>
-    <td colspan="2" align="center"><img src="./Screenshot/screenshot_20251111_203805.png" alt="Rofi Launcher"/><br/><sub><b>Rofi Application Launcher</b></sub></td>
+    <td colspan="2" align="center"><img src="./Screenshot/launcher.png" alt="Rofi Launcher"/><br/><sub><b>Theme Launcher</b></sub></td>
   </tr>
 </table>
 
 ---
 
-## ✨ Features
+## Features
 
-- **Auto Color Theming** - `pywal` + `wpgtk` generate schemes from wallpapers
+- **Auto Color Theming** - `pywal` + `colorz` + `colorthief` + `haishoku` + `wpgtk` generate schemes from wallpapers
 - **Lightweight** - Minimal resource usage, fast performance
 - **Complete Setup** - i3wm, Polybar, Rofi, Alacritty, Fish shell, Eww widgets
 - **One-Click Install** - Automated script with backup system
 
 ---
 
-## 🧩 Components
+## Components
 
 | Category | Application | Purpose |
 | :--- | :--- | :--- |
@@ -43,7 +43,7 @@
 | **Bar** | Polybar | Status bar |
 | **Terminal** | Alacritty | GPU-accelerated terminal |
 | **Shell** | Fish | User-friendly shell |
-| **Theming** | pywal + wpgtk | Auto color generation |
+| **Theming** | pywal + colorz + colorthief + haishoku + wpgtk | Auto color generation |
 | **Launcher** | Rofi | App launcher/switcher |
 | **Compositor** | Picom | Transparency & effects |
 | **Widgets** | Eww | System monitoring |
@@ -52,7 +52,7 @@
 
 ---
 
-## 📋 Requirements
+## Requirements
 
 - **OS**: Arch Linux or derivatives
 - **Display**: X11/Xorg
@@ -61,7 +61,7 @@
 
 ---
 
-## ⚡ Installation
+## Installation
 ```bash
 git clone https://github.com/MDiaznf23/simple-autoricing-i3wm-dotfiles.git
 cd simple-autoricing-i3wm-dotfiles
@@ -69,7 +69,7 @@ chmod +x install.sh
 ./install.sh
 ```
 
-### ⚠️ Warning
+### Warning
 Script will:
 - Install packages from official repos & AUR
 - Change default shell to Fish
@@ -80,7 +80,7 @@ Script will:
 
 ---
 
-## 🚀 Post-Installation
+## Post-Installation
 
 1. **Logout** → Select **i3** session → **Login**
 2. Fish shell active on next login
@@ -92,11 +92,11 @@ Script will:
 - **Close Window**: `Mod + Shift + q`
 - **Reload i3**: `Mod + Shift + r`
 
-Full keybinds: `~/.config/i3/config`
+Full keybinds: `~/.config/i3/config` or `Mod + Shift + h`
 
 ---
 
-## 🎨 Customization
+## Customization
 
 ### Wallpaper Selector
 
@@ -122,7 +122,7 @@ Reload with `Mod + Shift + r` after changes.
 
 ---
 
-## 🆘 Troubleshooting
+## Troubleshooting
 
 **Fonts issue**: `sudo pacman -S ttf-font-awesome ttf-jetbrains-mono nerd-fonts-complete`
 
@@ -132,7 +132,7 @@ Reload with `Mod + Shift + r` after changes.
 
 ---
 
-## 🙏 Credits
+## Credits
 
 Inspired by [chameleon-lizard/autorice](https://github.com/chameleon-lizard/autorice) and the Arch/r/unixporn communities.
 

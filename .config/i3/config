@@ -3,7 +3,7 @@
 # Please see https://i5wm.org/docs/userguide.html for a complete reference!
 
 # Border configuration
-set $thick 2
+set $thick 0
 
 # DEFAULT BORDER
 for_window [class="^.*"] border pixel $thick
@@ -20,15 +20,15 @@ for_window [class="st"] border pixel $thick
 workspace_auto_back_and_forth no
 focus_follows_mouse no
 smart_borders on
+smart_borders no_gaps
 
 # FLOATING APPLICATIONS
-# for_window [class="Megasync"] floating enable
-# for_window [class="Pavucontrol"] floating enable
-# for_window [class="Lxappearance"] floating enable
 for_window [class="Blueman-manager"] floating enable
 for_window [class="eww"] floating enable
+for_window [class="qimgv"] floating enable
 for_window [class="eww"] sticky enable
 for_window [class="mpv"] floating enable
+for_window [class="Engrampa"] floating enable
 for_window [class="conky"] floating enable, sticky enable, border none
 
 set $mod Mod4
@@ -57,6 +57,9 @@ gaps bottom 5
 
 # PROTIP: You can also dynamically set dmenu's colors this way:
 bindsym $mod+d exec ~/.config/rofi/launchers/type-6/launcher.sh
+
+# Show Keybindings Help
+bindsym $mod+Shift+h exec ~/.config/i3/i3-help.sh
 
 # Workspace cycling with looping
 bindsym Ctrl+Mod4+Right exec --no-startup-id ~/.config/Scripts/ws_cycle.py next
@@ -159,7 +162,8 @@ set $ws4 "4"
 set $ws5 "5"
 
 # toggle tiling / floating
-bindsym $mod+Shift+v floating toggle
+# Keybind untuk toggle floating dengan resize otomatis
+bindsym $mod+Shift+v floating toggle, resize set 500 300, move position center
 
 # switch to workspace
 bindsym $mod+1 workspace $ws1
@@ -215,6 +219,12 @@ exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 exec_always --no-startup-id picom
 exec_always --no-startup-id killall conky; sleep 1 && ~/.config/conky/conky-wal.sh
 exec_always --no-startup-id setxkbmap -layout "us,ru" -option "grp:win_space_toggle"
+
+# Set screen timeout
+exec --no-startup-id xset s 600 600
+
+# Auto lock dengan xss-lock
+exec --no-startup-id xss-lock -- lock
 
 # Browser binding
 bindsym $mod+b exec firefox

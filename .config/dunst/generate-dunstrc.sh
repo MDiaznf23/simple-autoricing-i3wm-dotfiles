@@ -13,7 +13,8 @@ cat > ~/.config/dunst/dunstrc << EOF
     origin = top-right
     offset = 15x52
     
-    frame_width = 0
+    frame_width = 2
+    frame_color = "$color2"
     separator_height = 2
     separator_color = "$color1"
     

@@ -1,0 +1,524 @@
+;-------------------------------------------------------
+; SYSTEM MONITOR WITH TABS - UPDATED VERSION
+;-------------------------------------------------------
+
+;; Variable active tab
+(defvar active_tab "dashboard")
+
+;; ===== POLLING VARIABLES =====
+
+;; Profile polls
+(defpoll USERNAME :interval "60s" "~/.config/eww/scripts/profile.sh username")
+(defpoll WM :interval "60s" "~/.config/eww/scripts/profile.sh wm")
+(defpoll UPTIME :interval "30s" "~/.config/eww/scripts/profile.sh uptime-short")
+(defpoll IMAGE-URL :interval "30s" "~/.config/eww/scripts/profile.sh image-url")
+
+
+;; Music polls
+(defpoll media_cover :interval "1s"
+  :initial ""
+  `~/.config/eww/scripts/get_cover.sh`)
+
+(deflisten active_player
+  :initial ""
+  `playerctl -F metadata --format '{{ playerInstance }}' 2>/dev/null | grep -v kdeconnect | head -n1`)
+
+(defpoll media_title :interval "500ms"
+  :initial ""
+  `~/.config/eww/scripts/get_media_info.sh title`)
+
+(defpoll media_artist :interval "500ms"
+  :initial ""
+  `~/.config/eww/scripts/get_media_info.sh artist`)
+
+(defpoll media_status :interval "500ms"
+  :initial "Stopped"
+  `~/.config/eww/scripts/get_media_info.sh status`)
+
+(defpoll media_player :interval "500ms"
+  :initial ""
+  `~/.config/eww/scripts/get_media_info.sh player`)
+
+;; Weather polls
+(defpoll WEATHER_ICON :interval "600s" "~/.config/eww/scripts/weather-wrapper.sh icon")
+(defpoll WEATHER_DESC :interval "600s" "~/.config/eww/scripts/weather-wrapper.sh desc")
+(defpoll WEATHER_CITY :interval "3600s" "~/.config/eww/scripts/weather-wrapper.sh city")
+
+;; ===== CLOCK POLLING =====
+(defpoll TIME :interval "1s" "date '+%H'")
+(defpoll MIN :interval "1s" "date '+%M'")
+(defpoll DATE :interval "60s" "date '+%a, %d %b'")
+
+(defpoll my_notes :interval "5s"
+  "~/.config/eww/scripts/read_note.sh")
+
+;; Variables info laptop
+(defpoll laptop_info :interval "24h"
+  :initial '{"brand":"Unknown","model":"Unknown","cpu":"Unknown","gpu":"Unknown","ram":"Unknown","disk":"Unknown"}'
+  `~/.config/eww/scripts/get-laptop-info.sh`)
+
+;; Tab Navigation Widget
+(defwidget tab_navigation []
+  (box :class "tab-navigation"
+       :orientation "h"
+       :space-evenly true
+       :spacing 0
+    
+    ;; Tab Performance
+    (button :class "tab-button ${active_tab == 'performance' ? 'active' : ''}"
+            :onclick "eww update active_tab=performance"
+      (box :orientation "h"
+           :spacing 8
+           :space-evenly false
+           :halign "center"
+           
+        (label :class "tab-label" :text "Performance")))
+    
+    ;; Tab Dashboard
+    (button :class "tab-button ${active_tab == 'dashboard' ? 'active' : ''}"
+            :onclick "eww update active_tab=dashboard"
+      (box :orientation "h"
+           :spacing 8
+           :space-evenly false
+           :halign "center"
+        (label :class "tab-label" :text "Dashboard")))
+
+    ;; Tab Information
+    (button :class "tab-button ${active_tab == 'information' ? 'active' : ''}"
+            :onclick "eww update active_tab=information"
+      (box :orientation "h"
+           :spacing 8
+           :space-evenly false
+           :halign "center"
+        (label :class "tab-label" :text "Information")))
+
+    ))
+
+;; Metric Bar Widget 
+(defwidget metric_bar [icon label value usage_text color_class]
+  (box :class "metric-bar-container" 
+       :orientation "v" 
+       :space-evenly false
+       :spacing 8
+
+    ;; Header dengan icon dan label
+    (box :class "metric-header"
+         :orientation "h"
+         :space-evenly false
+         :spacing 10
+         :valign "center"
+      (label :class "metric-icon ${color_class}" 
+             :text icon
+             :valign "center")
+      (box :class "description-metric"
+           :orientation "v"
+           :space-evenly false
+           :spacing 2
+           :valign "center"
+        (label :class "metric-label" 
+               :text label
+               :xalign 0)
+        (label :class "metric-value-text" 
+               :text value
+               :xalign 0)
+        (label :class "metric-usage-text"
+               :text usage_text
+               :xalign 0)))))
+
+;;Profile Widget
+(defwidget profile_widget []
+  (box :class "info-card"
+       :orientation "h"  
+       :space-evenly false
+       :spacing 12
+       :valign "center"
+    
+    ;; Profile Image
+    (box :class "image"
+     :style "background-image: url('${IMAGE-URL}');")
+    
+    ;; Profile Info
+    (box :class "card-content"
+         :orientation "v"
+         :space-evenly false
+         :valign "center"
+      
+      ;; Username
+      (box :class "info-row"
+           :orientation "h"
+           :space-evenly false
+           :spacing 6
+        (label :class "info-icon" :text "")
+        (label :class "info-text" :limit-width 13 :text USERNAME :xalign 0))
+      
+      ;; Window Manager
+      (box :class "info-row"
+           :orientation "h"
+           :space-evenly false
+           :spacing 6
+        (label :class "info-icon" :text "")
+        (label :class "info-text" :text WM :xalign 0))
+      
+      ;; Uptime
+      (box :class "info-row"
+           :orientation "h"
+           :space-evenly false
+           :spacing 6
+        (label :class "info-icon" :text "")
+        (label :class "info-text" :limit-width 13 :text UPTIME :xalign 0)))))
+
+;; Weather Widget
+(defwidget weather_widget []
+  (box :class "info-card-weather"
+       :orientation "h"
+       :space-evenly false
+       :halign "center"
+    
+    (box :class "info-row-weather"
+         :orientation "h"
+         :spacing 0
+         :width 100
+         :height 80
+      (label :class "weather-icon" :text WEATHER_ICON))
+    
+     ;; Weather info 
+    (box :class "card-content"
+         :orientation "v"
+         :space-evenly false
+         :spacing 5
+         :valign "center"  ; biar vertikal center
+      
+      (label :class "info-weather" :limit-width 9 :wrap true :wrap-mode "wordchar" :lines 2 :justify "center" :text WEATHER_CITY :xalign 0.5)
+      (label :class "info-text" :limit-width 16 :wrap true :wrap-mode "wordchar" :lines 2 :justify "center" :text WEATHER_DESC :xalign 0.5))
+))
+
+(defwidget calendar_box []
+    (box :class "calendar-box"
+         :orientation "v"
+         :space-evenly false
+
+    (calendar :class "cal-widget"
+              :vexpand false
+              :valign "start")))
+
+;; Clock & Date Widget
+(defwidget clock_box []
+  (box :class "clock-box"
+       :orientation "v"
+       :space-evenly false
+       :spacing 8
+       :valign "center"
+    
+    ;; Time Display
+    (label :class "clock-time" 
+           :text TIME)
+    (label :class "clock-separator" 
+           :text "---")
+    (label :class "clock-time" 
+           :text MIN)
+    
+    ;; Date Display
+    (label :class "clock-date" 
+           :text DATE)))
+
+;; Quick Apps Widget
+(defwidget apps_box []
+  (box :class "apps-box"
+       :orientation "v"
+       :space-evenly true
+       :spacing 5
+    
+    ;; Row 1
+    (box :orientation "h"
+         :space-evenly true
+         :spacing 5
+      
+      ;; alacritty
+      (button :class "app-button"
+              :onclick "alacritty & eww close performance_monitor"
+        (label :class "app-icon" :xalign 0.5 :text ""))
+      
+      ;; pcmanfm
+      (button :class "app-button"
+              :onclick "pcmanfm & eww close performance_monitor"
+        (label :class "app-icon-1" :text "")))
+    
+    ;; Row 2
+    (box :orientation "h"
+         :space-evenly true
+         :spacing 5
+      
+      ;; neovim
+      (button :class "app-button"
+              :onclick "alacritty -e nvim & eww close performance_monitor"
+        (label :class "app-icon-2" :text ""))
+      
+      ;; calibre
+      (button :class "app-button"
+              :onclick "calibre & eww close performance_monitor"
+        (label :class "app-icon-3" :text "")))
+
+    ;; Row 3
+    (box :orientation "h"
+         :space-evenly true
+         :spacing 5
+      
+      ;; image viewer
+      (button :class "app-button"
+              :onclick "qimgv & eww close performance_monitor"
+        (label :class "app-icon-4" :text ""))
+      
+      ;; Terminal
+      (button :class "app-button"
+              :onclick "cheese & eww close performance_monitor"
+        (label :class "app-icon-5" :text "")))
+    ))
+
+;; WIDGET MEDIA PLAYER
+(defwidget media_widget []
+  (box :class "media-widget-container"
+       :orientation "v"
+       :space-evenly false
+       :spacing 10
+  
+    ;; Cover Art
+    (box :class "media-cover-widget"
+         :style "background-image: url('${media_cover}');
+                 background-size: contain;
+                 background-repeat: no-repeat;
+                 background-position: center;"
+         :visible {media_cover != ""})
+    
+    ;; Media Info
+    (box :class "media-widget-info"
+         :orientation "v"  ; UBAH JADI VERTICAL
+         :space-evenly false
+         :spacing 10
+      
+      ;; Label section
+      (box :orientation "v"
+           :space-evenly false
+           :hexpand true
+           :halign "center"
+        (label :class "media-widget-name"
+               :text media_player
+               :visible {media_player != ""}
+               :xalign 0.5)
+        (label :class "media-widget-title"
+               :text {media_title != "" ? media_title : "No media playing"}
+               :limit-width 20
+               :xalign 0.5)
+        (label :class "media-widget-artist"
+               :text media_artist
+               :limit-width 20
+               :xalign 0.5))
+      
+      ;; Controls
+      (box :class "media-widget-controls"
+           :halign "center"
+           :spacing 10
+        (button :class "media-widget-btn"
+                :onclick "PLAYER=$(~/.config/eww/scripts/get_player.sh); playerctl -p \"$PLAYER\" previous"
+          (box :width 30 :height 30 :halign "center" :valign "center"
+            (label :text "󰒮" :style "font-size: 28px;")))
+        
+        (button :class "media-widget-btn-play"
+                :onclick "PLAYER=$(~/.config/eww/scripts/get_player.sh); playerctl -p \"$PLAYER\" play-pause"
+          (box :width 30 :height 30 :halign "center" :valign "center"
+            (label :text {media_status == "Playing" ? "󰏤" : "󰐊"}
+                   :style "font-size: 32px;")))
+        
+        (button :class "media-widget-btn"
+                :onclick "PLAYER=$(~/.config/eww/scripts/get_player.sh); playerctl -p \"$PLAYER\" next"
+          (box :width 30 :height 30 :halign "center" :valign "center"
+            (label :text "󰒭" :style "font-size: 28px;"))))
+      )))
+
+;; NOTE BOX
+(defwidget note_box []
+  (box :class "note-container"
+       :orientation "v"
+       :width 70
+       :height 83
+    (button :class "edit-btn"
+            :onclick "xdg-open ~/.config/eww/my-notes.txt &"
+      (box :orientation "v"
+           :space-evenly false
+           :height 77  ;; Tambahkan height
+          (label :text my_notes
+                 :class "note-text"
+                 :wrap true
+                 :xalign 0.5
+                 :yalign 0.5)))))
+
+;; Performance Content Widget
+(defwidget performance_content []
+  (box :class "tab-content" 
+       :orientation "h" 
+       :spacing 10
+       :space-evenly true
+    
+    ;; CPU
+    (metric_bar 
+        :icon ""
+        :label "CPU"
+        :value "${CPU_TEMP}°C"
+        :usage_text "${CPU_USAGE}% Usage"
+        :color_class "cpu-color")
+    
+    ;; Memory
+    (metric_bar 
+        :icon ""
+        :label "RAM"
+        :value "${MEM_USAGE_GB} / ${MEM_TOTAL}"
+        :usage_text "${MEM_USAGE_PERC}% Used"
+        :color_class "mem-color")
+    
+    ;; Disk
+    (metric_bar 
+        :icon ""
+        :label "Disk"
+        :value "${DISK_USAGE_GB} / ${DISK_TOTAL}"
+        :usage_text "${DISK_USAGE_PERC}% Used"
+        :color_class "disk-color")))
+
+;; Widget box utama
+(defwidget laptop-info-widget []
+  (box :class "laptop-container"
+       :orientation "h"
+       :space-evenly false
+       :spacing 0
+    
+    ;; Logo laptop dari cache
+    (box :class "logo-section"
+         :halign "center"
+      (image :path {laptop_info.logo_path != "" ? laptop_info.logo_path : ""}
+             :image-width 50
+             :image-height 50
+             :visible {laptop_info.logo_path != ""}))
+    
+    ;; Info spesifikasi
+    (box :class "specs-section"
+         :orientation "v"
+         :space-evenly false
+         :spacing 0
+      
+      ;; Brand & Model
+      (box :class "brand-row"
+           :space-evenly false
+           :spacing 10
+           :orientation "h"
+        (label :class "spec-brand" :text "${laptop_info.model}"))
+      
+      ;; CPU
+      (box :class "spec-row"
+           :space-evenly false
+           :spacing 10
+        (box :orientation "h" :space-evenly false :spacing 10
+          (label :class "spec-label" :width 70 :text "CPU" :xalign 0)
+          (label :class "spec-value" :text "${laptop_info.cpu}" :halign "start")))
+      
+      ;; GPU
+      (box :class "spec-row"
+           :space-evenly false
+           :spacing 10
+        (box :orientation "h" :space-evenly false :spacing 10
+          (label :class "spec-label" :text "GPU" :width 70 :xalign 0)
+          (label :class "spec-value" :text "${laptop_info.gpu}" :limit-width 35 :wrap true :wrap-mode "word" :lines 2 :justify "left" :halign "start")))
+      
+      ;; RAM
+      (box :class "spec-row"
+           :space-evenly false
+           :spacing 0
+       (box :orientation "h" :space-evenly false :spacing 10
+          (label :class "spec-label" :text "Memory" :width 70 :xalign 0)
+          (label :class "spec-value" :text "${laptop_info.ram}" :halign "start")))
+      
+      ;; Disk
+      (box :class "spec-row"
+           :space-evenly false
+           :spacing 0
+        (box :orientation "h" :space-evenly false :spacing 10
+          (label :class "spec-label" :text "Storage" :width 70 :xalign 0)
+          (label :class "spec-value" :text "${laptop_info.disk}" :halign "start"))))))
+          
+;; Dashboard Content Widget 
+(defwidget dashboard_content []
+  (box :class "tab-content other-content"
+       :orientation "h"   
+       :space-evenly false
+       :spacing 10
+    
+    ;;KOLOM KIRI
+    (box :orientation "v"
+         :spacing 10
+         :space-evenly false
+      
+      ;; Row 1: Profile and Weather
+      (box :class "column"
+           :orientation "h"
+           :spacing 10
+           :space-evenly false
+
+        (profile_widget)
+        (weather_widget))
+      
+      ;; Row 2: Calendar, Clock, Apps
+      (box :class "column"
+           :orientation "h"
+           :spacing 10
+           :hexpand true
+           :space-evenly false
+
+        (calendar_box)
+        (clock_box)
+        (apps_box)))
+    
+    ;; KOLOM KANAN
+    (box :class "right-column"
+         :orientation "v"
+         :spacing 10
+         :space-evenly false
+         :vexpand true
+      (media_widget)
+      (note_box))    
+  ))
+
+;; Main Widget
+(defwidget main_widget []
+  (box :class "main-container"
+       :orientation "v"
+       :space-evenly false
+       :spacing 0
+    
+    ;; Tab Navigation
+    (tab_navigation)
+    
+    (box :class "content-area"
+      (box :visible "${active_tab == 'performance'}"
+        (performance_content))
+      
+      (box :visible "${active_tab == 'dashboard'}"
+        (dashboard_content))
+
+      (box :visible "${active_tab == 'information'}"
+        (laptop-info-widget))
+      )))
+
+;; ----------------------------------------
+;; JENDELA UTAMA 
+;; ----------------------------------------
+(defwindow performance_monitor
+  :monitor 0
+  :geometry (geometry :x "0%"
+                      :y "38px"
+                      :width "200px"
+                      :height "100px"
+                      :anchor "top center")
+  :stacking "overlay"
+  :exclusive false
+  :windowtype "dialog"
+  :wm-ignore false
+  :focusable false
+  :resizable false
+  (main_widget))

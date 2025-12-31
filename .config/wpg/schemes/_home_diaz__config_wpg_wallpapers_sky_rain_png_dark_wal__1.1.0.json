@@ -1,0 +1,28 @@
+{
+    "wallpaper": "/home/diaz/.config/wpg/wallpapers/sky_rain.png",
+    "alpha": "100",
+
+    "special": {
+        "background": "#475b43",
+        "foreground": "#e3ebee",
+        "cursor": "#e3ebee"
+    },
+    "colors": {
+        "color0": "#475b43",
+        "color1": "#78BEED",
+        "color2": "#BED5A3",
+        "color3": "#90B8E6",
+        "color4": "#91C8F1",
+        "color5": "#ADD2E4",
+        "color6": "#AED4F1",
+        "color7": "#e3ebee",
+        "color8": "#9ea4a6",
+        "color9": "#78BEED",
+        "color10": "#BED5A3",
+        "color11": "#90B8E6",
+        "color12": "#91C8F1",
+        "color13": "#ADD2E4",
+        "color14": "#AED4F1",
+        "color15": "#e3ebee"
+    }
+}

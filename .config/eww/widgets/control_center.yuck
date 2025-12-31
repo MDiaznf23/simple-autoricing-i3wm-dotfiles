@@ -1,0 +1,515 @@
+;;-----------------------------------------------------
+;; POLLING VARIABEL
+;;-----------------------------------------------------
+
+(defvar wifi_list_visible false)
+(defvar bluetooth_list_visible false) 
+
+(defpoll bluetooth_devices_listen :interval "2s"
+  :initial "[]"
+  `~/.config/eww/scripts/scan_bluetooth.sh`)
+
+;; Pindahkan bluetooth_status poll ke sini 
+(defpoll bluetooth_status :interval "1s"
+  :initial "no"
+  `bluetoothctl show | grep "Powered:" | awk '{print $2}' || echo "no"`)
+
+(defpoll wifi_status :interval "500ms"
+  :initial "disabled"
+  `nmcli radio wifi || echo "disabled"`)
+
+;; Poll untuk WiFi networks list
+(defpoll wifi_networks :interval "5s"
+  :initial "[]"
+  `~/.config/eww/scripts/scan_wifi.sh`)
+
+;; Poll untuk current connected SSID
+(defpoll wifi_ssid :interval "2s"
+  :initial ""
+  `nmcli -t -f active,ssid dev wifi | grep '^yes' | cut -d':' -f2 || echo "Not Connected"`)
+
+;; Polls sistem
+(defpoll volume_level :interval "500ms" 
+  :initial "50"
+  `pactl get-sink-volume @DEFAULT_SINK@ 2>/dev/null | grep 'Volume:' | head -n1 | awk '{print $5}' | tr -d '%' || echo "50"`)
+
+(defpoll brightness_level :interval "500ms"
+  :initial "50" 
+  `brightnessctl g 2>/dev/null | awk -v max=$(brightnessctl m 2>/dev/null) '{print int($1/max*100)}' || echo "50"`)
+
+(defpoll night_mode_status :interval "2s"
+  :initial "off"
+  `[ -f /tmp/night_mode_status ] && cat /tmp/night_mode_status || echo "off"`)
+
+;; Poll untuk Notifikasi (Dunst) - UPDATED
+(defpoll notification_count :interval "2s"
+  :initial "0"
+  `dunstctl count history || echo 0`)
+
+(defpoll notification_history :interval "500ms"
+  :initial "[]"
+  `~/.config/eww/scripts/get_notifications.sh`)
+
+;; CALENDAR
+(defpoll DATE_HEADER :interval "30s" 
+  "date +'%A, %d %B'")
+
+(defpoll CPU_TEMP :interval "2s" 
+  :initial "0"
+  "sensors | grep -i 'core 0' | awk '{print $3}' | tr -d '+Â°C' | cut -d. -f1 || cat /sys/class/hwmon/hwmon*/temp1_input 2>/dev/null | head -1 | awk '{printf \"%.0f\", $1/1000}' || echo '0'")
+
+;; CPU Usage
+(defpoll CPU_USAGE :interval "2s" 
+  :initial "0"
+  "top -bn1 | grep 'Cpu(s)' | awk '{print 100 - $8}' | cut -d. -f1")
+
+;; Memory Usage
+(defpoll MEM_USAGE_GB :interval "2s" 
+  :initial "0"
+  "free -h | awk '/^Mem/ {print $3}' | sed 's/i//'")
+
+(defpoll MEM_USAGE_PERC :interval "2s" 
+  :initial "0"
+  "free | awk '/Mem/ {printf \"%.0f\", $3/$2*100}'")
+
+(defpoll MEM_TOTAL :interval "30s"
+  :initial "0"
+  "free -h | awk '/^Mem/ {print $2}' | sed 's/i//'")
+
+;; Disk Usage
+(defpoll DISK_USAGE_GB :interval "5s"
+  :initial "0"
+  "df -h / | awk 'NR==2 {print $3}'")
+
+(defpoll DISK_USAGE_PERC :interval "5s"
+  :initial "0"
+  "df / | awk 'NR==2 {print $5}' | tr -d '%'")
+
+(defpoll DISK_TOTAL :interval "30s"
+  :initial "0"
+  "df -h / | awk 'NR==2 {print $2}'")
+
+(defpoll clock_time
+  :interval "1s"
+  "date +'%H:%M'")
+
+(defpoll clock_date
+  :interval "1h"
+  "date +'%A, %B %d'")
+
+;;---------------------------------------------------------
+;; WIDGET CONTROL CENTER WINDOWS (UTAMA)
+;;---------------------------------------------------------
+
+;; ========================================
+;; WIDGET BLUETOOTH ITEM (untuk list)
+;; ========================================
+(defwidget bluetooth_device_item [name mac connected paired type_icon pair_icon conn_icon]
+  (box :class "bt-device-item ${connected == 'true' ? 'bt-connected' : ''}"       
+       :orientation "h"
+       :spacing 10
+       :space-evenly false
+    
+    ;; Type icon (headphone, phone, dll)
+    (label :class "bt-type-icon"
+           :text type_icon)
+    
+    ;; Device name
+    (label :class "bt-name-label"
+           :text name
+           :xalign 0
+           :limit-width 25
+           :hexpand true)
+    
+    (box :spacing 5
+      ;; Connect/Disconnect button
+      (button :class "bt-action-btn"
+              :onclick "~/.config/eww/scripts/connect_bluetooth.sh '${mac}' toggle && sleep 1 && eww update bluetooth_devices=$(~/.config/eww/scripts/scan_bluetooth.sh)"
+        (label :text {connected == "true" ? " " : "Connect"}))
+      
+      ;; Unpair button (hanya tampil jika paired)
+      (button :class "bt-action-btn bt-unpair"
+              :visible {paired == "true"}
+              :onclick "~/.config/eww/scripts/connect_bluetooth.sh '${mac}' unpair && sleep 1 && eww update bluetooth_devices=$(~/.config/eww/scripts/scan_bluetooth.sh)"
+        (label :text ""))
+    )
+  )
+)
+
+;; ========================================
+;; WIDGET WIFI ITEM (untuk list)
+;; ========================================
+(defwidget wifi_network_item [ssid signal secured connected sig_icon sec_icon]
+  (button :class "wifi-network-item ${connected == 'true' ? 'wifi-connected' : ''}"
+          :onclick "~/.config/eww/scripts/connect_wifi.sh '${ssid}' &"
+    (box :orientation "h"
+         :spacing 10
+         :space-evenly false
+      
+      ;; Signal icon
+      (label :class "wifi-signal-icon"
+             :text sig_icon)
+      
+      ;; SSID
+      (label :class "wifi-ssid-label"
+             :text ssid
+             :xalign 0
+             :limit-width 25
+             :hexpand true)
+      
+      ;; Security icon
+      (label :class "wifi-security-icon"
+             :text sec_icon
+             :visible {secured == "true"})
+      
+      ;; Connected indicator
+      (label :class "wifi-connected-icon"
+             :text "✓"
+             :visible {connected == "true"})
+    )
+  )
+)
+
+;; ----------------------------------------
+;; WIDGET TOGGLE
+;; ----------------------------------------
+(defwidget toggle_widget [icon label ?onclick ?active_class]
+  (box :class "toggle-widget"
+       :orientation "v"
+       :spacing 0
+       :valign "center"
+       :halign "fill"
+    
+  (button :class "toggle-icon ${active_class}"
+        :onclick {onclick != "" ? onclick : ""}
+    (box :width 30 :height 30 :halign "center" :valign "center"
+      (label :text icon :style "font-size: 20px;")
+    )
+  )
+
+    (label :class "toggle-label"
+           :text label
+           :xalign 0.5 )  
+  )
+)
+
+;; ----------------------------------------
+;; WIDGET UNTUK SATU ITEM NOTIFIKASI - FIXED
+;; ----------------------------------------
+(defwidget notification_item [appname summary id icon_path]
+  (box :class "notification-item"
+       :orientation "h"
+       :spacing 10
+       :space-evenly false
+    
+    ;; Ikon Notifikasi
+    (box :class "notification-icon-container"
+         :visible {icon_path != "" && icon_path != "null"}
+      (label :text " " :style "font-size: 24px;"))
+    
+    ;; Teks Notifikasi
+    (box :class "notification-text-container"
+         :orientation "v"
+         :halign "start"
+         :valign "center"
+         :hexpand true
+         :space-evenly false
+      (label :class "notification-appname"
+             :text appname
+             :xalign 0
+             :limit-width 35)
+      (label :class "notification-summary"
+             :text summary
+             :xalign 0
+             :wrap true
+             :limit-width 35))
+    
+    ;; Button close yang berfungsi
+    (button :class "notification-close-btn"
+            :onclick "dunstctl history-rm ${id} && eww update notification_history=$(~/.config/eww/scripts/get_notifications.sh)"
+      (label :text "✕"))
+  )
+)
+
+;; ----------------------------------------
+;; WIDGET QUICK TOGGLES (UPDATED)
+;; ----------------------------------------
+(defwidget quick_toggles []
+  (box :class "quick-toggles-container"
+       :orientation "v"  
+       :spacing -5
+       :space-evenly false
+           
+    ;; Row pertama: 3 toggle buttons (WiFi, BT, Night)
+    (box :class "quick-toggles-row"
+         :orientation "h"
+         :spacing 10
+         :halign "fill"
+         :valign "center"
+         :space-evenly true
+
+      ;; 1. WiFi - ONCLICK TOGGLE EXPAND
+      (toggle_widget :icon {wifi_status == "enabled" ? " " : ""}
+                     :label {wifi_status == "enabled" ? "On" : "Off"}
+                     :onclick "eww update bluetooth_list_visible=false wifi_list_visible=${!wifi_list_visible}"
+                     :active_class {wifi_status == "enabled" ? "wifi-active" : ""})
+      
+      ;; 2. Bluetooth Mode
+      (toggle_widget :icon {bluetooth_status == "yes" ? "󰂯" : "󰂲"}
+                     :label {bluetooth_status == "yes" ? "On" : "Off"}
+                     :onclick "eww update wifi_list_visible=false bluetooth_list_visible=${!bluetooth_list_visible}"
+                     :active_class {bluetooth_status == "yes" ? "bt-active" : ""})
+
+      ;; 3. Night Mode (UPDATED)
+      (toggle_widget :icon "🌙"
+                     :label {night_mode_status == "on" ? "On" : "Off"}
+                     :onclick "~/.config/eww/scripts/toggle_night_mode.sh"
+                     :active_class {night_mode_status == "on" ? "night-active" : ""})
+    ) 
+
+    ;; EXPANDABLE WIFI LIST (dibawah toggle buttons)
+    (revealer :reveal wifi_list_visible
+              :transition "slidedown"
+              :duration "400ms"
+      (box :class "wifi-expanded-panel"
+           :orientation "v"
+           :spacing 5
+           :space-evenly false
+        
+        ;; Scan button
+        (button :class "wifi-scan-btn"
+                :onclick "eww update wifi_networks=$(~/.config/eww/scripts/scan_wifi.sh)"
+          (label :text " Refresh Networks"))
+        
+        ;; Networks list
+        (scroll :class "wifi-networks-scroll"
+                :height 180
+                :vscroll true
+                :hscroll false
+          (box :orientation "v"
+               :spacing 3
+               :space-evenly false
+            
+            ;; Loop through networks
+            (for network in wifi_networks
+              (wifi_network_item 
+                :ssid {network.ssid}
+                :signal {network.signal}
+                :secured {network.secured}
+                :connected {network.connected}
+                :sig_icon {network.sig_icon}
+                :sec_icon {network.sec_icon}
+              )
+            )
+            
+            ;; No networks message
+            (label :class "wifi-no-networks"
+                   :text "No networks found"
+                   :visible {wifi_networks == "[]" || wifi_status != "enabled"})
+          )
+        )
+        
+        ;; WiFi Power toggle at bottom
+        (button :class "wifi-power-toggle"
+                :onclick "~/.config/eww/scripts/toggle_wifi.sh && sleep 1 && eww update wifi_networks=$(~/.config/eww/scripts/scan_wifi.sh)"
+          (label :text {wifi_status == "enabled" ? "Turn Off WiFi" : "Turn On WiFi"}))
+      )
+    )  ;; TUTUP revealer wifi
+
+    (revealer :reveal bluetooth_list_visible
+              :transition "slidedown"
+              :duration "400ms"
+      (box :class "bt-expanded-panel"
+           :orientation "v"
+           :spacing 5
+           :space-evenly false
+        
+        ;; Scan button
+        (button :class "bt-scan-btn"
+                :onclick "eww update bluetooth_devices_listen=$(~/.config/eww/scripts/scan_bluetooth.sh)"
+          (label :text " Refresh Devices"))
+        
+        ;; Devices list
+        (scroll :class "bt-devices-scroll"
+                :height 180
+                :vscroll true
+                :hscroll false
+          (box :orientation "v"
+               :spacing 3
+               :space-evenly false
+            
+            ;; Loop through devices
+            (for device in bluetooth_devices_listen
+              (bluetooth_device_item 
+                :name {device.name}
+                :mac {device.mac}
+                :connected {device.connected}
+                :paired {device.paired}
+                :type_icon {device.type_icon}
+                :pair_icon {device.pair_icon}
+                :conn_icon {device.conn_icon}
+              )
+            )
+            
+            ;; No devices message
+            (label :class "bt-no-devices"
+                   :text "No devices found"
+                   :visible {bluetooth_devices_listen == "[]" || bluetooth_status != "yes"})
+          )
+        )
+        
+        ;; Bluetooth Power toggle at bottom
+        (button :class "bt-power-toggle"
+                :onclick "~/.config/eww/scripts/toggle_bluetooth.sh && sleep 1 && eww update bluetooth_devices=$(~/.config/eww/scripts/scan_bluetooth.sh)"
+          (label :text {bluetooth_status == "yes" ? "Turn Off Bluetooth" : "Turn On Bluetooth"}))
+      )
+    )  
+  )  
+)  
+
+;; ----------------------------------------
+;; WIDGET UNTUK PUSAT NOTIFIKASI - FIXED
+;; ----------------------------------------
+(defwidget notification_center []
+  (box :class "notification-center-container"
+       :orientation "v"
+       :space-evenly false
+       :spacing 0
+    
+    ;; Header Notifikasi - FIXED
+    (box :class "notification-header"
+         :orientation "h"
+         :space-evenly false
+         :hexpand true
+      (label :class "notification-header-title"
+             :text "Notifications"
+             :halign "start"
+             :hexpand true)
+      (button :class "clear-all-btn"
+              :onclick "dunstctl history-clear && eww update notification_history='[]'"
+        (label :xalign 1 :text "Clear")))
+    
+    (separator)
+    
+    ;; Daftar Notifikasi (dengan scroll)
+    (scroll :class "notification-list-scroll"
+            :height 150
+            :vscroll true
+            :hscroll false
+      (box :class "notification-list"
+           :orientation "v"
+           :spacing 8
+           :valign {notification_count == 0 ? "center" : "start"}
+           :vexpand true
+           ;; Loop melalui hasil script
+           (for notification in notification_history
+             (notification_item
+                 :appname {notification.appname}
+                 :summary {notification.summary}
+                 :id {notification.id}
+                 :icon_path {notification.icon}
+             )
+           )
+           
+           ;; Footer di DALAM scroll - tampil saat tidak ada notifikasi
+           (box :class "notification-footer"
+                :halign "center"
+                :valign "center"
+                :vexpand true
+                :visible {notification_count == 0}
+             (label :text "No new notifications"))
+      )
+    )
+))
+
+;; ----------------------------------------
+;; WIDGET SEPARATOR
+;; ----------------------------------------
+(defwidget separator []
+  (box :class "separator" :hexpand true))
+
+;; ----------------------------------------
+;; WIDGET SLIDER
+;; ----------------------------------------
+(defwidget slider_row [icon_left value onchange]
+  (box :class "slider-row" 
+       :spacing 15 
+       :space-evenly false
+       :valign "center"
+    (label :class "slider-icon" :text icon_left)
+    (scale :class "system-slider"
+           :min 0
+           :max 101
+           :value value
+           :orientation "h"
+           :onchange onchange
+           :hexpand true)
+    (label :class "slider-percentage"
+           :text "${value}%"
+           :style "min-width: 35px;")
+  )
+)
+
+;; ----------------------------------------
+;; WIDGET CONTROL CENTER UTAMA
+;; ----------------------------------------
+(defwidget control_center []
+  (box :class "control-center-container"
+       :orientation "v"
+       :spacing 0
+       :space-evenly false  
+       :valign "start"
+    
+    ;; Quick toggles (sudah include WiFi expandable)
+    (quick_toggles)
+
+;; CONDITIONAL: Separator hanya muncul jika WiFi dan BT list TIDAK visible
+(revealer :reveal {!wifi_list_visible && !bluetooth_list_visible}
+        :transition "slideup"
+        :duration "400ms"
+(separator))
+
+;; CONDITIONAL: Sliders hanya muncul jika WiFi dan BT list TIDAK visible
+(revealer :reveal {!wifi_list_visible && !bluetooth_list_visible}
+        :transition "slideup"
+        :duration "400ms"
+(box :class "sliders-container" 
+    :orientation "v" 
+    :spacing 0
+    :space-evenly false
+    (slider_row :icon_left "󰃞"
+                :value brightness_level
+                :onchange "brightnessctl s {}%")
+    (slider_row :icon_left "󰕾"
+                :value volume_level
+                :onchange "pactl set-sink-volume @DEFAULT_SINK@ {}%")
+))
+
+;; CONDITIONAL: Separator hanya muncul jika WiFi dan BT list TIDAK visible
+(revealer :reveal {!wifi_list_visible && !bluetooth_list_visible}
+        :transition "slideup"
+        :duration "400ms"
+(separator))
+
+;; CONDITIONAL: Notification Center hanya muncul jika WiFi dan BT list TIDAK visible
+(revealer :reveal {!wifi_list_visible && !bluetooth_list_visible}
+        :transition "slideup"
+        :duration "400ms"
+(notification_center))
+
+))
+
+;; ----------------------------------------
+;; JENDELA UTAMA
+;; ----------------------------------------
+(defwindow control_center_window
+  :monitor 0
+  :geometry (geometry :x "-100px"
+                      :y "38px"
+                      :anchor "top right")
+  :stacking "overlay"
+  :focusable false
+  :windowtype "dialog"
+  :wm-ignore false
+  (control_center))                
+

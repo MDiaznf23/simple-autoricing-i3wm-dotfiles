@@ -1,0 +1,28 @@
+{
+    "wallpaper": "/home/diaz/.config/wpg/wallpapers/sea.jpg",
+    "alpha": "100",
+
+    "special": {
+        "background": "#00030c",
+        "foreground": "#9b9fb3",
+        "cursor": "#9b9fb3"
+    },
+    "colors": {
+        "color0": "#00030c",
+        "color1": "#05227b",
+        "color2": "#0f2bc4",
+        "color3": "#4c62e3",
+        "color4": "#4183d8",
+        "color5": "#aa7536",
+        "color6": "#6ba9de",
+        "color7": "#9b9fb3",
+        "color8": "#373f67",
+        "color9": "#05227b",
+        "color10": "#0f2bc4",
+        "color11": "#4c62e3",
+        "color12": "#4183d8",
+        "color13": "#aa7536",
+        "color14": "#6ba9de",
+        "color15": "#9b9fb3"
+    }
+}

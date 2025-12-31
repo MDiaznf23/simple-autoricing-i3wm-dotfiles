@@ -5,11 +5,12 @@
 
 /* Kontainer utama di dalam jendela */
 .cal-box {
-  padding: 16px;
+  padding: 10px;
   font-family: "JetBrainsMono Nerd Font", "Noto Sans", sans-serif;
   background-color: $background; // Warna background dari pywal
-  border-radius: 10px;
-  border: 1px solid $color8; // Border abu-abu dari pywal
+  border-radius: 0 0 10px 10px;
+  border: 1.5px solid $color2; // Border abu-abu dari pywal
+  border-top: none;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
@@ -39,7 +40,7 @@
       color: $foreground;
       background: transparent;
       border: none;
-      padding: 2px;
+      padding: 0px;
       transition: all 0.2s ease;
       
       &:hover { 

@@ -1,0 +1,71 @@
+;; ---------------------------------------------------
+;; WIDGET CLOCK AND DATE (TAMPILAN)
+;; ---------------------------------------------------
+;; Mendefinisikan struktur widget-nya.
+
+(defwidget desktop_clock []
+  (box :class "clock-container"
+       :orientation "vertical"
+       :space-evenly false
+       :valign "center"
+       :halign "center"
+    (label :class "time-label" :text clock_time)
+    (label :class "date-label" :text clock_date)
+  )
+)
+
+;; ------------------------------------
+;; WIDGET CALENDAR
+;; -------------------------------------
+
+(defwidget calendar_widget []
+  (box :class "cal-box"
+       :orientation "v"
+       :spacing 5
+       :space-evenly false
+       :vexpand false
+       :valign "start"
+    
+    ;; Header Tanggal
+    (label :class "cal-header-date"
+           :halign "start"
+           :text DATE_HEADER
+           :vexpand false)
+    
+    ;; Widget Kalender
+    (calendar :class "cal"
+              :vexpand false
+              :valign "start")
+  )
+)
+
+;; ----------------------------------------
+;; JENDELA UTAMA
+;; ----------------------------------------
+(defwindow calendar_popup
+  :monitor 0
+  :geometry (geometry :x "-30px"
+                      :y "38px"
+                      :width "300px"
+                      :height "330px"
+                      :anchor "top right")
+  :stacking "overlay"
+  :exclusive false
+  :focusable true
+  :windowtype "dialog"
+  :wm-ignore false
+  (calendar_widget))
+
+(defwindow clock
+  :monitor 0                             
+  :geometry (geometry :x "0%"            
+                      :y "52px"           
+                      :width "100%"        
+                      :height "10%"
+                      :anchor "top center")
+  
+  :stacking "overlay"                         
+  :wm-ignore false
+  :windowtype "desktop"                       
+                                         
+  (desktop_clock))

@@ -8,7 +8,7 @@ source "$HOME/.cache/wal/colors.sh"
 
 APIKEY="b3583824922b1ebb7c41be7a351343bc" 
 # if you leave these empty location will be picked based on your ip-adres
-CITY_NAME='Semarang'
+CITY_NAME='Jakarta'
 COUNTRY_CODE='ID'
 # Desired output language
 LANG="en"
@@ -27,20 +27,20 @@ UNITS="metric"
 
 # Color Settings (using wpg colors)
 
-COLOR_CLOUD="$color8"           # abu-abu
-COLOR_THUNDER="$color3"         # kuning/orange
-COLOR_LIGHT_RAIN="$color4"      # biru muda
-COLOR_HEAVY_RAIN="$color6"      # cyan
-COLOR_SNOW="$color7"            # putih
-COLOR_FOG="$color8"             # abu-abu
-COLOR_TORNADO="$color1"         # merah
-COLOR_SUN="$color3"             # kuning
-COLOR_MOON="$color7"            # putih
-COLOR_ERR="$color1"             # merah
-COLOR_WIND="$color4"            # biru
-COLOR_COLD="$color6"            # cyan
-COLOR_HOT="$color1"             # merah
-COLOR_NORMAL_TEMP="$color7"     # putih
+COLOR_CLOUD="$color8"           
+COLOR_THUNDER="$color3"         
+COLOR_LIGHT_RAIN="$color4"     
+COLOR_HEAVY_RAIN="$color6"    
+COLOR_SNOW="$color7"            
+COLOR_FOG="$color8"            
+COLOR_TORNADO="$color1"        
+COLOR_SUN="$color3"            
+COLOR_MOON="$color7"            
+COLOR_ERR="$color1"             
+COLOR_WIND="$color4"           
+COLOR_COLD="$color6"            
+COLOR_HOT="$color1"             
+COLOR_NORMAL_TEMP="$color7"     
 
 # Leave "" if you want the default polybar color
 COLOR_TEXT=""
@@ -152,33 +152,33 @@ function setIcons {
         #Thunderstorm
         ICON_COLOR=$COLOR_THUNDER
         if [ $DATE -ge $SUNRISE -a $DATE -le $SUNSET ]; then
-            ICON=" "
+            ICON=" "
         else
-            ICON=" "
+            ICON=" "
         fi
     elif [ $WID -le 311 ]; then
         #Light drizzle
         ICON_COLOR=$COLOR_LIGHT_RAIN
         if [ $DATE -ge $SUNRISE -a $DATE -le $SUNSET ]; then
-            ICON=" "
+            ICON=" "
         else
-            ICON=" "
+            ICON=" "
         fi
     elif [ $WID -le 321 ]; then
         #Heavy drizzle
         ICON_COLOR=$COLOR_HEAVY_RAIN
         if [ $DATE -ge $SUNRISE -a $DATE -le $SUNSET ]; then
-            ICON=" "
+            ICON="殺"
         else
-            ICON=" "
+            ICON="殺"
         fi
     elif [ $WID -le 531 ]; then
         #Rain
         ICON_COLOR=$COLOR_HEAVY_RAIN
         if [ $DATE -ge $SUNRISE -a $DATE -le $SUNSET ]; then
-            ICON=" "
+            ICON=" "
         else
-            ICON=" "
+            ICON=" "
         fi
     elif [ $WID -le 622 ]; then
         #Snow
@@ -205,7 +205,7 @@ function setIcons {
         # Few clouds
         if [ $DATE -ge $SUNRISE -a $DATE -le $SUNSET ]; then
             ICON_COLOR=$COLOR_SUN
-            ICON=" "
+            ICON="󰅟 " 
         else
             ICON_COLOR=$COLOR_MOON
             ICON=" "
@@ -213,7 +213,7 @@ function setIcons {
     elif [ $WID -le 804 ]; then
         # Overcast
         ICON_COLOR=$COLOR_CLOUD
-        ICON=" "
+        ICON="󰅟 " 
     else
         ICON_COLOR=$COLOR_ERR
         ICON=" "

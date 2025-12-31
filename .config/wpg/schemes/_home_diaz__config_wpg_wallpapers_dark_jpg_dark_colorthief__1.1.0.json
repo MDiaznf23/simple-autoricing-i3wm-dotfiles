@@ -1,0 +1,28 @@
+{
+    "wallpaper": "/home/diaz/.config/wpg/wallpapers/dark.jpg",
+    "alpha": "100",
+
+    "special": {
+        "background": "#040004",
+        "foreground": "#a19ba1",
+        "cursor": "#a19ba1"
+    },
+    "colors": {
+        "color0": "#040004",
+        "color1": "#413f61",
+        "color2": "#4a4543",
+        "color3": "#645961",
+        "color4": "#8f5b4b",
+        "color5": "#6f7295",
+        "color6": "#81859e",
+        "color7": "#a19ba1",
+        "color8": "#433744",
+        "color9": "#413f61",
+        "color10": "#4a4543",
+        "color11": "#645961",
+        "color12": "#8f5b4b",
+        "color13": "#6f7295",
+        "color14": "#81859e",
+        "color15": "#a19ba1"
+    }
+}

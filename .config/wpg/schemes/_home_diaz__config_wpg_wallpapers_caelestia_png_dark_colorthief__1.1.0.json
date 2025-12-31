@@ -1,0 +1,28 @@
+{
+    "wallpaper": "/home/diaz/.config/wpg/wallpapers/caelestia.png",
+    "alpha": "100",
+
+    "special": {
+        "background": "#050509",
+        "foreground": "#a4a4ac",
+        "cursor": "#a4a4ac"
+    },
+    "colors": {
+        "color0": "#050509",
+        "color1": "#373a67",
+        "color2": "#855391",
+        "color3": "#7455cd",
+        "color4": "#6474b3",
+        "color5": "#d66fa5",
+        "color6": "#9ca4bc",
+        "color7": "#a4a4ac",
+        "color8": "#49495a",
+        "color9": "#373a67",
+        "color10": "#855391",
+        "color11": "#7455cd",
+        "color12": "#6474b3",
+        "color13": "#d66fa5",
+        "color14": "#9ca4bc",
+        "color15": "#a4a4ac"
+    }
+}

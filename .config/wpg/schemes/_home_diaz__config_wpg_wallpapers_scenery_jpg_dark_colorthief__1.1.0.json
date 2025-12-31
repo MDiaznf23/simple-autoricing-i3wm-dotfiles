@@ -1,0 +1,28 @@
+{
+    "wallpaper": "/home/diaz/.config/wpg/wallpapers/scenery.jpg",
+    "alpha": "100",
+
+    "special": {
+        "background": "#030303",
+        "foreground": "#a0a1a1",
+        "cursor": "#a0a1a1"
+    },
+    "colors": {
+        "color0": "#030303",
+        "color1": "#3d4b5c",
+        "color2": "#6c6b72",
+        "color3": "#70757a",
+        "color4": "#6e7b89",
+        "color5": "#909bac",
+        "color6": "#94a4ae",
+        "color7": "#a0a1a1",
+        "color8": "#414343",
+        "color9": "#3d4b5c",
+        "color10": "#6c6b72",
+        "color11": "#70757a",
+        "color12": "#6e7b89",
+        "color13": "#909bac",
+        "color14": "#94a4ae",
+        "color15": "#a0a1a1"
+    }
+}
