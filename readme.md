@@ -14,7 +14,7 @@
 
 ## Demo
 
-<video src="./Screenshot/demo.mp4" controls></video>
+https://github.com/user-attachments/assets/f297109c-e04c-41b1-a0d1-062a8233dc05
 
 ---
 
