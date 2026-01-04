@@ -16,6 +16,9 @@ error() { echo -e "${RED}✗ $1${NC}"; }
 success() { echo -e "${GREEN}✓ $1${NC}"; }
 warning() { echo -e "${YELLOW}⚠ $1${NC}"; }
 
+echo "Installing base-devel..."
+sudo pacman -S --needed --noconfirm base-devel git
+
 # Check for AUR helper
 if ! command -v yay &> /dev/null && ! command -v paru &> /dev/null; then
     echo "Installing yay (AUR helper)..."
