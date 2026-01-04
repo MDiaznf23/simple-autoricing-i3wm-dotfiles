@@ -1,1 +1,41 @@
 .git
+
+# Pipx environments and binaries
+.local/share/pipx/
+
+# Pipx binary symlinks (will be recreated dynamically)
+.local/bin/wal
+.local/bin/wpg
+.local/bin/genzathurarc
+.local/bin/zathura
+
+# Pywal generated files
+.cache/wal/
+
+# Wpg generated schemes
+.config/wpg/schemes/
+
+# Eww colors symlink (will be recreated dynamically)
+.config/eww/colors.scss
+
+# Wpg template symlinks (will be recreated dynamically)
+.config/wpg/templates/gtk2
+.config/wpg/templates/gtk3.0
+.config/wpg/templates/gtk3.20
+
+# System generated
+*.log
+*.tmp
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Local notes
+*.local
+my-notes.txt
+
+# Backup directories
+*_backup_*/
+backup_*/
