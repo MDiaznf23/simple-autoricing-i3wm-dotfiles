@@ -41,7 +41,7 @@
 
 ;; Variables info laptop
 (defpoll laptop_info :interval "86400s" 
-  :initial '{"brand":"Loading...","model":"Loading...","cpu":"...","gpu":"...","ram":"...","disk":"...","logo_path":"/home/diaz/.config/eww/assets/brand.png"}'
+  :initial '{"brand":"Loading...","model":"Loading...","cpu":"...","gpu":"...","ram":"...","disk":"...","logo_path":""}'
   :run-once true
   "~/.config/eww/scripts/get-laptop-info.sh")
 
@@ -372,7 +372,7 @@
     ;; Logo laptop dari cache
   (box :class "logo-section"
          :halign "center"
-      (image :path {laptop_info.logo_path != "" ? laptop_info.logo_path : "/home/diaz/.config/eww/assets/brand.png"}
+      (image :path {laptop_info.logo_path}
              :image-width 50
              :image-height 50
              :visible {laptop_info.logo_path != ""}))
