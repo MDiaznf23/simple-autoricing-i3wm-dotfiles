@@ -1,5 +1,5 @@
 #!/bin/bash
-source ~/.cache/wal/colors.sh
+source ~/.cache/m3-colors/colors.sh
 
 cat > ~/.config/dunst/dunstrc << EOF
 [global]

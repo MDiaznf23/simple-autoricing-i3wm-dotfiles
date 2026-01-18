@@ -2,7 +2,7 @@
 
 <div align="center">
 
-**Minimal i3wm environment with automated color theming from wallpapers**
+**Minimal i3wm with automated Material 3 theming from wallpapers**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Arch Linux](https://img.shields.io/badge/Arch-Linux-1793D1?logo=arch-linux&logoColor=fff)](https://archlinux.org/)
@@ -12,62 +12,45 @@
 
 ---
 
-## Demo
-
-https://github.com/user-attachments/assets/f297109c-e04c-41b1-a0d1-062a8233dc05
-
----
-
 ## Screenshots
 
-<table>
-  <tr>
-    <td><img src="./Screenshot/clean-desktop.png" alt="Clean Desktop"/><br/><sub><b>Clean Desktop</b></sub></td>
-    <td><img src="./Screenshot/busy-desktop.png" alt="Busy Desktop"/><br/><sub><b>Busy Desktop</b></sub></td>
-  </tr>
-  <tr>
-    <td colspan="2" align="center"><img src="./Screenshot/launcher.png" alt="Rofi Launcher"/><br/><sub><b>Theme Launcher</b></sub></td>
-  </tr>
-</table>
+
+**Clean Desktop**
+
+![Clean Desktop](./Screenshot/clean-desktop.png)
+
+**Busy Desktop**
+
+![Busy Desktop](./Screenshot/busy-desktop.png)
+
+**Minimalist Desktop**
+
+![Rofi Launcher](./Screenshot/minimal.png)
 
 ---
 
 ## Features
 
-- **Auto Color Theming** - `pywal` + `colorz` + `colorthief` + `haishoku` + `wpgtk` generate schemes from wallpapers
-- **Lightweight** - Minimal resource usage, fast performance
-- **Complete Setup** - i3wm, Polybar, Rofi, Alacritty, Fish shell, Eww widgets
-- **One-Click Install** - Automated script with backup system
+- **Auto Material 3 Theming** - Colors extracted from wallpapers via m3wal
+- **Lightweight** - Minimal resources, fast performance
+- **Complete Setup** - i3wm, Eww, Alacritty, Fish, Rofi, all themed
+- **One-Click Install** - Automated with backup
 
 ---
 
-## Components
+## Stack
 
-| Category | Application | Purpose |
-| :--- | :--- | :--- |
-| **WM** | i3-wm | Tiling window manager |
-| **Bar** | Polybar | Status bar |
-| **Terminal** | Alacritty | GPU-accelerated terminal |
-| **Shell** | Fish | User-friendly shell |
-| **Theming** | pywal + colorz + colorthief + haishoku + wpgtk | Auto color generation |
-| **Launcher** | Rofi | App launcher/switcher |
-| **Compositor** | Picom | Transparency & effects |
-| **Widgets** | Eww | System monitoring |
-| **File Manager** | PCManFM | Lightweight GUI |
-| **Wallpaper** | feh | Image viewer |
-
----
-
-## Requirements
-
-- **OS**: Arch Linux or derivatives
-- **Display**: X11/Xorg
-- **Internet**: For package downloads
-- AUR helper auto-installed if missing
+| Component | App | Component | App |
+|:---|:---|:---|:---|
+| WM | i3-wm | Terminal | Alacritty |
+| Bar | Eww | Shell | Fish |
+| Theming | m3wal | Launcher | Rofi |
+| Compositor | Picom | Notifications | Dunst |
 
 ---
 
 ## Installation
+
 ```bash
 git clone https://github.com/MDiaznf23/simple-autoricing-i3wm-dotfiles.git
 cd simple-autoricing-i3wm-dotfiles
@@ -75,80 +58,175 @@ chmod +x install.sh
 ./install.sh
 ```
 
-### Warning
-Script will:
-- Install packages from official repos & AUR
-- Change default shell to Fish
-- **Backup & overwrite** configs in `~/.config`, `~/.Xresources`
-- Install Python packages via pipx
+**Script will:**
+- Install all packages (repos + AUR)
+- Backup existing configs to `~/dotfiles_backup_YYYYMMDD_HHMMSS`
+- Install yay if needed
+- Install m3wal via pipx
+- Copy all dotfiles
+- Set Fish as default shell
+- Apply initial theme
 
-**Backup created**: `~/dotfiles_backup_YYYYMMDD_HHMMSS`
-
----
-
-## Post-Installation
-
-1. **Logout** → Select **i3** session → **Login**
-2. Fish shell active on next login
-
-### Default Keybindings
-- **Mod Key**: `Super` (Windows key)
-- **Terminal**: `Mod + Enter`
-- **Launcher**: `Mod + d`
-- **Close Window**: `Mod + Shift + q`
-- **Reload i3**: `Mod + Shift + r`
-
-Full keybinds: `~/.config/i3/config` or `Mod + Shift + h`
+**Then:** Logout → Select i3 → Login
 
 ---
 
-## Customization
+## Usage
 
-### Wallpaper Selector
+### Keybindings
 
-<div align="center">
-<img src="./Screenshot/wpg-selector.png" alt="WPG Wallpaper Selector" width="600"/>
-</div>
+| Key | Action | Key | Action |
+|:---|:---|:---|:---|
+| `Super + Enter` | Terminal | `Super + d` | Launcher |
+| `Super + Shift + q` | Close window | `Super + Shift + r` | Reload i3 |
+| `Super + h/j/k/l` | Focus | `Super + Shift + h/j/k/l` | Move window |
+| `Super + 1-9` | Workspace | `Super + Shift + b` | Change wallpaper |
 
-**Keybind**: `Mod + Shift + b` - Opens wpg wallpaper picker
+### Theming
 
-### WPG Commands
+**Change wallpaper:**
 ```bash
-wpg -s wallpaper.jpg         # Apply wallpaper
-wpg -a ~/Pictures/wall.jpg   # Add to collection
-wpg -d wallpaper.jpg         # Delete theme
+m3wal /path/to/wallpaper.jpg --full
 ```
 
-### Edit Configs
+**With options:**
 ```bash
-nano ~/.config/i3/config       # i3 keybinds
-nano ~/.config/polybar/config  # Polybar settings
+m3wal wallpaper.jpg --full --mode dark --variant VIBRANT
+m3wal wallpaper.jpg --full --mode light --variant EXPRESSIVE
+m3wal wallpaper.jpg --full  # auto-detect (recommended)
 ```
-Reload with `Mod + Shift + r` after changes.
+
+**Variants:** `CONTENT` (default), `VIBRANT`, `EXPRESSIVE`, `NEUTRAL`, `TONALSPOT`, `FIDELITY`, `MONOCHROME`
+
+**Modes:** `auto` (default), `light`, `dark`
+
+---
+
+## Configuration
+
+### m3wal Config
+`~/.config/m3-colors/m3-colors.conf`
+
+```ini
+[General]
+mode = auto              # auto, light, dark
+variant = CONTENT        # Color variant
+operation_mode = full    # generator or full
+
+[Features]
+set_wallpaper = true
+apply_xresources = true
+generate_palette_preview = true
+```
+
+### Custom Templates
+Create in `~/.config/m3-colors/templates/`:
+
+```
+# myapp.conf.template
+background={{m3surface}}
+foreground={{m3onSurface}}
+primary={{m3primary}}
+```
+
+Deploy via `~/.config/m3-colors/deploy.json`:
+
+```json
+{
+  "deployments": [
+    {"source": "myapp.conf", "destination": "~/.config/myapp/colors.conf"}
+  ]
+}
+```
+
+### Hook Scripts
+Create in `~/.config/m3-colors/hooks/`:
+
+```bash
+#!/bin/bash
+# reload-apps.sh
+killall -USR1 kitty
+i3-msg reload
+```
+
+Enable:
+```ini
+[Hook.Scripts]
+enabled = true
+scripts = reload-apps.sh
+```
+
+---
+
+## File Structure
+
+```
+~/.config/
+├── i3/           # Window manager
+├── eww/          # Bar & widgets
+├── alacritty/    # Terminal
+├── rofi/         # Launcher
+├── m3-colors/    # Theming
+│   ├── templates/     # Color templates
+│   ├── hooks/         # Scripts
+│   └── deploy.json    # Deployment
+└── fish/         # Shell
+
+~/.local/bin/     # Scripts
+~/Pictures/Wallpapers/  # Your wallpapers
+```
 
 ---
 
 ## Troubleshooting
 
-**Fonts issue**: `sudo pacman -S ttf-font-awesome ttf-jetbrains-mono nerd-fonts-complete`
+**m3wal not found:**
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+```
 
-**No transparency**: `picom --config ~/.config/picom/picom.conf &`
+**Fonts missing:**
+```bash
+fc-cache -fv
+```
 
-**Wallpaper not changing**: `feh --bg-scale /path/to/wallpaper.jpg`
+**Transparency broken:**
+```bash
+picom --config ~/.config/picom/picom.conf &
+```
+
+**Manual wallpaper:**
+```bash
+feh --bg-scale /path/to/wallpaper.jpg
+```
 
 ---
 
-## Credits
+## Advanced
 
-Inspired by [chameleon-lizard/autorice](https://github.com/chameleon-lizard/autorice) and the Arch/r/unixporn communities.
+### Python API
+```python
+from m3wal import M3WAL
+
+m3 = M3WAL("wallpaper.jpg")
+m3.analyze_wallpaper()
+m3.generate_scheme(mode="dark", variant="VIBRANT")
+m3.apply_all_templates()
+m3.deploy_configs()
+```
+
+### Random Wallpaper
+```bash
+m3wal $(find ~/Pictures/Wallpapers -type f | shuf -n1) --full
+```
 
 ---
 
-## Support
+## Links
 
 - [GitHub Issues](https://github.com/MDiaznf23/simple-autoricing-i3wm-dotfiles/issues)
-- [Arch Wiki](https://wiki.archlinux.org/)
-- [r/i3wm](https://reddit.com/r/i3wm)
+- [m3wal](https://github.com/MDiaznf23/m3wal)
+- [Arch Wiki - i3](https://wiki.archlinux.org/title/I3)
 
 ---
 

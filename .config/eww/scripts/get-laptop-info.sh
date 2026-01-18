@@ -1,12 +1,22 @@
 #!/bin/bash
 
-# Script untuk mendapatkan informasi laptop + logo dari API
-# Simpan di: ~/.config/eww/scripts/get-laptop-info.sh
+# CACHE FILE PATH
 
-# Fungsi untuk mendeteksi brand laptop
+CACHE_FILE="/tmp/eww_laptop_info_cache.json"
+FALLBACK_LOGO="${HOME}/.config/eww/assets/brand.png"
+LOGO_CACHE_DIR="${HOME}/.cache/eww/logos"
+
+# --- 1. CEK CACHE UTAMA (FAST PATH) ---
+if [ -s "$CACHE_FILE" ]; then
+    cat "$CACHE_FILE"
+    exit 0
+fi
+
+# --- 2. JIKA CACHE KOSONG, JALANKAN DETEKSI (HEAVY PATH) ---
+# Bagian ini hanya jalan 1x setelah laptop nyala.
+
 get_brand() {
     local vendor=$(cat /sys/class/dmi/id/sys_vendor 2>/dev/null | tr '[:upper:]' '[:lower:]')
-    
     case "$vendor" in
         *lenovo*) echo "lenovo" ;;
         *asus*) echo "asus" ;;
@@ -25,12 +35,19 @@ get_brand() {
     esac
 }
 
-# Fungsi untuk download dan cache logo
 get_logo_path() {
     local brand=$1
     local domain=""
-    
-    # Map brand ke domain company
+    mkdir -p "$LOGO_CACHE_DIR"
+    local logo_file="${LOGO_CACHE_DIR}/${brand}.png"
+
+    # Cek cache logo
+    if [ -f "$logo_file" ] && [ -s "$logo_file" ]; then
+        echo "$logo_file"
+        return
+    fi
+
+    # Mapping domain
     case "$brand" in
         lenovo) domain="lenovo.com" ;;
         asus) domain="asus.com" ;;
@@ -47,127 +64,78 @@ get_logo_path() {
         framework) domain="frame.work" ;;
         *) domain="" ;;
     esac
-    
-    # Path untuk cache logo
-    local cache_dir="${HOME}/.cache/eww/logos"
-    mkdir -p "$cache_dir"
-    local logo_file="${cache_dir}/${brand}.png"
-    
-    # Path fallback ke asset lokal
-    local fallback_logo="${HOME}/.config/eww/assets/brand.png"
-    
-    # Download logo kalau belum ada (cache)
-    if [ ! -f "$logo_file" ]; then
-        if [ -n "$domain" ]; then
-            local logo_url="https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https%3A%2F%2F${domain}&size=128"
-            curl -s -o "$logo_file" "$logo_url" 2>/dev/null
-            
-            # Cek apakah download berhasil
-            if [ ! -s "$logo_file" ]; then
-                rm -f "$logo_file"
-                # Gunakan fallback lokal jika ada
-                if [ -f "$fallback_logo" ]; then
-                    echo "$fallback_logo"
-                    return
-                fi
-                echo ""
-                return
-            fi
-        else
-            # Jika domain tidak diketahui, langsung cek fallback lokal
-            if [ -f "$fallback_logo" ]; then
-                echo "$fallback_logo"
-                return
-            fi
-            echo ""
-            return
-        fi
+
+    # Download Async (Background)
+    if [ -n "$domain" ]; then
+        (
+            logo_url="https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https%3A%2F%2F${domain}&size=128"
+            curl -s -m 10 -o "$logo_file" "$logo_url" 2>/dev/null
+        ) &
     fi
-    
-    echo "$logo_file"
+
+    echo "$FALLBACK_LOGO"
 }
 
-# Fungsi untuk mendapatkan model laptop
 get_model() {
     local model=$(cat /sys/class/dmi/id/product_name 2>/dev/null)
-    if [ -z "$model" ] || [ "$model" = "System Product Name" ]; then
+    if [ -z "$model" ] || [[ "$model" == *"System Product"* ]]; then
         model=$(cat /sys/class/dmi/id/board_name 2>/dev/null)
     fi
     echo "${model:-Unknown}"
 }
 
-# Fungsi untuk mendapatkan info CPU
 get_cpu() {
-    local cpu=$(lscpu | grep "Model name" | cut -d':' -f2 | xargs)
-    cpu=$(echo "$cpu" | sed -e 's/(R)//g' -e 's/(TM)//g' -e 's/CPU //g' -e 's/  */ /g')
-    echo "${cpu:-Unknown}"
+    lscpu | grep "Model name" | cut -d':' -f2 | sed -e 's/(R)//g' -e 's/(TM)//g' -e 's/CPU //g' -e 's/Core //g' | xargs
 }
 
-# Fungsi untuk mendapatkan info GPU
 get_gpu() {
-    local gpu=$(lspci | grep -i 'vga\|3d\|display' | cut -d':' -f3 | head -n1 | xargs)
-    gpu=$(echo "$gpu" | sed -e 's/Corporation //g' -e 's/\[.*\]//g' -e 's/  */ /g')
-    echo "${gpu:-Unknown}"
+    lspci | grep -i 'vga\|3d\|display' | cut -d':' -f3 | head -n1 | sed -e 's/Corporation //g' -e 's/\[.*\]//g' | xargs
 }
 
-# Fungsi untuk mendapatkan info RAM
 get_ram() {
-    local total_ram=$(free -h | awk '/^Mem:/ {print $2}')
-    local ram_type=""
-    
-    if [ -r /sys/devices/system/memory/meminfo ]; then
-        ram_type=$(cat /sys/devices/system/memory/meminfo 2>/dev/null | grep -i "type" | head -n1 | awk '{print $2}')
-    fi
-    
-    if [ -z "$ram_type" ]; then
-        ram_type=$(lshw -short -C memory 2>/dev/null | grep -i "system memory" | awk '{print $2}' | head -n1)
-    fi
-    
-    if [ -z "$ram_type" ]; then
-        echo "${total_ram:-Unknown}"
-    else
-        echo "${total_ram} ${ram_type}"
-    fi
+    free -h | awk '/^Mem:/ {print $2}'
 }
 
-# Fungsi untuk mendapatkan info Disk
 get_disk() {
     local disk=$(df -h / | awk 'NR==2 {print $2}')
     local disk_type="SSD"
-    
-    if [ -b "/dev/sda" ]; then
-        local rotational=$(cat /sys/block/sda/queue/rotational 2>/dev/null)
-        [ "$rotational" = "1" ] && disk_type="HDD"
-    elif [ -b "/dev/nvme0n1" ]; then
-        disk_type="NVMe"
+    if [ -f "/sys/block/sda/queue/rotational" ]; then
+        [ "$(cat /sys/block/sda/queue/rotational)" -eq 1 ] && disk_type="HDD"
     fi
-    
     echo "${disk} ${disk_type}"
 }
 
-# Escape string untuk JSON
-json_escape() {
-    echo "$1" | sed 's/"/\\"/g' | sed 's/\\/\\\\/g'
-}
-
-# Ambil semua informasi
+# --- GENERATE DATA ---
 BRAND=$(get_brand)
 LOGO_PATH=$(get_logo_path "$BRAND")
-MODEL=$(json_escape "$(get_model)")
-CPU=$(json_escape "$(get_cpu)")
-GPU=$(json_escape "$(get_gpu)")
-RAM=$(json_escape "$(get_ram)")
-DISK=$(json_escape "$(get_disk)")
+MODEL=$(get_model)
+CPU=$(get_cpu)
+GPU=$(get_gpu)
+RAM=$(get_ram)
+DISK=$(get_disk)
 
-# Output dalam format JSON
-cat << EOF
-{
-  "brand": "$BRAND",
-  "logo_path": "$LOGO_PATH",
-  "model": "$MODEL",
-  "cpu": "$CPU",
-  "gpu": "$GPU",
-  "ram": "$RAM",
-  "disk": "$DISK"
-}
-EOF
+# --- SAVE TO JSON CACHE ---
+# Kita simpan output json ke variabel dulu
+JSON_OUTPUT=$(jq -n \
+  --arg brand "$BRAND" \
+  --arg logo_path "$LOGO_PATH" \
+  --arg model "$MODEL" \
+  --arg cpu "$CPU" \
+  --arg gpu "$GPU" \
+  --arg ram "$RAM" \
+  --arg disk "$DISK" \
+  '{
+    brand: $brand,
+    logo_path: $logo_path,
+    model: $model,
+    cpu: $cpu,
+    gpu: $gpu,
+    ram: $ram,
+    disk: $disk
+  }')
+
+# Tulis ke file cache
+echo "$JSON_OUTPUT" > "$CACHE_FILE"
+
+# Print ke stdout untuk Eww
+echo "$JSON_OUTPUT"

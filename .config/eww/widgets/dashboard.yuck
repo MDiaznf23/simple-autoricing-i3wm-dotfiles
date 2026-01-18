@@ -1,61 +1,49 @@
 ;-------------------------------------------------------
 ; SYSTEM MONITOR WITH TABS - UPDATED VERSION
 ;-------------------------------------------------------
-
+(defvar performance_monitor_visible false)
 ;; Variable active tab
 (defvar active_tab "dashboard")
 
 ;; ===== POLLING VARIABLES =====
 
 ;; Profile polls
-(defpoll USERNAME :interval "60s" "~/.config/eww/scripts/profile.sh username")
-(defpoll WM :interval "60s" "~/.config/eww/scripts/profile.sh wm")
-(defpoll UPTIME :interval "30s" "~/.config/eww/scripts/profile.sh uptime-short")
-(defpoll IMAGE-URL :interval "30s" "~/.config/eww/scripts/profile.sh image-url")
+(defpoll profile 
+  :interval "60s" 
+  :initial '{"username": "loading...", "wm": "loading...", "uptime": "...", "image": ""}'
+  "~/.config/eww/scripts/profile.sh json")
 
+(defpoll system 
+  :interval "2s" 
+  :initial '{"cpu_usage": 0, "cpu_temp": 0, "mem_perc": 0, "mem_used": "0G", "mem_total": "0G", "disk_perc": 0, "disk_used": "0G", "disk_total": "0G"}'
+  :run-while performance_monitor_visible
+  "~/.config/eww/scripts/sys_info.sh")
 
 ;; Music polls
-(defpoll media_cover :interval "1s"
-  :initial ""
-  `~/.config/eww/scripts/get_cover.sh`)
-
-(deflisten active_player
-  :initial ""
-  `playerctl -F metadata --format '{{ playerInstance }}' 2>/dev/null | grep -v kdeconnect | head -n1`)
-
-(defpoll media_title :interval "500ms"
-  :initial ""
-  `~/.config/eww/scripts/get_media_info.sh title`)
-
-(defpoll media_artist :interval "500ms"
-  :initial ""
-  `~/.config/eww/scripts/get_media_info.sh artist`)
-
-(defpoll media_status :interval "500ms"
-  :initial "Stopped"
-  `~/.config/eww/scripts/get_media_info.sh status`)
-
-(defpoll media_player :interval "500ms"
-  :initial ""
-  `~/.config/eww/scripts/get_media_info.sh player`)
+(deflisten media_info 
+    :initial '{"player": "", "status": "Stopped", "title": "No Media", "artist": "", "cover": ""}'
+    "~/.config/eww/scripts/media_listener.sh")
 
 ;; Weather polls
-(defpoll WEATHER_ICON :interval "600s" "~/.config/eww/scripts/weather-wrapper.sh icon")
-(defpoll WEATHER_DESC :interval "600s" "~/.config/eww/scripts/weather-wrapper.sh desc")
-(defpoll WEATHER_CITY :interval "3600s" "~/.config/eww/scripts/weather-wrapper.sh city")
+(defpoll WEATHER_ICON :interval "1800s" "~/.config/eww/scripts/weather-wrapper.sh icon")  
+(defpoll WEATHER_DESC :interval "1800s" "~/.config/eww/scripts/weather-wrapper.sh desc")
+(defpoll WEATHER_CITY :interval "86400s" "~/.config/eww/scripts/weather-wrapper.sh city")
 
 ;; ===== CLOCK POLLING =====
-(defpoll TIME :interval "1s" "date '+%H'")
-(defpoll MIN :interval "1s" "date '+%M'")
-(defpoll DATE :interval "60s" "date '+%a, %d %b'")
+(defpoll times 
+  :interval "1s" 
+  "date '+{\"h\":\"%H\",\"m\":\"%M\",\"d\":\"%a, %d %b\"}'")
 
-(defpoll my_notes :interval "5s"
+(defpoll my_notes 
+  :interval "30s"
+  :run-while performance_monitor_visible
   "~/.config/eww/scripts/read_note.sh")
 
 ;; Variables info laptop
-(defpoll laptop_info :interval "24h"
-  :initial '{"brand":"Unknown","model":"Unknown","cpu":"Unknown","gpu":"Unknown","ram":"Unknown","disk":"Unknown"}'
-  `~/.config/eww/scripts/get-laptop-info.sh`)
+(defpoll laptop_info :interval "86400s" 
+  :initial '{"brand":"Loading...","model":"Loading...","cpu":"...","gpu":"...","ram":"...","disk":"...","logo_path":"/home/diaz/.config/eww/assets/brand.png"}'
+  :run-once true
+  "~/.config/eww/scripts/get-laptop-info.sh")
 
 ;; Tab Navigation Widget
 (defwidget tab_navigation []
@@ -134,8 +122,9 @@
        :valign "center"
     
     ;; Profile Image
+    ;; Akses via profile.image
     (box :class "image"
-     :style "background-image: url('${IMAGE-URL}');")
+         :style {profile.image != "" ? "background-image: url('${profile.image}');" : "background-image: none;"})
     
     ;; Profile Info
     (box :class "card-content"
@@ -144,28 +133,25 @@
          :valign "center"
       
       ;; Username
+      ;; Akses via profile.username
       (box :class "info-row"
-           :orientation "h"
-           :space-evenly false
-           :spacing 6
+           :orientation "h" :space-evenly false :spacing 6
         (label :class "info-icon" :text "")
-        (label :class "info-text" :limit-width 13 :text USERNAME :xalign 0))
+        (label :class "info-text" :limit-width 13 :text {profile.username} :xalign 0))
       
       ;; Window Manager
+      ;; Akses via profile.wm
       (box :class "info-row"
-           :orientation "h"
-           :space-evenly false
-           :spacing 6
+           :orientation "h" :space-evenly false :spacing 6
         (label :class "info-icon" :text "")
-        (label :class "info-text" :text WM :xalign 0))
+        (label :class "info-text" :text {profile.wm} :xalign 0))
       
       ;; Uptime
+      ;; Akses via profile.uptime
       (box :class "info-row"
-           :orientation "h"
-           :space-evenly false
-           :spacing 6
+           :orientation "h" :space-evenly false :spacing 6
         (label :class "info-icon" :text "")
-        (label :class "info-text" :limit-width 13 :text UPTIME :xalign 0)))))
+        (label :class "info-text" :limit-width 13 :text {profile.uptime} :xalign 0)))))
 
 ;; Weather Widget
 (defwidget weather_widget []
@@ -186,7 +172,7 @@
          :orientation "v"
          :space-evenly false
          :spacing 5
-         :valign "center"  ; biar vertikal center
+         :valign "center"  
       
       (label :class "info-weather" :limit-width 9 :wrap true :wrap-mode "wordchar" :lines 2 :justify "center" :text WEATHER_CITY :xalign 0.5)
       (label :class "info-text" :limit-width 16 :wrap true :wrap-mode "wordchar" :lines 2 :justify "center" :text WEATHER_DESC :xalign 0.5))
@@ -211,15 +197,15 @@
     
     ;; Time Display
     (label :class "clock-time" 
-           :text TIME)
+           :text {times.h})
     (label :class "clock-separator" 
            :text "---")
     (label :class "clock-time" 
-           :text MIN)
+           :text {times.m})
     
     ;; Date Display
     (label :class "clock-date" 
-           :text DATE)))
+           :text {times.d})))
 
 ;; Quick Apps Widget
 (defwidget apps_box []
@@ -283,15 +269,12 @@
   
     ;; Cover Art
     (box :class "media-cover-widget"
-         :style "background-image: url('${media_cover}');
-                 background-size: contain;
-                 background-repeat: no-repeat;
-                 background-position: center;"
-         :visible {media_cover != ""})
+         :style {media_info.cover != "" ? "background-image: url('${media_info.cover}'); background-size: contain; background-repeat: no-repeat; background-position: center;" : "background-image: none;"}
+         :visible {media_info.cover != ""})
     
     ;; Media Info
     (box :class "media-widget-info"
-         :orientation "v"  ; UBAH JADI VERTICAL
+         :orientation "v"  
          :space-evenly false
          :spacing 10
       
@@ -301,35 +284,32 @@
            :hexpand true
            :halign "center"
         (label :class "media-widget-name"
-               :text media_player
-               :visible {media_player != ""}
+               :text {media_info.player}
+               :visible {media_info.player != ""}
                :xalign 0.5)
         (label :class "media-widget-title"
-               :text {media_title != "" ? media_title : "No media playing"}
+               :text {media_info.title}
                :limit-width 20
                :xalign 0.5)
         (label :class "media-widget-artist"
-               :text media_artist
+               :text {media_info.artist}
                :limit-width 20
                :xalign 0.5))
       
       ;; Controls
-      (box :class "media-widget-controls"
-           :halign "center"
-           :spacing 10
+    (box :class "media-widget-controls" :halign "center" :spacing 10
         (button :class "media-widget-btn"
-                :onclick "PLAYER=$(~/.config/eww/scripts/get_player.sh); playerctl -p \"$PLAYER\" previous"
+                :onclick "playerctl -p ${media_info.player} previous"
           (box :width 30 :height 30 :halign "center" :valign "center"
             (label :text "󰒮" :style "font-size: 28px;")))
         
         (button :class "media-widget-btn-play"
-                :onclick "PLAYER=$(~/.config/eww/scripts/get_player.sh); playerctl -p \"$PLAYER\" play-pause"
+                :onclick "playerctl -p ${media_info.player} play-pause"
           (box :width 30 :height 30 :halign "center" :valign "center"
-            (label :text {media_status == "Playing" ? "󰏤" : "󰐊"}
-                   :style "font-size: 32px;")))
+            (label :text {media_info.status == "Playing" ? "󰏤" : "󰐊"}                       :style "font-size: 32px;")))
         
         (button :class "media-widget-btn"
-                :onclick "PLAYER=$(~/.config/eww/scripts/get_player.sh); playerctl -p \"$PLAYER\" next"
+                :onclick "playerctl -p ${media_info.player} next"
           (box :width 30 :height 30 :halign "center" :valign "center"
             (label :text "󰒭" :style "font-size: 28px;"))))
       )))
@@ -362,24 +342,24 @@
     (metric_bar 
         :icon ""
         :label "CPU"
-        :value "${CPU_TEMP}°C"
-        :usage_text "${CPU_USAGE}% Usage"
+        :value "${system.cpu_temp}°C"
+        :usage_text "${system.cpu_usage}% Usage"
         :color_class "cpu-color")
     
     ;; Memory
     (metric_bar 
         :icon ""
         :label "RAM"
-        :value "${MEM_USAGE_GB} / ${MEM_TOTAL}"
-        :usage_text "${MEM_USAGE_PERC}% Used"
+        :value "${system.mem_used} / ${system.mem_total}"
+        :usage_text "${system.mem_perc}% Used"
         :color_class "mem-color")
     
     ;; Disk
     (metric_bar 
         :icon ""
         :label "Disk"
-        :value "${DISK_USAGE_GB} / ${DISK_TOTAL}"
-        :usage_text "${DISK_USAGE_PERC}% Used"
+        :value "${system.disk_used} / ${system.disk_total}"
+        :usage_text "${system.disk_perc}% Used"
         :color_class "disk-color")))
 
 ;; Widget box utama
@@ -390,9 +370,9 @@
        :spacing 0
     
     ;; Logo laptop dari cache
-    (box :class "logo-section"
+  (box :class "logo-section"
          :halign "center"
-      (image :path {laptop_info.logo_path != "" ? laptop_info.logo_path : ""}
+      (image :path {laptop_info.logo_path != "" ? laptop_info.logo_path : "/home/diaz/.config/eww/assets/brand.png"}
              :image-width 50
              :image-height 50
              :visible {laptop_info.logo_path != ""}))
@@ -422,9 +402,18 @@
       (box :class "spec-row"
            :space-evenly false
            :spacing 10
-        (box :orientation "h" :space-evenly false :spacing 10
+        (box :orientation "h" 
+             :space-evenly false
+             :spacing 10
+             :width 300
           (label :class "spec-label" :text "GPU" :width 70 :xalign 0)
-          (label :class "spec-value" :text "${laptop_info.gpu}" :limit-width 35 :wrap true :wrap-mode "word" :lines 2 :justify "left" :halign "start")))
+          (label :class "spec-value" 
+                 :text "${laptop_info.gpu}" 
+                 :wrap true 
+                 :limit-width 35
+                 :lines 2
+                 :justify "left" 
+                 :halign "start")))
       
       ;; RAM
       (box :class "spec-row"
@@ -489,21 +478,27 @@
   (box :class "main-container"
        :orientation "v"
        :space-evenly false
-       :spacing 0
     
-    ;; Tab Navigation
+    ;; Tab Navigation (Tombol Atas)
     (tab_navigation)
     
+    ;; Kita mapping logic: dashboard=0, performance=1, information=2
     (box :class "content-area"
-      (box :visible "${active_tab == 'performance'}"
-        (performance_content))
-      
-      (box :visible "${active_tab == 'dashboard'}"
-        (dashboard_content))
+      (stack :selected {active_tab == "dashboard" ? 0 : active_tab == "performance" ? 1 : 2}
+             :transition "slideleft" ;; Animasi gratis! (bisa crossfade, slideright, dll)
+        
+        ;; Index 0: Dashboard Content
+        (dashboard_content)
+        
+        ;; Index 1: Performance Content
+        (performance_content)
 
-      (box :visible "${active_tab == 'information'}"
-        (laptop-info-widget))
-      )))
+        ;; Index 2: Information Content
+        (laptop-info-widget)
+      )
+    )
+  )
+)
 
 ;; ----------------------------------------
 ;; JENDELA UTAMA 
@@ -511,14 +506,14 @@
 (defwindow performance_monitor
   :monitor 0
   :geometry (geometry :x "0%"
-                      :y "38px"
+                      :y "45px"
                       :width "200px"
                       :height "100px"
                       :anchor "top center")
   :stacking "overlay"
-  :exclusive false
+  :exclusive true
   :windowtype "dialog"
-  :wm-ignore false
+  :wm-ignore true
   :focusable false
   :resizable false
   (main_widget))

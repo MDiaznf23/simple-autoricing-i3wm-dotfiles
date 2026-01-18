@@ -1,6 +1,6 @@
 #!/bin/sh
 # Load pywal colors BEFORE i3 starts
-xrdb -merge ~/.cache/wal/colors.Xresources
+xrdb -merge ~/.cache/m3-colors/colors.Xresources
 
 # Apply pywal sequences
-[ -f ~/.cache/wal/sequences ] && cat ~/.cache/wal/sequences
+[ -f ~/.cache/m3-colors/sequences ] 

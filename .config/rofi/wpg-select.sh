@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # --- Konfigurasi ---
-WALLPAPER_DIR="$HOME/.config/wpg/wallpapers"
+WALLPAPER_DIR="$HOME/Pictures/Wallpapers"
 CACHE_DIR="$HOME/.cache/wpg-rofi-thumbs"
 THEME_FILE="$HOME/.config/rofi/wallpaper-select.rasi" # Pastikan path ini benar
 
@@ -57,5 +57,5 @@ SELECTED=$(cat "$CACHE_DIR/rofi_list_cache" | rofi -dmenu -i \
 # --- Eksekusi WPG ---
 if [ -n "$SELECTED" ]; then
     # Jalankan WPG
-    wpg -s "$WALLPAPER_DIR/$SELECTED"
+    m3wal "$WALLPAPER_DIR/$SELECTED"
 fi

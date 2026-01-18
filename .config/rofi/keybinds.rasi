@@ -1,6 +1,5 @@
 /* ~/.config/rofi/keybinds.rasi */
-
-@import "~/.cache/wal/colors-rofi-dark.rasi"
+@import "~/.cache/m3-colors/rofi.rasi"
 
 * {
     font: "JetBrains Mono Nerd Font 10";
@@ -8,14 +7,16 @@
     text-color: @foreground;
     margin: 0px;
     padding: 0px;
+    border-color: transparent;
+    separatorcolor: transparent;
 }
 
 window {
     width: 900px; /* Lebar agar muat command panjang */
     location: center;
     anchor: center;
-    border: 2px solid;
-    border-color: @selected-active-background; /* Warna aksen dari wal */
+    border: 0px solid;
+    border-color: transparent;
     border-radius: 12px;
     background-color: @background; /* Background utama */
     padding: 20px;
@@ -25,28 +26,38 @@ mainbox {
     children: [ inputbar, listview ];
     spacing: 15px;
     background-color: transparent;
+    border: 0px solid;
+    border-color: transparent;
 }
 
 /* Bagian Pencarian */
 inputbar {
     children: [ prompt, entry ];
     background-color: @active-background;
+    border: 0px solid;
     border-radius: 8px;
+    border-color: transparent;
     padding: 2px; /* Padding luar */
 }
 
 prompt {
     background-color: @selected-normal-background;
-    text-color: @background;
+    text-color: @selected-normal-foreground;
     padding: 10px 15px;
+    border: 0px solid;
     border-radius: 6px;
+    border-color: transparent;
     margin: 5px;
 }
 
 entry {
     placeholder: "Search Keybinding...";
     placeholder-color: @foreground;
+    background-color: transparent;
+    text-color: @active-foreground;
     padding: 10px;
+    border: 0px solid;
+    border-color: transparent;
     vertical-align: 0.5;
 }
 
@@ -57,11 +68,16 @@ listview {
     scrollbar: false;
     spacing: 5px;
     margin: 10px 0px 0px 0px;
+    border: 0px solid;
+    border-color: transparent;
+    background-color: transparent;
 }
 
 element {
     padding: 10px 15px;
+    border: 0px solid;
     border-radius: 6px;
+    border-color: transparent;
     orientation: horizontal;
     spacing: 10px;
 }
@@ -69,21 +85,38 @@ element {
 element normal.normal {
     background-color: transparent;
     text-color: @foreground;
+    border: 0px solid;
+    border-color: transparent;
+}
+
+element normal.active {
+    background-color: @active-background;
+    text-color: @active-foreground;
 }
 
 element selected.normal {
     background-color: @selected-normal-background; /* Highlight saat dipilih */
-    text-color: @background;
-    border: 0px;
+    text-color: @selected-normal-foreground;
+    border: 0px solid;
+    border-color: transparent;
+}
+
+element selected.active {
+    background-color: @selected-active-background;
+    text-color: @selected-active-foreground;
 }
 
 element-text {
     background-color: transparent;
     text-color: inherit;
     vertical-align: 0.5;
+    border: 0px solid;
+    border-color: transparent;
 }
 
 element-icon {
     size: 20px;
     background-color: transparent;
+    border: 0px solid;
+    border-color: transparent;
 }

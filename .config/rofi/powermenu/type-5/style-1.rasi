@@ -1,4 +1,4 @@
-@import "~/.cache/wal/colors-rofi-dark.rasi"
+@import "~/.cache/m3-colors/rofi.rasi"
 
 /**
  *
@@ -17,6 +17,8 @@ configuration {
 /*****----- Global Properties -----*****/
 * {
     font:                        "JetBrains Mono Nerd Font 10";
+    border-color:                transparent;
+    separatorcolor:              transparent;
 }
 
 /*
@@ -34,9 +36,7 @@ window {
     y-offset:                    0px;
 
     padding:                     0px;
-    border:                      0px solid;
     border-radius:               20px;
-    border-color:                @selected-normal-background;
     cursor:                      "default";
     background-color:            @background;
 }
@@ -49,7 +49,7 @@ mainbox {
     padding:                     0px;
     border:                      0px solid;
     border-radius:               0px;
-    border-color:                @selected-normal-background;
+    border-color:                transparent;
     background-color:            transparent;
     children:                    [ "inputbar", "listview", "message" ];
 }
@@ -60,7 +60,7 @@ inputbar {
     spacing:                     0px;
     padding:                     100px 80px;
     background-color:            transparent;
-    background-image:            url("~/.config/wpg/.current-rofi.jpg", height);
+    background-image:            url("~/.config/m3-colors/current-rofi.jpg", width);
     children:                    [ "textbox-prompt-colon", "dummy","prompt"];
 }
 
@@ -71,11 +71,11 @@ dummy {
 textbox-prompt-colon {
     enabled:                     true;
     expand:                      false;
-    str:                         " System";
+    str:                         "  System";
     padding:                     12px;
     border-radius:               12px;
     background-color:            @urgent-background;
-    text-color:                  @background;
+    text-color:                  @urgent-foreground;
 }
 
 prompt {
@@ -83,7 +83,7 @@ prompt {
     padding:                     12px;
     border-radius:               12px;
     background-color:            @active-background;
-    text-color:                  @background;
+    text-color:                  @active-foreground;
 }
 
 /*****----- Listview -----*****/
@@ -102,6 +102,8 @@ listview {
     spacing:                     15px;
     margin:                      15px;
     background-color:            transparent;
+    border:                      0px solid;
+    border-color:                transparent;
     cursor:                      "default";
 }
 
@@ -109,7 +111,9 @@ listview {
 element {
     enabled:                     true;
     padding:                     30px 10px;
+    border:                      0px solid;
     border-radius:               12px;
+    border-color:                transparent;
     background-color:            @alternate-normal-background;
     text-color:                  @foreground;
     cursor:                      pointer;
@@ -126,15 +130,17 @@ element-text {
 
 element selected.normal {
     background-color:            @selected-normal-background;
-    text-color:                  @background;
+    text-color:                  @selected-normal-foreground;
 }
 
 /*****----- Message -----*****/
 message {
     enabled:                     true;
-    margin:                      0px;
+    margin:                      0px 15px 15px 15px;
     padding:                     15px;
-    border-radius:               0px;
+    border:                      0px solid;
+    border-radius:               12px;
+    border-color:                transparent;
     background-color:            @alternate-normal-background;
     text-color:                  @foreground;
 }

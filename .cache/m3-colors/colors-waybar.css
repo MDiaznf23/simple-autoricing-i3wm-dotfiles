@@ -1,0 +1,28 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 30,
+  
+  "style": {
+    "background": "#16121a",
+    "color": "#e8dfec"
+  },
+  
+  "modules": {
+    "clock": {
+      "style": {
+        "color": "#d8b9ff"
+      }
+    },
+    
+    "battery": {
+      "states": {
+        "warning": 30,
+        "critical": 15
+      },
+      "format-critical": {
+        "color": "#ffb4ab"
+      }
+    }
+  }
+}

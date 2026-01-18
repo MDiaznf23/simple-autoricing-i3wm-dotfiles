@@ -1,0 +1,167 @@
+/* === Eww Bar Styles === */
+
+/* Bar Container (Main Window) */
+.bar-container {
+  background-color: transparent;
+  
+  background-image: linear-gradient(135deg, 
+    $on-secondary-fixed,  
+    $surface-dim,
+    $on-primary-fixed,
+    $surface-container,
+    $on-primary,
+    $surface-container-low,
+    $on-secondary,
+  );
+
+  border: 1.5px solid transparentize($outline-variant, 0.5);
+  border-radius: 10px;
+  padding: 0px 5px 0px 5px;
+  min-height: 27px;
+}
+
+/* Sections Layout */
+.bar-section-center, 
+.bar-section-left, 
+.bar-section-right {
+  padding: 0px;
+  min-height: 18px;
+}
+
+/* Left Section Padding Adjustment */
+.bar-section-left {
+  padding-right: 6px; 
+  padding-left: 10px;
+}
+
+/* === MODULES === */
+
+/* Windows Center Module */
+.windows-center-bar {
+  background-color: $on-secondary-fixed;
+  border-radius: 15px;
+  padding: 0px 10px;
+  min-height: 18px;
+}
+
+/* Workspaces (i3) Container */
+.i3-section {
+  border-radius: 15px;
+  padding: 0px;
+  min-height: 18px;
+  
+  background-image: linear-gradient(to bottom right,
+    $surface-container-high,
+    $on-secondary-fixed
+  );
+}
+
+/* Workspace Buttons */
+.ws-btn {
+  padding: 0px 10px;
+  background-color: transparent; 
+  border-radius: 15px;
+}
+
+/* Workspace: Focused (Aktif) */
+.ws-btn.focused {
+  background-image: linear-gradient(to bottom right,
+    $on-primary,
+  );
+  color: $on-primary;
+  border-radius: 15px;
+}
+
+/* Workspace: Hover */
+.ws-btn:hover {
+  background-image: linear-gradient(to bottom,
+    $tertiary,
+  );
+  color: $on-tertiary;
+  border-radius: 15px;
+}
+
+/* Workspace: Focused + Hover */
+.ws-btn.focused:hover {
+  background-image: linear-gradient(to bottom,
+    $primary-fixed-dim,
+  );
+}
+
+/* Right Status Modules (Battery, Wifi, etc) */
+.status-section-right {
+  background-image: linear-gradient(135deg,
+    $on-secondary-fixed,
+    $surface-container
+  );
+  border-radius: 15px;
+  padding: 0px 10px;
+  min-height: 18px;
+}
+
+/* System Tray */
+.system-tray-bar {
+  background-image: linear-gradient(135deg,
+    $on-secondary-fixed,
+    $surface-container
+  );
+  border-radius: 15px;
+  padding: 0px 10px;
+  min-height: 18px;
+}
+
+/* === TEXT STYLES === */
+
+.left-text {
+  font-size: 14px;
+  color: $on-surface;
+}
+
+.right-text {
+  font-family: "Iosevka Nerd Font";
+  font-size: 12px;
+  color: $on-surface;
+}
+
+.center-text {
+  font-family: "Iosevka Nerd Font";
+  font-size: 13px;
+  font-weight: 700;
+  color: $on-secondary-container; 
+}
+
+.weather-bar {
+  color: $on-surface;
+  font-size: 18px;
+  padding-right: 5px;
+}
+
+.text-weather-bar {
+  font-family: "Iosevka Nerd Font";
+  font-size: 13px;
+  font-weight: 700;
+  color: $on-surface;
+}
+
+.time-bar {
+  min-height: 18px;
+  padding: 0px 5px;
+}
+
+.time-icon {
+  padding: 0px;
+  font-size: 11px;
+  color: $primary; 
+}
+
+.time-text {
+  font-size: 12px;
+  font-weight: 900;
+  color: $on-surface;
+}
+
+.icon-center-bar {
+  padding-right: 5px;
+  color: $secondary; 
+  font-size: 12px;
+}

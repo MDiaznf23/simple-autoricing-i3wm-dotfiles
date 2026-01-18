@@ -4,6 +4,7 @@
 
 (defvar wifi_list_visible false)
 (defvar bluetooth_list_visible false) 
+(defvar control_center_visible false)
 
 (defpoll bluetooth_devices_listen :interval "2s"
   :initial "[]"
@@ -31,10 +32,12 @@
 ;; Polls sistem
 (defpoll volume_level :interval "500ms" 
   :initial "50"
+  :run-while control_center_visible
   `pactl get-sink-volume @DEFAULT_SINK@ 2>/dev/null | grep 'Volume:' | head -n1 | awk '{print $5}' | tr -d '%' || echo "50"`)
 
 (defpoll brightness_level :interval "500ms"
-  :initial "50" 
+  :initial "50"
+  :run-while control_center_visible
   `brightnessctl g 2>/dev/null | awk -v max=$(brightnessctl m 2>/dev/null) '{print int($1/max*100)}' || echo "50"`)
 
 (defpoll night_mode_status :interval "2s"
@@ -54,41 +57,6 @@
 (defpoll DATE_HEADER :interval "30s" 
   "date +'%A, %d %B'")
 
-(defpoll CPU_TEMP :interval "2s" 
-  :initial "0"
-  "sensors | grep -i 'core 0' | awk '{print $3}' | tr -d '+Â°C' | cut -d. -f1 || cat /sys/class/hwmon/hwmon*/temp1_input 2>/dev/null | head -1 | awk '{printf \"%.0f\", $1/1000}' || echo '0'")
-
-;; CPU Usage
-(defpoll CPU_USAGE :interval "2s" 
-  :initial "0"
-  "top -bn1 | grep 'Cpu(s)' | awk '{print 100 - $8}' | cut -d. -f1")
-
-;; Memory Usage
-(defpoll MEM_USAGE_GB :interval "2s" 
-  :initial "0"
-  "free -h | awk '/^Mem/ {print $3}' | sed 's/i//'")
-
-(defpoll MEM_USAGE_PERC :interval "2s" 
-  :initial "0"
-  "free | awk '/Mem/ {printf \"%.0f\", $3/$2*100}'")
-
-(defpoll MEM_TOTAL :interval "30s"
-  :initial "0"
-  "free -h | awk '/^Mem/ {print $2}' | sed 's/i//'")
-
-;; Disk Usage
-(defpoll DISK_USAGE_GB :interval "5s"
-  :initial "0"
-  "df -h / | awk 'NR==2 {print $3}'")
-
-(defpoll DISK_USAGE_PERC :interval "5s"
-  :initial "0"
-  "df / | awk 'NR==2 {print $5}' | tr -d '%'")
-
-(defpoll DISK_TOTAL :interval "30s"
-  :initial "0"
-  "df -h / | awk 'NR==2 {print $2}'")
-
 (defpoll clock_time
   :interval "1s"
   "date +'%H:%M'")
@@ -104,15 +72,19 @@
 ;; ========================================
 ;; WIDGET BLUETOOTH ITEM (untuk list)
 ;; ========================================
-(defwidget bluetooth_device_item [name mac connected paired type_icon pair_icon conn_icon]
-  (box :class "bt-device-item ${connected == 'true' ? 'bt-connected' : ''}"       
+(defwidget bluetooth_device_item [name mac connected paired type]
+  (box :class "bt-device-item ${connected ? 'bt-connected' : ''}"       
        :orientation "h"
        :spacing 10
        :space-evenly false
     
-    ;; Type icon (headphone, phone, dll)
+    ;; Type icon - CONVERT type text jadi icon di widget
     (label :class "bt-type-icon"
-           :text type_icon)
+           :text {type == "phone" ? "󰄜 " :
+                  type == "headphone" ? "󰋎 " :
+                  type == "computer" ? "󰈸 " :
+                  type == "keyboard" ? "󰌌 " :
+                  type == "mouse" ? "󰍽 " : "󰑖 "})
     
     ;; Device name
     (label :class "bt-name-label"
@@ -124,14 +96,14 @@
     (box :spacing 5
       ;; Connect/Disconnect button
       (button :class "bt-action-btn"
-              :onclick "~/.config/eww/scripts/connect_bluetooth.sh '${mac}' toggle && sleep 1 && eww update bluetooth_devices=$(~/.config/eww/scripts/scan_bluetooth.sh)"
-        (label :text {connected == "true" ? " " : "Connect"}))
+              :onclick "~/.config/eww/scripts/connect_bluetooth.sh '${mac}' toggle && sleep 1"
+        (label :text {connected ? "󱘖 " : "Connect"}))
       
-      ;; Unpair button (hanya tampil jika paired)
+      ;; Unpair button
       (button :class "bt-action-btn bt-unpair"
-              :visible {paired == "true"}
-              :onclick "~/.config/eww/scripts/connect_bluetooth.sh '${mac}' unpair && sleep 1 && eww update bluetooth_devices=$(~/.config/eww/scripts/scan_bluetooth.sh)"
-        (label :text ""))
+              :visible {paired}
+              :onclick "~/.config/eww/scripts/connect_bluetooth.sh '${mac}' unpair && sleep 1"
+        (label :text "󰆴"))
     )
   )
 )
@@ -345,9 +317,7 @@
                 :mac {device.mac}
                 :connected {device.connected}
                 :paired {device.paired}
-                :type_icon {device.type_icon}
-                :pair_icon {device.pair_icon}
-                :conn_icon {device.conn_icon}
+                :type {device.type}  ;; Ganti dari type_icon
               )
             )
             
@@ -504,12 +474,11 @@
 ;; ----------------------------------------
 (defwindow control_center_window
   :monitor 0
-  :geometry (geometry :x "-100px"
-                      :y "38px"
-                      :anchor "top right")
+  :geometry (geometry :x "-80px" :y "45px" :anchor "top right")
   :stacking "overlay"
+  :exclusive true
   :focusable false
   :windowtype "dialog"
-  :wm-ignore false
-  (control_center))                
+  :wm-ignore true
+  (control_center))               
 

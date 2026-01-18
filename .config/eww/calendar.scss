@@ -1,117 +1,114 @@
-/* calendar.scss - Pywal Colors - FIXED TODAY INDICATOR */
-// Color Generator From WPG
-
-@import "colors.scss";
+/* calendar.scss - Material 3 Colors */
 
 /* Kontainer utama di dalam jendela */
 .cal-box {
   padding: 10px;
   font-family: "JetBrainsMono Nerd Font", "Noto Sans", sans-serif;
-  background-color: $background; // Warna background dari pywal
+  background-color: $surface;
   border-radius: 0 0 10px 10px;
-  border: 1.5px solid $color2; // Border abu-abu dari pywal
+  border: 1.5px solid $outline;
   border-top: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 /* Header tanggal kustom */
 .cal-header-date {
   font-size: 1.1rem;
   font-weight: bold;
-  color: $foreground; // Warna teks dari pywal
+  color: $on-surface;
 }
 
 /* Widget kalender */
 .cal {
   font-size: 1rem;
-  color: $foreground; // Warna teks dari pywal
+  color: $on-surface;
   margin: 0;
   padding: 0;
-
+  
   /* Header bulan & tahun */
   > .calendar_header {
     margin-bottom: 6px;
     font-size: 1.2rem;
     font-weight: bold;
-    color: $foreground; // Warna teks dari pywal
+    color: $on-surface;
     
     button {
       font-size: 1rem;
-      color: $foreground;
+      color: $on-surface;
       background: transparent;
       border: none;
       padding: 0px;
       transition: all 0.2s ease;
       
       &:hover { 
-        color: $color6; // Warna highlight dari pywal
-        background-color: rgba($color1, 0.2); // Background semi-transparan
+        color: $primary;
+        background-color: $surface-container-high;
         border-radius: 6px;
       }
     }
   }
-
+  
   /* Nama hari */
   > .calendar_grid .calendar__day-names {
     margin-bottom: 4px;
     font-weight: bold;
-    color: $color8; // Abu-abu dari pywal
+    color: $on-surface-variant;
     font-size: 0.8rem;
   }
-
+  
   /* Grid kalender */
   > .calendar_grid {
     margin: 0;
     padding: 0;
     margin-bottom: 0;
   }
-
-  /* Tanggal individual - MUST USE label selector */
+  
+  /* Tanggal individual */
   label.calendar__day {
-    color: $foreground;
+    color: $on-surface;
     border-radius: 50%;
     margin: 2px;
     min-width: 32px;
     min-height: 32px;
     transition: all 0.2s ease;
   }
-
+  
   /* Tanggal bulan sebelum/sesudah */
   label.calendar__day.prev_month,
   label.calendar__day.next_month {
-    color: $color8;
+    color: $on-surface-variant;
     opacity: 0.5;
   }
-
+  
   /* Hover effect */
   label.calendar__day:hover {
-    background-color: rgba($color1, 0.3);
-    color: $color7;
+    background-color: $surface-container-highest;
+    color: $on-surface;
   }
 }
 
+/* Today indicator */
 calendar:selected {
-  background: $color4;
-  color: $color15;
+  background: $primary-container;
+  color: $on-primary-container;
   font-weight: bold;
-  border: 2px solid $color6;
-  border-radius: 4px; // Kotak dengan sudut sedikit rounded
+  border: 2px solid $primary;
+  border-radius: 10px;
 }
 
 /* Alternatif dengan lebih spesifik */
 .cal calendar:selected {
-  background: $color4;
-  color: $color15;
+  background: $primary-container;
+  color: $on-primary-container;
   font-weight: bold;
-  border: 2px solid $color6;
-  border-radius: 4px; // Kotak dengan sudut sedikit rounded
+  border: 2px solid $primary;
+  border-radius: 10px;
 }
 
 /* Jika masih tidak muncul, coba selector ini */
 .cal-box calendar:selected {
-  background: $color4;
-  color: $color15;
+  background: $primary-container;
+  color: $on-primary-container;
   font-weight: bold;
-  border: 2px solid $color6;
-  border-radius: 4px; // Kotak dengan sudut sedikit rounded
+  border: 2px solid $primary;
+  border-radius: 10px;
 }

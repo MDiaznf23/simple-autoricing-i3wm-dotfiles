@@ -1,0 +1,138 @@
+/* Eww Bar Styles */
+
+/* Bar Container */
+.bar-container {
+  background-color: transparent;
+  background-image: linear-gradient(135deg, 
+    $secondary-fixed,  
+    $surface-dim,
+    $primary-fixed-dim,
+    $surface-container,
+    $primary-fixed,
+    $surface-container,
+    $secondary-fixed-dim,
+  );
+  border: 1.5px solid $outline-variant;  
+  border-radius: 10px;
+  padding: 0px 5px 0px 5px;
+  min-height: 27px;
+}
+
+.bar-section-center {
+  padding: 0px;
+  min-height: 18px;
+}
+
+.windows-center-bar {
+  background-color: $primary-fixed;
+  border-radius: 15px;
+  padding: 0px 10px 0px 10px;
+  min-height: 18px;
+}
+
+.bar-section-left {
+  padding: 0px 10px 0px 6px;
+  min-height: 18px;
+}
+
+.bar-section-right {
+  padding: 0px;
+  min-height: 18px;
+}
+
+.i3-section {
+  border-radius: 15px;
+  padding: 0px;
+  min-height: 18px;
+  background-color: $surface-container-high;
+}
+
+.ws-btn {
+  padding: 0px 10px 0px 10px;
+}
+
+/* Workspace yang Focused (Aktif) */
+.ws-btn.focused {
+  background-color: $inverse-primary;
+  border-radius: 15px;
+}
+
+/* Hover effect untuk semua button */
+.ws-btn:hover {
+  background-color: $secondary-fixed-dim;
+  border-radius: 15px;
+}
+
+/* Hover khusus untuk focused button */
+.ws-btn.focused:hover {
+  background-color: $outline;
+}
+
+.status-section-right {
+  background-color: $secondary-fixed;
+  border-radius: 15px;
+  padding: 0px 10px 0px 10px;
+  min-height: 18px;
+}
+
+.system-tray-bar {
+  background-color: $secondary-fixed;
+  border-radius: 15px;
+  padding: 0px 10px 0px 10px;
+  min-height: 18px;
+}
+
+.left-text {
+  font-size: 14px;
+}
+
+.right-text {
+  font-family: "Iosevka Nerd Font";
+  font-size: 12px;
+  color: $on-secondary-fixed;
+}
+
+.center-text {
+  font-family: "Iosevka Nerd Font";
+  font-size: 13px;
+  font-weight: 700;
+  color: $on-primary-fixed;
+}
+
+.weather-bar {
+  color: $foreground;
+  font-size: 18px;
+  padding: 0px 5px 0px 0px;
+}
+
+.text-weather-bar {
+  font-family: "Iosevka Nerd Font";
+  font-size: 13px;
+  font-weight: 700;
+  color: $foreground;
+}
+
+.time-bar {
+  min-height: 18px;
+  padding: 0px 5px 0px 5px;
+}
+
+.time-icon {
+  padding: 0px 0px 0px 0px;
+  font-size: 11px;  
+}
+
+.time-text {
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.icon-center-bar {
+  padding: 0px 5px 0px 0px;
+  color: $on-secondary-container;
+  font-size: 12px;
+}
+
+
+
+

@@ -5,20 +5,18 @@
  *
  * Rofi Theme File
  * Rofi Version: 1.7.3
- * Modified to use Pywal colors
+ * Modified to use Material 3 colors
  **/
 
-/*****----- Import Pywal Colors -----*****/
-@import "~/.cache/wal/colors-rofi-dark.rasi"
+/*****----- Import Material 3 Colors -----*****/
+@import "~/.cache/m3-colors/rofi.rasi"
 
 /*****----- Configuration -----*****/
 configuration {
-	modi:                       "drun,run,filebrowser,window";
+	modi:                       "drun,run";
     show-icons:                 true;
     display-drun:               "APPS";
     display-run:                "RUN";
-    display-filebrowser:        "FILES";
-    display-window:             "WINDOW";
 	drun-display-format:        "{name}";
 	window-format:              "{w} · {c} · {t}";
 }
@@ -26,6 +24,8 @@ configuration {
 /*****----- Global Properties -----*****/
 * {
     font:                        "JetBrains Mono Nerd Font 10";
+    border-color:                transparent;
+    separatorcolor:              transparent;
 }
 
 /*****----- Main Window -----*****/
@@ -35,13 +35,15 @@ window {
     location:                    center;
     anchor:                      center;
     fullscreen:                  false;
-    width:                       1000px;
+    width:                       800px;
     x-offset:                    0px;
     y-offset:                    0px;
 
     /* properties for all widgets */
     enabled:                     true;
+    border:                      0px solid;
     border-radius:               15px;
+    border-color:                transparent;
     cursor:                      "default";
     background-color:            @background;
 }
@@ -50,6 +52,10 @@ window {
 mainbox {
     enabled:                     true;
     spacing:                     0px;
+    margin:                      0px;
+    padding:                     0px;
+    border:                      0px solid;
+    border-color:                transparent;
     background-color:            transparent;
     orientation:                 horizontal;
     children:                    [ "imagebox", "listbox" ];
@@ -57,8 +63,10 @@ mainbox {
 
 imagebox {
     padding:                     20px;
+    border-radius:               10px;
+    border-color:                transparent;
     background-color:            transparent;
-    background-image:            url("~/.config/wpg/.current-rofi.jpg", height);
+    background-image:            url("~/.config/m3-colors/current-rofi.jpg", height);
     orientation:                 vertical;
     children:                    [ "inputbar", "dummy", "mode-switcher" ];
 }
@@ -66,6 +74,8 @@ imagebox {
 listbox {
     spacing:                     20px;
     padding:                     20px;
+    border:                      0px solid;
+    border-color:                transparent;
     background-color:            transparent;
     orientation:                 vertical;
     children:                    [ "message", "listview" ];
@@ -80,9 +90,11 @@ inputbar {
     enabled:                     true;
     spacing:                     10px;
     padding:                     15px;
+    border:                      0px solid;
     border-radius:               10px;
+    border-color:                transparent;
     background-color:            @selected-normal-background;
-    text-color:                  @foreground;
+    text-color:                  @selected-normal-foreground;
     children:                    [ "textbox-prompt-colon", "entry" ];
 }
 textbox-prompt-colon {
@@ -105,19 +117,23 @@ entry {
 mode-switcher{
     enabled:                     true;
     spacing:                     20px;
+    border:                      0px solid;
+    border-color:                transparent;
     background-color:            transparent;
     text-color:                  @foreground;
 }
 button {
     padding:                     15px;
+    border:                      0px solid;
     border-radius:               10px;
+    border-color:                transparent;
     background-color:            @active-background;
-    text-color:                  @foreground;
+    text-color:                  @active-foreground;
     cursor:                      pointer;
 }
 button selected {
     background-color:            @selected-active-background;
-    text-color:                  @foreground;
+    text-color:                  @selected-active-foreground;
 }
 
 /*****----- Listview -----*****/
@@ -134,6 +150,9 @@ listview {
     fixed-columns:               true;
 
     spacing:                     10px;
+    margin:                      0px;
+    border:                      0px solid;
+    border-color:                transparent;
     background-color:            transparent;
     text-color:                  @foreground;
     cursor:                      "default";
@@ -144,13 +163,15 @@ element {
     enabled:                     true;
     spacing:                     15px;
     padding:                     8px;
+    border:                      0px solid;
     border-radius:               10px;
+    border-color:                transparent;
     background-color:            transparent;
     text-color:                  @foreground;
     cursor:                      pointer;
 }
 element normal.normal {
-    background-color:            @normal-background;
+    background-color:            transparent;
     text-color:                  @normal-foreground;
 }
 element normal.urgent {
@@ -189,19 +210,25 @@ element-text {
 
 /*****----- Message -----*****/
 message {
+    border:                      0px solid;
+    border-color:                transparent;
     background-color:            transparent;
 }
 textbox {
     padding:                     15px;
+    border:                      0px solid;
     border-radius:               10px;
+    border-color:                transparent;
     background-color:            @active-background;
-    text-color:                  @foreground;
+    text-color:                  @active-foreground;
     vertical-align:              0.5;
     horizontal-align:            0.0;
 }
 error-message {
     padding:                     15px;
+    border:                      0px solid;
     border-radius:               20px;
+    border-color:                transparent;
     background-color:            @background;
     text-color:                  @foreground;
 }

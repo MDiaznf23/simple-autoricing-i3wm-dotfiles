@@ -1,0 +1,146 @@
+;; Eww Bar Configuration
+
+(deflisten workspaces :initial "[]" 
+  "bash ~/.config/eww/scripts/get-workspaces.sh")
+
+(deflisten current_mode :initial "default"
+  "i3-msg -t subscribe -m '[\"mode\"]' | jq -r '.change'")
+
+;; Definisi variable untuk window title
+(defpoll active_window :interval "1s"
+  "~/.config/polybar/scripts/xwindow-clickable.sh")
+
+;; Definisi variable untuk WiFi
+(defpoll system_status :interval "2s"
+  :initial '{"wifi":"","brightness":"","volume":""}'
+  "~/.config/eww/scripts/wifi-status.sh")
+
+;; Variable untuk waktu
+(defpoll time :interval "1s"
+  "date '+%H:%M'")
+
+(defwidget workspaces_widget []
+  (eventbox
+    :onscroll "i3-msg workspace {}"
+    (box 
+      :class "i3-section"
+      :spacing 2
+      :valign "center"
+      :vexpand false
+      (for ws in workspaces
+        (button
+          :class "ws-btn ${ws.focused ? 'focused' : ''} ${ws.urgent ? 'urgent' : ''} ${ws.visible ? 'visible' : ''}"
+          :onclick "i3-msg 'workspace number ${ws.num}'"
+          "${ws.name}")))))
+
+;; Main Bar Widget
+(defwidget bar-widget []
+  (centerbox :class "bar-container"
+             :orientation "h"
+             :valign "center"
+             :vexpand false
+
+    ;; Bagian Kiri (start)
+    (box :class "bar-section-left"
+         :orientation "h"
+         :space-evenly false
+         :halign "start"
+         :spacing 10
+         :valign "center"
+         :vexpand false
+
+      (button :onclick "~/.config/rofi/powermenu/type-5/powermenu.sh &"
+        (label :class "left-text"
+             :text " "))
+        
+      (workspaces_widget)
+      (label :class "weather-bar" :text WEATHER_ICON)
+      (label :class "text-weather-bar" :text WEATHER_DESC)
+    )
+    
+    ;; Bagian Tengah (center) 
+    (box :class "bar-section-center"
+         :orientation "h"
+         :halign "center"
+         :space-evenly false
+         :valign "center"
+         :vexpand false
+      
+    (button :onclick "~/.config/eww/scripts/toggle_dashboard.sh"
+            :timeout "2s"
+        (box :class "windows-center-bar"
+             :orientation "h"
+             :halign "center"
+             :space-evenly false
+             :valign "center"
+             :vexpand false
+
+          (label :class "icon-center-bar"
+                 :text " ")
+          (label :class "center-text"
+                 :text active_window)
+        )
+      )
+    )   
+    
+    ;; Bagian Kanan (end)
+    (box :class "bar-section-right"
+         :orientation "h"
+         :space-evenly false
+         :halign "end"
+         :spacing 5
+         :valign "center"
+         :vexpand false
+
+      (box :class "system-tray-bar"
+           :valign "center"
+           :vexpand false
+        (systray :icon-size 12 :spacing 8)
+      )
+
+      (button :onclick "~/.config/eww/scripts/toggle-control-center.sh"
+              :timeout "2s"       
+        (box :class "status-section-right"
+             :orientation "h"
+             :space-evenly false
+             :halign "end"
+             :spacing 10
+             :valign "center"
+             :vexpand false
+
+          (label :class "right-text" :text {system_status.wifi})
+          (label :class "right-text" :text {system_status.brightness})
+          (label :class "right-text" :text {system_status.volume})
+        )
+      )
+
+      (box :class "time-bar"
+           :orientation "h"
+           :space-evenly false
+           :spacing 0
+           :valign "center"
+           :vexpand false
+        (label :class "time-icon" 
+               :text " ")
+        (label :class "time-text" :valign "center" :vexpand false 
+               :text time)
+      )
+    )
+  )
+)
+
+;; Window Definition
+(defwindow bar
+  :monitor 0
+  :geometry (geometry 
+    :x "14px"
+    :y "10px"
+    :width "98%"
+    :height "27px"
+    :anchor "top left")
+  :stacking "fg"
+  :exclusive false
+  :focusable false
+  :windowtype "dock"
+  :wm-ignore true
+  (bar-widget))

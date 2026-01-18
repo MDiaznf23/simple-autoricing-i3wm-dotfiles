@@ -1,0 +1,425 @@
+/* ========================================
+// EWW Control Center - eww.scss (M3 Style)
+// ======================================== */
+
+/* --- Global --- */
+* {
+  all: unset;
+  font-family: "JetBrains Mono Nerd Font", monospace;
+  font-size: 14px;
+  color: $on-surface;
+  border: none;
+  box-shadow: none;
+}
+
+/* --- Kontainer Utama --- */
+.control-center-container {
+  background-color: transparent;
+  background-image: linear-gradient(135deg, 
+    $secondary-fixed,  
+    $surface,
+    $primary-fixed-dim,
+  );
+  border-radius: 10px;
+  padding: 15px;
+  min-width: 240px;
+  border: 1.5px solid $outline-variant;
+}
+
+/* --- Garis Pemisah --- */
+.separator {
+  min-height: 1px;
+  background-color: $outline-variant;
+  margin: 8px 0;
+}
+
+/* --- 2. Quick Toggles --- */
+.quick-toggles-container {
+  padding: 5px;
+  margin-bottom: 0px;
+}
+
+.quick-toggles-row {
+  margin-bottom: -10px;
+}
+
+.toggle-widget {
+  min-width: 45px;
+  margin-bottom: 0;
+}
+
+.toggle-icon {
+  font-size: 24px;
+  color: $on-surface-variant;
+  background-color: $surface-container;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: -10px;
+
+  min-width: 24px;
+  min-height: 24px;
+
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.toggle-icon:hover {
+  background-color: $surface-dim;
+}
+
+/* Styling saat aktif */
+.toggle-icon.bt-active {
+  background-color: $primary-fixed;
+  color: $on-primary-fixed;
+}
+
+/* Styling saat aktif */
+.toggle-icon.bt-active:hover {
+  background-color: $primary-fixed-dim;
+  color: $on-primary-fixed;
+}
+
+.toggle-icon.wifi-active {
+  background-color: $secondary-fixed;
+  color: $on-secondary-container;
+}
+
+.toggle-icon.wifi-active:hover {
+  background-color: $secondary-fixed-dim;
+  color: $on-secondary-container;
+}
+
+/* BARU: Styling untuk Night Mode aktif */
+.toggle-icon.night-active {
+  background-color: $secondary-container;
+  color: $on-tertiary-container;
+}
+
+.toggle-icon.night-active:hover {
+  background-color: $outline-variant;
+}
+
+.toggle-label {
+  font-size: 12px;
+  color: $on-surface-variant;
+}
+
+/* --- 3. Sliders --- */
+.sliders-container {
+  padding: 5px;
+}
+
+.slider-percentage {
+  font-size: 13px;
+}
+
+.slider-row {
+  margin: 0px;
+}
+
+.slider-icon {
+  font-size: 18px;
+  color: $on-surface-variant;
+}
+
+.system-slider trough {
+  background: $surface-container-highest;
+  min-height: 8px;
+  border-radius: 4px;
+}
+
+.system-slider highlight {
+  background: $primary;
+  min-height: 8px;
+  border-radius: 4px;
+}
+
+/* Titik di slider */
+.system-slider slider {
+  background: $on-primary;
+  border-radius: 50%;
+  min-width: 10px;
+  min-height: 10px;
+  margin: -4px 0;
+}
+
+/* --- 4. Notifications --- */
+.notification-center-container {
+  padding: 0px;
+}
+
+.notification-header {
+  padding: 0px;
+}
+
+.notification-header-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: $on-surface;
+}
+
+.clear-all-btn {
+  font-size: 12px;
+  color: $on-surface-variant;
+  background-color: $surface-container;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+.clear-all-btn:hover {
+  background-color: $surface-container-high;
+  color: $on-surface;
+}
+
+.notification-list-scroll {
+  padding: 0px 10px 0px 0px;
+}  
+
+/* Kotak untuk setiap item notifikasi */
+.notification-item {
+  background-color: $surface;
+  border-radius: 10px;
+  padding: 0px 0px;
+  margin: 0px;
+}
+
+/* Kontainer untuk ikon */
+.notification-icon-container {
+  min-width: 32px;
+  min-height: 32px;
+  margin-right: 5px;
+  border-radius: 8px;
+  background-color: $surface;
+}
+.notification-app-icon {
+  border-radius: 8px;
+}
+
+/* Teks notifikasi */
+.notification-appname {
+  font-size: 13px;
+  font-weight: bold;
+  color: $on-surface;
+}
+.notification-summary {
+  font-size: 12px;
+  color: $on-surface-variant;
+}
+
+/* Tombol close 'X' per notifikasi */
+.notification-close-btn {
+  font-size: 14px;
+  color: $on-surface-variant;
+  margin-left: 5px;
+}
+
+.notification-close-btn:hover {
+  color: $error;
+}
+
+/* Teks saat tidak ada notifikasi */
+.notification-footer {
+  margin-top: 10px;
+  color: $on-surface-variant;
+  font-size: 13px;
+}
+
+/* WiFi Widget Container */
+.wifi-expanded-panel {
+  padding: 0px;
+  border-radius: 10px;
+}
+
+.wifi-current-icon {
+  font-size: 16px;
+}
+
+.wifi-current-label {
+  font-size: 13px;
+  color: $on-surface;
+  font-weight: 500;
+}
+
+/* Scan/Refresh Button */
+.wifi-scan-btn {
+  padding: 8px;
+  margin-top: 10px;
+  margin-bottom: 3px;
+  border-radius: 8px;
+  font-size: 12px;
+  color: $on-surface-variant;
+  transition: background-color 0.2s ease;
+}
+.wifi-scan-btn:hover {
+  background-color: $surface-dim;
+  color: $on-surface;
+}
+
+/* Networks Scroll Container */
+.wifi-networks-scroll {
+  margin-bottom: 8px;
+}
+
+.wifi-network-item {
+  background-color: $surface-container;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin: 2px 0;
+  transition: all 0.2s ease;
+}
+.wifi-network-item:hover {
+  background-color: $surface-dim;
+}
+
+/* Connected network highlight */
+.wifi-network-item.wifi-connected {
+  background-color: $primary-fixed;
+  border-left: 3px solid $primary;
+}
+
+.wifi-signal-icon {
+  font-size: 16px;
+  min-width: 24px;
+}
+
+.wifi-ssid-label {
+  font-size: 13px;
+  color: $on-surface;
+}
+
+.wifi-security-icon {
+  font-size: 14px;
+  color: $on-surface-variant;
+  min-width: 20px;
+}
+
+.wifi-connected-icon {
+  font-size: 16px;
+  color: $primary;
+  font-weight: bold;
+}
+
+/* No Networks Message */
+.wifi-no-networks {
+  padding: 20px;
+  color: $on-surface-variant;
+  font-size: 13px;
+}
+
+/* WiFi Power Toggle Button */
+.wifi-power-toggle {
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 12px;
+  color: $on-surface-variant;
+  transition: background-color 0.2s ease;
+}
+.wifi-power-toggle:hover {
+  background-color: $surface-dim;
+  color: $on-surface;
+}
+
+.wifi-loading {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { -gtk-icon-transform: rotate(1turn); }
+}
+
+/*-----------------------------------*/
+
+/* Bluetooth Expanded Panel */
+.bt-expanded-panel {
+  margin-top: 10px;
+  padding: 0px;
+  border-radius: 10px;
+}
+
+/* Scan/Refresh Button */
+.bt-scan-btn {
+  padding: 8px;
+  margin-top: 5px;
+  margin-bottom: 3px;
+  border-radius: 8px;
+  font-size: 12px;
+  color: $on-surface-variant;
+  transition: background-color 0.2s ease;
+}
+.bt-scan-btn:hover {
+  background-color: $surface-dim;
+  color: $on-surface;
+}
+
+/* Devices Scroll Container */
+.bt-devices-scroll {
+  margin-bottom: 8px;
+}
+
+/* Individual Bluetooth Device Item */
+.bt-device-item {
+  background-color: $surface-container;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin: 2px 0;
+  transition: all 0.2s ease;
+}
+.bt-device-item:hover {
+  background-color: $surface-container-high;
+}
+
+/* Connected device highlight */
+.bt-device-item.bt-connected {
+  background-color: $secondary-container;
+  border-left: 3px solid $primary;
+}
+
+.bt-type-icon {
+  font-size: 16px;
+  min-width: 24px;
+}
+
+.bt-name-label {
+  font-size: 13px;
+  color: $on-surface;
+}
+
+.bt-paired-icon {
+  font-size: 14px;
+  color: $secondary;
+  min-width: 20px;
+}
+
+/* Action Buttons */
+.bt-action-btn {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+.bt-action-btn:hover {
+  background-color: $tertiary-fixed-dim;
+}
+.bt-action-btn.bt-unpair:hover {
+  background-color: $inverse-primary;
+  color: $on-error-container;
+}
+
+/* No Devices Message */
+.bt-no-devices {
+  padding: 20px;
+  color: $on-surface-variant;
+  font-size: 13px;
+}
+
+/* Bluetooth Power Toggle Button */
+.bt-power-toggle {
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 12px;
+  color: $on-surface-variant;
+  transition: background-color 0.2s ease;
+}
+.bt-power-toggle:hover {
+  background-color: $surface-dim;
+  color: $on-surface;
+}

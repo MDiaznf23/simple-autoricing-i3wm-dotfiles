@@ -1,6 +1,5 @@
 /* ~/.config/rofi/wallpaper-select.rasi */
-
-@import "~/.cache/wal/colors-rofi-dark.rasi"
+@import "~/.cache/m3-colors/rofi.rasi"
 
 * {
     /* Gunakan font yang bagus */
@@ -9,6 +8,8 @@
     text-color: @foreground;
     margin: 0px;
     padding: 0px;
+    border-color: transparent;
+    separatorcolor: transparent;
 }
 
 window {
@@ -20,8 +21,8 @@ window {
     anchor: center;
     
     background-color: @background;
-    border: 3px solid;
-    border-color: @selected-active-background; /* Warna aksen dari WPG/Wal */
+    border: 0px solid;
+    border-color: transparent;
     border-radius: 15px; /* Sudut membulat yang halus */
     padding: 20px;
 }
@@ -29,29 +30,39 @@ window {
 mainbox {
     children: [ inputbar, listview ];
     spacing: 20px;
+    border: 0px solid;
+    border-color: transparent;
 }
 
 /* --- Input Bar (Pencarian) --- */
 inputbar {
     children: [ prompt, entry ];
     background-color: @active-background;
+    border: 0px solid;
     border-radius: 10px;
+    border-color: transparent;
     padding: 5px;
     margin: 0px 0px 10px 0px; /* Jarak ke galeri */
 }
 
 prompt {
     background-color: @selected-normal-background;
-    text-color: @background;
+    text-color: @selected-normal-foreground;
     padding: 10px 20px;
+    border: 0px solid;
     border-radius: 8px;
+    border-color: transparent;
     margin: 5px;
 }
 
 entry {
     placeholder: "Search Wallpaper...";
     placeholder-color: @foreground;
+    background-color: transparent;
+    text-color: @active-foreground;
     padding: 10px;
+    border: 0px solid;
+    border-color: transparent;
     vertical-align: 0.5;
 }
 
@@ -65,26 +76,43 @@ listview {
     flow: horizontal;
     scrollbar: false;
     spacing: 15px;   /* Jarak antar kotak gambar */
+    border: 0px solid;
+    border-color: transparent;
+    background-color: transparent;
 }
 
 element {
     orientation: vertical; /* Gambar di atas, teks di bawah (jika ada) */
     padding: 20px 10px;
+    border: 0px solid;
     border-radius: 12px;
+    border-color: transparent;
     cursor: pointer;
 }
 
 element normal.normal {
-    background-color: @background;
+    background-color: @alternate-normal-background;
     text-color: @foreground;
+    border: 0px solid;
+    border-color: transparent;
 }
 
 /* Efek saat dipilih/highlight */
 element selected.normal {
     background-color: @selected-normal-background; /* Warna highlight */
-    text-color: @background;
-    border: 2px solid;
-    border-color: @foreground;
+    text-color: @selected-normal-foreground;
+    border: 0px solid;
+    border-color: transparent;
+}
+
+element normal.active {
+    background-color: @active-background;
+    text-color: @active-foreground;
+}
+
+element selected.active {
+    background-color: @selected-active-background;
+    text-color: @selected-active-foreground;
 }
 
 /* Pengaturan Gambar Thumbnail */
@@ -92,6 +120,8 @@ element-icon {
     size: 140px;   /* Ukuran thumbnail besar */
     horizontal-align: 0.5;
     background-color: transparent;
+    border: 0px solid;
+    border-color: transparent;
     cursor: inherit;
 }
 
