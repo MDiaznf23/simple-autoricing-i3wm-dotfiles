@@ -225,7 +225,5 @@ exec --no-startup-id xss-lock -- lock
 # Browser binding
 bindsym $mod+b exec firefox
 
-exec_always --no-startup-id ~/.config/eww/scripts/fullscreen-monitor.sh
-
 # Autostart
 exec_always --no-startup-id ~/.config/i3/autostart.sh
