@@ -1,7 +1,7 @@
 
 #!/bin/bash
 # Wrapper script untuk weather agar output JSON friendly untuk Eww
-WEATHER_SCRIPT="$HOME/.config/polybar/scripts/weather.sh"
+WEATHER_SCRIPT="$HOME/.config/eww/scripts/weather.sh"
 
 case "$1" in
     temp)
