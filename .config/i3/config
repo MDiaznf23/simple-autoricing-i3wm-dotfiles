@@ -209,9 +209,6 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-# Start eww daemon and bar
-exec_always --no-startup-id ~/.config/i3/start-eww.sh
-
 # Initial commands that execute on i3 start.
 exec_always --no-startup-id picom
 exec_always --no-startup-id setxkbmap -layout "us,ru" -option "grp:win_space_toggle"
