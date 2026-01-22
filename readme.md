@@ -83,7 +83,7 @@ chmod +x install.sh
 |:---|:---|
 | `Super + Enter` | Terminal | 
 | `Super + Shift + q` | Close window | 
-| `Super + h/j/k/l` | Focus | 
+| `Super + h/j` | Focus | 
 | `Super + 1-9` | Workspace | 
 | `Super + d` | Launcher |
 | `Super + Shift + r` | Reload i3 |
