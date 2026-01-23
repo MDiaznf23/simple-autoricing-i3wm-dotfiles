@@ -42,7 +42,7 @@ sudo pacman -S --needed --noconfirm \
     i3-wm i3status i3lock alacritty pcmanfm rofi picom feh scrot xclip xdotool \
     brightnessctl firefox playerctl lm_sensors imagemagick xsettingsd \
     python python-pip python-pipx fish redshift \
-    jq bc dunst rsync fastfetch pamixer python-i3ipc qt5ct cava
+    jq bc dunst rsync fastfetch pamixer python-i3ipc qt5ct cava 
 
 # Install fonts
 echo "Installing fonts..."
