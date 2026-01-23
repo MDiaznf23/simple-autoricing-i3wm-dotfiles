@@ -1,0 +1,47 @@
+.brightness-popup {
+  background-color: $surface;
+  border-radius: 10px;
+  padding: 10px;
+  border: 2px solid $outline;
+}
+
+.icon-brightness-popup {
+  font-size: 24px; /* Diperbesar sedikit karena hanya ikon */
+  font-weight: bold;
+}
+
+.brightness-header-popup {
+  margin-bottom: 10px;
+  color: $on-surface;
+}
+
+.brightness-slider-box-popup {
+  padding: 5px;
+}
+
+.brightness-slider-popup {
+  min-height: 150px; /* Memberikan tinggi minimal pada slider */
+  min-width: 20px;
+}
+
+/* Mengatur warna trough (jalur) dan highlight slider menggunakan variabel warna Anda */
+scale trough {
+    all: unset;
+    background-color: $surface-container-highest;
+    border-radius: 10px;
+    min-width: 10px; 
+}
+
+scale highlight {
+    all: unset;
+    background-color: $primary;
+    border-radius: 10px;
+    min-width: 10px;
+}
+
+.brightness-percent-popup {
+  font-size: 12px;
+  font-weight: bold;
+  margin-top: 10px; /* Jarak antara slider dan angka */
+  color: $on-surface;
+}

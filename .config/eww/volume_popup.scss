@@ -1,0 +1,48 @@
+.volume-popup {
+  background-color: $surface;
+  border-radius: 10px;
+  padding: 10px;
+  border: 2px solid $outline;
+}
+
+.icon-volume-popup {
+  font-size: 18px; 
+  font-weight: bold;
+}
+
+/* Menggunakan suffix -popup agar sesuai dengan class di Yuck */
+.volume-header-popup {
+  margin-bottom: 10px;
+  color: $on-surface;
+}
+
+.volume-slider-box-popup {
+  padding: 5px;
+}
+
+.volume-slider-popup {
+  min-height: 150px; 
+  min-width: 20px;
+}
+
+/* Styling Slider Bar */
+.volume-slider-popup scale trough {
+    all: unset;
+    background-color: $surface-container-highest;
+    border-radius: 10px;
+    min-width: 10px; 
+}
+
+.volume-slider-popup scale highlight {
+    all: unset;
+    background-color: $secondary;
+    border-radius: 10px;
+    min-width: 10px;
+}
+
+.volume-percent-popup {
+  font-size: 12px;
+  font-weight: bold;
+  margin-top: 10px;
+  color: $on-surface;
+}

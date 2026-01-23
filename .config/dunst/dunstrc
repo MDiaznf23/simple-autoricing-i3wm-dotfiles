@@ -3,8 +3,8 @@
     monitor = 0
     follow = mouse
     # Format: (min_width, max_width), (min_height, max_height)
-    width = (300, 380)
-    height = (50, 110)
+    width = (250, 380)
+    height = (30, 110)
     
     origin = top-right
     offset = 15x52
@@ -31,7 +31,7 @@
     
     # Borders & Radius
     frame_width = 2
-    frame_color = "#8a919d"
+    frame_color = "#928f9e"
     separator_color = "frame"
     corner_radius = 10
 
@@ -55,16 +55,16 @@
 
 [urgency_low]
     # Surface Dim untuk low urgency
-    background = "#101419"
-    foreground = "#c0c7d4"
-    frame_color = "#414752"
+    background = "#131319"
+    foreground = "#c8c4d4"
+    frame_color = "#474552"
     timeout = 4
 
 [urgency_normal]
     # Surface Container High (Warna standar M3 untuk dialog/popup)
-    background = "#101419"
-    foreground = "#e0e2ea"
-    frame_color = "#0173c8"
+    background = "#131319"
+    foreground = "#e5e1eb"
+    frame_color = "#4437a3"
     timeout = 8
 
 [urgency_critical]

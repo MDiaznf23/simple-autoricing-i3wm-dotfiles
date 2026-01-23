@@ -42,7 +42,7 @@ sudo pacman -S --needed --noconfirm \
     i3-wm i3status i3lock alacritty pcmanfm rofi picom feh scrot xclip xdotool \
     brightnessctl firefox playerctl lm_sensors imagemagick xsettingsd \
     python python-pip python-pipx fish redshift \
-    jq bc dunst rsync fastfetch pamixer python-i3ipc
+    jq bc dunst rsync fastfetch pamixer python-i3ipc qt5ct
 
 # Install fonts
 echo "Installing fonts..."
@@ -59,7 +59,8 @@ $AUR_HELPER -S --needed --noconfirm \
     ttf-jetbrains-mono-nerd \
     ttf-iosevka-nerd \
     ttf-twemoji \
-    ueberzugpp
+    ueberzugpp \
+    qt6ct-kde
 
 # Install custom fonts if available
 if [ -d "fonts" ]; then
@@ -156,6 +157,20 @@ if [ -n "$WALLPAPER" ]; then
 else
     warning "No wallpaper found, skipping m3wal initialization"
     echo "Run 'm3wal /path/to/wallpaper.jpg --full' manually later"
+fi
+
+# Reload i3 if currently running
+echo ""
+echo "================================"
+echo "Reloading i3..."
+echo "================================"
+
+if pgrep -x "i3" > /dev/null; then
+    i3-msg restart
+    success "i3 reloaded successfully"
+else
+    warning "i3 is not currently running"
+    echo "Please logout and select i3 as your window manager"
 fi
 
 # Final message

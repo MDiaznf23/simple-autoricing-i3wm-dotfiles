@@ -11,8 +11,8 @@ cat > ~/.config/dunst/dunstrc << EOF
     monitor = 0
     follow = mouse
     # Format: (min_width, max_width), (min_height, max_height)
-    width = (300, 380)
-    height = (50, 110)
+    width = (250, 380)
+    height = (30, 110)
     
     origin = top-right
     offset = 15x52

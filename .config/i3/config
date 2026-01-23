@@ -27,6 +27,7 @@ for_window [class="Blueman-manager"] floating enable
 for_window [class="Viewnior"] floating enable, sticky enable, resize set 960 540, move position center
 for_window [class="mpv"] floating enable, resize set 1090 615, move position center
 for_window [class="Engrampa"] floating enable, resize set 890 500, move position center
+for_window [class="copyq"] floating enable, resize set 550 410, move position center
 for_window [class="Audacious"] floating enable, resize set 550 410, move position center
 set $mod Mod4
 
@@ -66,13 +67,13 @@ bindsym Ctrl+Mod4+Left exec --no-startup-id ~/.config/Scripts/ws_cycle.py prev
 bindsym $mod+l exec --no-startup-id lock
 
 # Pulse Audio controls
-bindsym XF86AudioRaiseVolume exec --no-startup-id pamixer -i 1 --set-limit 100
-bindsym XF86AudioLowerVolume exec --no-startup-id pamixer -d 1
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle 
+bindsym XF86AudioRaiseVolume exec --no-startup-id pamixer -i 1 --set-limit 100 && ~/.config/eww/scripts/volume-popup.sh
+bindsym XF86AudioLowerVolume exec --no-startup-id pamixer -d 1 && ~/.config/eww/scripts/volume-popup.sh
+bindsym XF86AudioMute exec --no-startup-id pamixer -t && ~/.config/eww/scripts/volume-popup.sh
 
 # Sreen brightness controls
-bindsym $mod+Ctrl+Up exec --no-startup-id brightnessctl set +10% && brightnessctl get > ~/.config/brightness_level
-bindsym $mod+Ctrl+Down exec --no-startup-id brightnessctl set 10%- && brightnessctl get > ~/.config/brightness_level
+bindsym $mod+Ctrl+Up exec --no-startup-id brightnessctl set +10% && ~/.config/eww/scripts/brightness-popup.sh
+bindsym $mod+Ctrl+Down exec --no-startup-id brightnessctl set 10%- && ~/.config/eww/scripts/brightness-popup.sh
 
 # is used in the bar {} block below.
 font terminess:monospace 9

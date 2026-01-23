@@ -18,6 +18,9 @@ sleep 0.3
 # Start xsettingsd (hanya jika belum running)
 pgrep -x xsettingsd > /dev/null || xsettingsd &
 
+# Tambahkan ini di wallpaper generator script setelah generate custom.lua
+nvim --headless -c "lua require('base46').compile()" -c "qa"
+
 # Reload eww
 eww reload &
 

@@ -7,7 +7,7 @@
 @define-color color5 {{term5}};
 @define-color color6 {{term6}};
 @define-color color7 {{term7}};
-@define-color color8 {{term8}};
+@define-color color8 {{m3surfaceContainerLowest}};
 @define-color color9 {{term9}};
 @define-color color10 {{term10}};
 @define-color color11 {{term11}};

@@ -1,0 +1,37 @@
+(deflisten volume :initial "50"
+  "~/.config/eww/scripts/get_volume_listen.sh")
+
+(defpoll volume-muted :interval "100ms"
+  "pamixer --get-mute")
+
+(defwidget volume-popup []
+  (box :class "volume-popup" 
+       :orientation "v"          
+       :space-evenly false
+    (box :class "volume-header-popup"
+      (label :class "icon-volume-popup" :text {volume-muted == "true" ? "󰝟" : "󰕾"})) 
+    (box :class "volume-slider-box-popup"
+         :orientation "v"        
+         :vexpand true           
+         :space-evenly false
+      (scale :class "volume-slider-popup"
+             :orientation "v"    
+             :flipped true       
+             :value volume
+             :min 0
+             :max 100
+             :onchange "pamixer --set-volume {} && ~/.config/eww/scripts/volume-popup.sh")
+      (label :class "volume-percent-popup" 
+             :text "${volume}%"))))
+
+(defwindow volume-popup
+  :monitor 0
+  :geometry (geometry :x "-16px"
+                      :y "52px"
+                      :width "60px"    
+                      :height "200px"  
+                      :anchor "top right")
+  :stacking "overlay"
+  :windowtype "normal"
+  :wm-ignore true
+  (volume-popup))

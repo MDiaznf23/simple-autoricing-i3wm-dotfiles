@@ -116,12 +116,7 @@
 
 /* System Tray */
 .system-tray-bar {
-  background-image: linear-gradient(135deg,
-    $on-secondary-fixed,
-    $surface-container
-  );
-  border-radius: 15px;
-  padding: 0px 10px;
+  padding: 0px 5px;
   min-height: 18px;
 }
 

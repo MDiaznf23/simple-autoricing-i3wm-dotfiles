@@ -6,42 +6,45 @@
 (defvar bluetooth_list_visible false) 
 (defvar control_center_visible false)
 
+(defpoll wifi_networks :interval "5s"
+  :initial "[]"
+  :run-while wifi_list_visible  
+  `~/.config/eww/scripts/scan_wifi.sh`)
+
 (defpoll bluetooth_devices_listen :interval "2s"
   :initial "[]"
+  :run-while bluetooth_list_visible 
   `~/.config/eww/scripts/scan_bluetooth.sh`)
 
 ;; Pindahkan bluetooth_status poll ke sini 
-(defpoll bluetooth_status :interval "1s"
+(defpoll bluetooth_status :interval "2s"
   :initial "no"
+  :run-while control_center_visible
   `bluetoothctl show | grep "Powered:" | awk '{print $2}' || echo "no"`)
 
-(defpoll wifi_status :interval "500ms"
+(defpoll wifi_status :interval "3s"
   :initial "disabled"
+  :run-while control_center_visible
   `nmcli radio wifi || echo "disabled"`)
 
 ;; Poll untuk WiFi networks list
-(defpoll wifi_networks :interval "5s"
-  :initial "[]"
-  `~/.config/eww/scripts/scan_wifi.sh`)
-
-;; Poll untuk current connected SSID
-(defpoll wifi_ssid :interval "2s"
+(defpoll wifi_ssid :interval "3s"
   :initial ""
+  :run-while control_center_visible
   `nmcli -t -f active,ssid dev wifi | grep '^yes' | cut -d':' -f2 || echo "Not Connected"`)
 
 ;; Polls sistem
-(defpoll volume_level :interval "500ms" 
-  :initial "50"
-  :run-while control_center_visible
-  `pactl get-sink-volume @DEFAULT_SINK@ 2>/dev/null | grep 'Volume:' | head -n1 | awk '{print $5}' | tr -d '%' || echo "50"`)
+;; VOLUME LISTENER (Real-time)
+(deflisten volume_level :initial "50"
+  `~/.config/eww/scripts/get_volume_listen.sh`)
 
-(defpoll brightness_level :interval "500ms"
-  :initial "50"
-  :run-while control_center_visible
-  `brightnessctl g 2>/dev/null | awk -v max=$(brightnessctl m 2>/dev/null) '{print int($1/max*100)}' || echo "50"`)
+;; BRIGHTNESS LISTENER (Real-time)
+(deflisten brightness_level :initial "50"
+  `~/.config/eww/scripts/get_brightness_listen.sh`)
 
 (defpoll night_mode_status :interval "2s"
   :initial "off"
+  :run-while control_center_visible
   `[ -f /tmp/night_mode_status ] && cat /tmp/night_mode_status || echo "off"`)
 
 ;; Poll untuk Notifikasi (Dunst) - UPDATED
@@ -49,20 +52,19 @@
   :initial "0"
   `dunstctl count history || echo 0`)
 
-(defpoll notification_history :interval "500ms"
+(defpoll notification_history :interval "2s"
   :initial "[]"
+  :run-while control_center_visible
   `~/.config/eww/scripts/get_notifications.sh`)
 
 ;; CALENDAR
 (defpoll DATE_HEADER :interval "30s" 
   "date +'%A, %d %B'")
 
-(defpoll clock_time
-  :interval "1s"
+(defpoll clock_time :interval "10s"
   "date +'%H:%M'")
 
-(defpoll clock_date
-  :interval "1h"
+(defpoll clock_date :interval "1h"
   "date +'%A, %B %d'")
 
 ;;---------------------------------------------------------

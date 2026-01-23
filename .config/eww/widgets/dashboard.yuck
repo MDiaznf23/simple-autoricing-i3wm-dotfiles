@@ -24,6 +24,9 @@
     :initial '{"player": "", "status": "Stopped", "title": "No Media", "artist": "", "cover": ""}'
     "~/.config/eww/scripts/media_listener.sh")
 
+;;Cava polls
+(deflisten cava :initial "" `~/.config/eww/scripts/cava.sh`)
+
 ;; Weather polls
 (defpoll WEATHER_ICON :interval "1800s" "~/.config/eww/scripts/weather-wrapper.sh icon")  
 (defpoll WEATHER_DESC :interval "1800s" "~/.config/eww/scripts/weather-wrapper.sh desc")
@@ -41,8 +44,7 @@
 
 ;; Variables info laptop
 (defpoll laptop_info :interval "86400s" 
-  :initial '{"brand":"Loading...","model":"Loading...","cpu":"...","gpu":"...","ram":"...","disk":"...","logo_path":""}'
-  :run-once true
+  :initial '{"brand":"Loading...","model":"Loading...","cpu":"...","gpu":"...","ram":"...","disk":"...","logo_path":"..."}'
   "~/.config/eww/scripts/get-laptop-info.sh")
 
 ;; Tab Navigation Widget
@@ -276,7 +278,7 @@
     (box :class "media-widget-info"
          :orientation "v"  
          :space-evenly false
-         :spacing 10
+         :spacing 5
       
       ;; Label section
       (box :orientation "v"
@@ -289,7 +291,7 @@
                :xalign 0.5)
         (label :class "media-widget-title"
                :text {media_info.title}
-               :limit-width 20
+               :limit-width 18
                :xalign 0.5)
         (label :class "media-widget-artist"
                :text {media_info.artist}
@@ -297,7 +299,7 @@
                :xalign 0.5))
       
       ;; Controls
-    (box :class "media-widget-controls" :halign "center" :spacing 10
+      (box :class "media-widget-controls" :halign "center" :spacing 10
         (button :class "media-widget-btn"
                 :onclick "playerctl -p ${media_info.player} previous"
           (box :width 30 :height 30 :halign "center" :valign "center"
@@ -306,7 +308,8 @@
         (button :class "media-widget-btn-play"
                 :onclick "playerctl -p ${media_info.player} play-pause"
           (box :width 30 :height 30 :halign "center" :valign "center"
-            (label :text {media_info.status == "Playing" ? "󰏤" : "󰐊"}                       :style "font-size: 32px;")))
+            (label :text {media_info.status == "Playing" ? "󰏤" : "󰐊"}
+                   :style "font-size: 32px;")))
         
         (button :class "media-widget-btn"
                 :onclick "playerctl -p ${media_info.player} next"
@@ -314,22 +317,33 @@
             (label :text "󰒭" :style "font-size: 28px;"))))
       )))
 
+;;CAVA Widget
+(defwidget cava []
+  (box :class "cava-container"
+       :orientation "v"
+    (label :text "${cava}" 
+           :class "cava")))
+
 ;; NOTE BOX
 (defwidget note_box []
   (box :class "note-container"
        :orientation "v"
-       :width 70
-       :height 83
+       :halign "center"
+       :valign "center"
     (button :class "edit-btn"
             :onclick "xdg-open ~/.config/eww/my-notes.txt &"
       (box :orientation "v"
            :space-evenly false
-           :height 77  ;; Tambahkan height
+           :valign "center"
           (label :text my_notes
                  :class "note-text"
-                 :wrap true
                  :xalign 0.5
-                 :yalign 0.5)))))
+                 :yalign 0.5
+                 :limit-width 16 
+                 :wrap true 
+                 :wrap-mode "wordchar" 
+                 :lines 2 
+                 :justify "center")))))
 
 ;; Performance Content Widget
 (defwidget performance_content []
@@ -367,12 +381,12 @@
   (box :class "laptop-container"
        :orientation "h"
        :space-evenly false
-       :spacing 0
+       :spacing 10
     
     ;; Logo laptop dari cache
   (box :class "logo-section"
          :halign "center"
-      (image :path {laptop_info.logo_path != "" ? laptop_info.logo_path : ""}
+      (image :path {laptop_info.logo_path}
              :image-width 50
              :image-height 50
              :visible {laptop_info.logo_path != ""}))
@@ -459,8 +473,8 @@
            :hexpand true
            :space-evenly false
 
-        (calendar_box)
         (clock_box)
+        (calendar_box)
         (apps_box)))
     
     ;; KOLOM KANAN
@@ -470,6 +484,7 @@
          :space-evenly false
          :vexpand true
       (media_widget)
+      (cava)
       (note_box))    
   ))
 

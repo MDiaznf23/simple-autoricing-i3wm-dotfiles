@@ -5,12 +5,16 @@
       "destination": "~/.config/nvim/lua/themes/material3.lua"
     },
     {
-      "source": "kdeglobals",
-      "destination": "~/.config/kdeglobals"
+      "source": "qt5ct.conf",
+      "destination": "~/.config/qt5ct/style-colors.conf"
     },
     {
-      "source": "colors.scss",
-      "destination": "~/.config/eww/colors.scss"
+      "source": "qt6ct.conf",
+      "destination": "~/.config/qt6ct/style-colors.conf"
+    },
+    {
+      "source": "kdeglobals",
+      "destination": "~/.config/kdeglobals"
     },
     {
       "source": "gtkrc",
@@ -23,6 +27,10 @@
     {
       "source": "gtk.3.20",
       "destination": "~/.local/share/themes/FlatColor/gtk-3.20/gtk.css"
+    },
+    {
+      "source": "colors.scss",
+      "destination": "~/.config/eww/colors.scss"
     }
   ]
 }

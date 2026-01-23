@@ -1,5 +1,5 @@
 #!/bin/bash
-# ~/.config/eww/scripts/xwindow-clickable.sh
+# ~/.config/polybar/scripts/xwindow-clickable.sh
 
 # Get active window title
 window_title=$(xdotool getactivewindow getwindowname 2>/dev/null)
