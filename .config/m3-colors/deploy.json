@@ -17,18 +17,6 @@
       "destination": "~/.config/kdeglobals"
     },
     {
-      "source": "gtkrc",
-      "destination": "~/.local/share/themes/FlatColor/gtk-2.0/gtkrc"
-    },
-    {
-      "source": "gtk.css",
-      "destination": "~/.local/share/themes/FlatColor/gtk-3.0/gtk.css"
-    },
-    {
-      "source": "gtk.3.20",
-      "destination": "~/.local/share/themes/FlatColor/gtk-3.20/gtk.css"
-    },
-    {
       "source": "colors.scss",
       "destination": "~/.config/eww/colors.scss"
     }

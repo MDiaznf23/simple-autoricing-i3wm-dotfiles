@@ -12,7 +12,7 @@
 
 ;; Definisi variable untuk WiFi
 (defpoll system_status :interval "2s"
-  :initial '{"wifi":"","brightness":"","volume":""}'
+  :initial '{"wifi":"","brightness":"","volume":"", "battery":""}'
   "~/.config/eww/scripts/wifi-status.sh")
 
 ;; Variable untuk waktu
@@ -24,20 +24,18 @@
        :valign "center"
        :vexpand false
        :visible {current-mode != "default"}
-    (label :class "indicator-i3" :text "${current-mode}")))
+    (label :class "indicator-i3"
+           :text "${current-mode}")))
 
 (defwidget workspaces_widget []
-  (eventbox
-    :onscroll "i3-msg workspace {}"
-    (box 
-      :class "i3-section"
-      :spacing 2
-      :valign "center"
-      :vexpand false
+  (eventbox :onscroll "i3-msg workspace {}"
+    (box :class "i3-section"
+         :spacing 2
+         :valign "center"
+         :vexpand false
       (for ws in workspaces
-        (button
-          :class "ws-btn ${ws.focused ? 'focused' : ''} ${ws.urgent ? 'urgent' : ''} ${ws.visible ? 'visible' : ''}"
-          :onclick "i3-msg 'workspace number ${ws.num}'"
+        (button :class "ws-btn ${ws.focused ? 'focused' : ''} ${ws.urgent ? 'urgent' : ''} ${ws.visible ? 'visible' : ''}"
+                :onclick "i3-msg 'workspace number ${ws.num}'"
           "${ws.name}")))))
 
 ;; Main Bar Widget
@@ -47,7 +45,9 @@
              :valign "center"
              :vexpand false
 
+    ;; ----------------------------------------------------------------
     ;; Bagian Kiri (start)
+    ;; ----------------------------------------------------------------
     (box :class "bar-section-left"
          :orientation "h"
          :space-evenly false
@@ -58,16 +58,28 @@
 
       (button :onclick "~/.config/rofi/powermenu/type-5/powermenu.sh &"
         (label :class "left-text"
-             :text " "))
+               :text " "))
         
       (workspaces_widget)
-      (label :class "weather-bar" :text WEATHER_ICON)
-      (label :class "text-weather-bar" :text WEATHER_DESC)
+
+      (eventbox :onhover "eww update show_weather_tooltip=true && eww open weather-tooltip-window"
+                :onhoverlost "eww update show_weather_tooltip=false && eww close weather-tooltip-window"
+        (box :orientation "h" 
+             :space-evenly false
+             :spacing 5
+          (label :class "weather-bar"
+                 :text WEATHER_ICON)
+          (label :class "text-weather-bar"
+                 :text WEATHER_DESC)
+        )
+      )
 
       (mode-indicator)
     )
     
+    ;; ----------------------------------------------------------------
     ;; Bagian Tengah (center) 
+    ;; ----------------------------------------------------------------
     (box :class "bar-section-center"
          :orientation "h"
          :halign "center"
@@ -75,24 +87,25 @@
          :valign "center"
          :vexpand false
       
-    (button :onclick "~/.config/eww/scripts/toggle_dashboard.sh"
-            :timeout "2s"
+      (button :onclick "~/.config/eww/scripts/toggle_dashboard.sh"
+              :timeout "2s"
         (box :class "windows-center-bar"
              :orientation "h"
              :halign "center"
              :space-evenly false
              :valign "center"
              :vexpand false
-
           (label :class "icon-center-bar"
                  :text " ")
           (label :class "center-text"
                  :text active_window)
         )
       )
-    )   
+    )    
     
+    ;; ----------------------------------------------------------------
     ;; Bagian Kanan (end)
+    ;; ----------------------------------------------------------------
     (box :class "bar-section-right"
          :orientation "h"
          :space-evenly false
@@ -104,11 +117,12 @@
       (box :class "system-tray-bar"
            :valign "center"
            :vexpand false
-        (systray :icon-size 12 :spacing 8)
+        (systray :icon-size 12
+                 :spacing 8)
       )
 
-      (button :onclick "~/.config/eww/scripts/toggle-control-center.sh"
-              :timeout "2s"       
+      (eventbox :onclick "~/.config/eww/scripts/toggle-control-center.sh"
+              :timeout "2s"        
         (box :class "status-section-right"
              :orientation "h"
              :space-evenly false
@@ -117,9 +131,27 @@
              :valign "center"
              :vexpand false
 
-          (label :class "right-text" :text {system_status.wifi})
-          (label :class "right-text" :text {system_status.brightness})
-          (label :class "right-text" :text {system_status.volume})
+          ;; --- 1. WiFi ---
+          (eventbox :onhover "eww update show_wifi_tooltip=true && eww open wifi-tooltip-window"
+                    :onhoverlost "eww update show_wifi_tooltip=false && eww close wifi-tooltip-window"
+            (label :class "right-text"
+                   :text {system_status.wifi})
+          )
+
+          ;; --- 2. Battery ---
+          (eventbox :onhover "eww update show_battery_tooltip=true && eww open battery-tooltip-window"
+                    :onhoverlost "eww update show_battery_tooltip=false && eww close battery-tooltip-window"
+            (label :class "right-text"
+                   :text {system_status.battery})
+          )
+
+          ;; --- 3. Brightness ---
+          (box :orientation "h"
+                 :spacing 5
+            (label :class "right-text"
+                     :text {system_status.brightness})
+            (label :class "right-text"
+                     :text {system_status.volume}))
         )
       )
 
@@ -131,7 +163,9 @@
            :vexpand false
         (label :class "time-icon" 
                :text " ")
-        (label :class "time-text" :valign "center" :vexpand false 
+        (label :class "time-text"
+               :valign "center"
+               :vexpand false 
                :text time)
       )
     )
@@ -141,12 +175,11 @@
 ;; Window Definition
 (defwindow bar
   :monitor 0
-  :geometry (geometry 
-    :x "14px"
-    :y "10px"
-    :width "98%"
-    :height "27px"
-    :anchor "top left")
+  :geometry (geometry :x "14px"
+                      :y "10px"
+                      :width "98%"
+                      :height "27px"
+                      :anchor "top left")
   :stacking "fg"
   :exclusive false
   :focusable false

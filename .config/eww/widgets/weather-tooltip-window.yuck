@@ -1,0 +1,81 @@
+;;; WEATHER TOOLTIPS WIDGET
+
+(defvar show_weather_tooltip false)
+
+(defwidget weather_forecast []
+  (box :orientation "v"
+       :space-evenly true
+       :spacing 2
+       :class "weather-tooltips-container"
+
+    (box :orientation "h"
+         :space-evenly false
+         :spacing 5 
+
+      (box :orientation "v"
+           :space-evenly false
+           :spacing 0
+           :hexpand true
+           :halign "start"
+         (label :class ""
+                :xalign 0
+                :text WEATHER_CITY )
+         (label :class "weather-temp-now"
+                :xalign 0
+                :text WEATHER_TEMP) 
+      ) 
+
+      (box :orientation "v"
+           :space-evenly false
+           :spacing 0
+
+          (label :xalign 0.9 :class "icon-weather-tool" :text WEATHER_ICON)
+          (label :xalign 1 :class "" :text WEATHER_DESC)
+          
+          (box :orientation "h"
+               :spacing 5 
+               :space-evenly false
+               :halign "end"
+              (label :class "weather-coord" :text WEATHER_LAT)
+              (label :class "weather-coord" :text WEATHER_LONG)
+          )
+
+      )
+    )
+    
+    ;;;FORECAST 5 DAYS
+    (box :orientation "h"
+         :space-evenly true
+         :spacing 30
+      
+      (for entry in weather_forecast_data
+        (box :orientation "v"
+             :space-evenly false
+             :spacing 2
+             
+          ;; Tampilkan Hari (e.g., Wednesday)
+          (label :text {entry.day} 
+                 :limit-width 3) 
+                 
+          ;; Tampilkan Icon
+          (label :text {entry.icon})
+
+          ;; Tampilkan Suhu (Max/Min)
+          (label :class "weather-temp" 
+                 :text "${entry.max}")
+        )
+      ) 
+
+    )
+  ) 
+)
+
+(defwindow weather-tooltip-window
+  :stacking "overlay"
+  :focusable false
+  :exclusive false
+  :geometry (geometry 
+    :x "150px"
+    :y "45px"
+    :anchor "top left")
+  (weather_forecast))

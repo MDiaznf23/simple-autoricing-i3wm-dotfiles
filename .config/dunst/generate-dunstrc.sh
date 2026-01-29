@@ -11,11 +11,11 @@ cat > ~/.config/dunst/dunstrc << EOF
     monitor = 0
     follow = mouse
     # Format: (min_width, max_width), (min_height, max_height)
-    width = (250, 380)
-    height = (30, 110)
+    width = (290, 310)
+    height = (30, 60)
     
     origin = top-right
-    offset = 15x52
+    offset = (15, 52)
     
     # Scale & Progress Bar
     notification_limit = 5
@@ -26,10 +26,10 @@ cat > ~/.config/dunst/dunstrc << EOF
     progress_bar_max_width = 300
 
     # --- LOOK & FEEL (Material 3 Style) ---
-    font = Noto Sans 11
+    font = Noto Sans 10
     
     markup = full
-    format = "<b>%s</b>\n<span font_desc='JetBrains Mono Nerd Font 11'>%b</span>"
+    format = "<b>%s</b>\n<span font_desc='JetBrains Mono Nerd Font 9'>%b</span>"
     
     # Spacing
     padding = 10

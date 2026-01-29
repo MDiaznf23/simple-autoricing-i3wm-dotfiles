@@ -8,17 +8,17 @@
 
 .main-container {
   background-color: transparent;
-  background-image: linear-gradient(135deg, 
-    $secondary-fixed,  
-    $surface-dim,
-    $primary-fixed-dim,
-    $surface-container,
-    $primary-fixed,
-    $surface-container-low,
-    $secondary-fixed-dim,
-  );
-    border-radius: 10px;
-    border: 1.5px solid $outline-variant;
+  background-image: linear-gradient(135deg,
+      $secondary-fixed,
+      $surface-dim,
+      $primary-fixed-dim,
+      $surface-container,
+      $primary-fixed,
+      $surface-container-low,
+      $secondary-fixed-dim,
+    );
+  border-radius: 10px;
+  border: 1.5px solid $outline-variant;
 }
 
 /* ========================================
@@ -26,43 +26,43 @@
    ======================================== */
 
 .tab-navigation {
-    background-color: transparentize($surface, 1.0);
-    border-radius: 0px;
-    padding: 0px;
-    border-left: 0.5px solid $outline-variant;
-    border-right: 0.5px solid $outline-variant;
+  background-color: transparentize($surface, 1.0);
+  border-radius: 0px;
+  padding: 0px;
+  border-left: 0.5px solid $outline-variant;
+  border-right: 0.5px solid $outline-variant;
 }
 
 .tab-button {
-    padding: 12px 20px;
-    transition: all 0.3s ease;
-    border-bottom: 3px solid transparent;
+  padding: 12px 20px;
+  transition: all 0.3s ease;
+  border-bottom: 3px solid transparent;
 }
 
 .tab-button:hover {
-    background-color: transparentize($surface-container, 0.3);
-    color: $on-surface;
+  background-color: transparentize($surface-container, 0.3);
+  color: $on-surface;
 }
 
 .tab-button.active {
-    background-color: transparentize($surface, 0.5);
-    border-bottom: 3px solid $inverse-primary;
-    color: $on-surface;
+  background-color: transparentize($surface, 0.5);
+  border-bottom: 3px solid $inverse-primary;
+  color: $on-surface;
 }
 
 .tab-button.active:hover {
-    background-color: transparentize($surface-container, 0.3);
-    border-bottom: 3px solid $inverse-primary;
-    color: $on-surface;
+  background-color: transparentize($surface-container, 0.3);
+  border-bottom: 3px solid $inverse-primary;
+  color: $on-surface;
 }
 
 .tab-icon {
-    font-size: 16px;
+  font-size: 16px;
 }
 
 .tab-label {
-    font-size: 14px;
-    font-weight: 600;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 /* ========================================
@@ -70,11 +70,11 @@
    ======================================== */
 
 .content-area {
-    padding: 20px;
+  padding: 20px;
 }
 
 .tab-content {
-    padding: 0px;
+  padding: 0px;
 }
 
 /* ========================================
@@ -82,15 +82,15 @@
    ======================================== */
 
 .metric-bar-container {
-    padding: 0px 0px;
-    background-color: transparentize($surface-container-low, 0.3);
-    border-radius: 10px;
-    border: 1.5px solid $outline-variant;
+  padding: 0px 0px;
+  background-color: transparentize($surface-container-low, 0.3);
+  border-radius: 10px;
+  border: 1.5px solid $outline-variant;
 }
 
 .metric-bar-container:hover {
-    background-color: $surface-container;
-    border-color: $outline;
+  background-color: $surface-container;
+  border-color: $outline;
 }
 
 /* ========================================
@@ -98,45 +98,45 @@
    ======================================== */
 
 .metric-header {
-    margin-bottom: 0px;
+  margin-bottom: 0px;
 }
 
 .metric-icon {
-    font-size: 64px;
-    padding: 0px 10px;
+  font-size: 64px;
+  padding: 0px 10px;
 }
 
 .metric-icon.cpu-color {
-    color: $tertiary; 
+  color: $tertiary;
 }
 
 .metric-icon.mem-color {
-    color: $primary; 
+  color: $primary;
 }
 
 .metric-icon.disk-color {
-    color: $secondary; 
+  color: $secondary;
 }
 
 .description-metric {
-    padding: 0px 10px;
+  padding: 0px 10px;
 }
 
 .metric-label {
-    font-size: 13px;
-    font-weight: 600;
-    color: $on-surface-variant;
+  font-size: 13px;
+  font-weight: 600;
+  color: $on-surface-variant;
 }
 
 .metric-value-text {
-    font-size: 16px;
-    font-weight: bold;
-    color: $on-surface;
+  font-size: 16px;
+  font-weight: bold;
+  color: $on-surface;
 }
 
 .metric-usage-text {
-    font-size: 14px;
-    color: $on-surface-variant;
+  font-size: 14px;
+  color: $on-surface-variant;
 }
 
 /* ===================================
@@ -145,7 +145,7 @@
 
 .info-card {
   background-color: transparentize($surface-container-low, 0.3);
-  border-radius: 10px; 
+  border-radius: 10px;
   padding: 5px 5px 5px 10px;
   border: 1px solid $outline-variant;
   min-height: 93px;
@@ -154,7 +154,7 @@
 
 .info-card-weather {
   background-color: transparentize($surface-container-low, 0.3);
-  border-radius: 10px; 
+  border-radius: 10px;
   padding: 5px 5px 5px 10px;
   border: 1px solid $outline-variant;
   min-height: 93px;
@@ -164,9 +164,9 @@
 .image {
   min-width: 75px;
   min-height: 75px;
-  background-size: contain; 
+  background-size: contain;
   background-repeat: no-repeat;
-  background-position: center;     
+  background-position: center;
 }
 
 .info-text {
@@ -197,14 +197,14 @@
 }
 
 .weather-icon {
-    font-size: 64px;
-    margin-left: -15px;
-    padding: 0px 0px 0px 0px;
-    color: $on-surface;
+  font-size: 64px;
+  margin-left: -15px;
+  padding: 0px 0px 0px 0px;
+  color: $on-surface;
 }
 
 .card-content {
-    padding: 0px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
 }
 
 /* ========================================
@@ -286,7 +286,7 @@
   color: $on-surface;
   padding: 2px 13px 2px 5px;
 }
- 
+
 .app-icon-1 {
   font-size: 28px;
   color: $outline;
@@ -323,17 +323,17 @@
 
 .media-widget-container {
   background-color: transparentize($surface-container-low, 0.3);
-  padding: 10px; 
+  padding: 10px;
   border: 1px solid $outline-variant;
   border-radius: 10px;
-  min-height: 180px; 
+  min-height: 180px;
 }
 
 .media-cover-widget {
   min-width: 80px;
   min-height: 80px;
   background-color: transparent;
-  border-radius: 10px;  
+  border-radius: 10px;
 }
 
 .media-widget-info {
@@ -376,7 +376,7 @@
   background-color: transparentize($surface-container-low, 0.3);
   border: 1px solid $outline-variant;
   border-radius: 10px;
-  min-height: 41px; 
+  min-height: 41px;
   padding: 0px 10px;
 }
 
@@ -400,12 +400,12 @@
   min-width: 175px;
 }
 
-.edit-btn{
+.edit-btn {
   padding: 0px;
 }
 
 .note-text {
-  font-family: "Kalam", cursive;
+  font-family: "Z003", cursive;
   font-size: 20px;
   font-weight: bold;
   color: $primary;

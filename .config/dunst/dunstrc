@@ -3,11 +3,11 @@
     monitor = 0
     follow = mouse
     # Format: (min_width, max_width), (min_height, max_height)
-    width = (250, 380)
-    height = (30, 110)
+    width = (290, 310)
+    height = (30, 60)
     
     origin = top-right
-    offset = 15x52
+    offset = (15, 52)
     
     # Scale & Progress Bar
     notification_limit = 5
@@ -18,10 +18,10 @@
     progress_bar_max_width = 300
 
     # --- LOOK & FEEL (Material 3 Style) ---
-    font = Noto Sans 11
+    font = Noto Sans 10
     
     markup = full
-    format = "<b>%s</b>\n<span font_desc='JetBrains Mono Nerd Font 11'>%b</span>"
+    format = "<b>%s</b>\n<span font_desc='JetBrains Mono Nerd Font 9'>%b</span>"
     
     # Spacing
     padding = 10
@@ -31,7 +31,7 @@
     
     # Borders & Radius
     frame_width = 2
-    frame_color = "#928f9e"
+    frame_color = "#978d9f"
     separator_color = "frame"
     corner_radius = 10
 
@@ -55,16 +55,16 @@
 
 [urgency_low]
     # Surface Dim untuk low urgency
-    background = "#131319"
-    foreground = "#c8c4d4"
-    frame_color = "#474552"
+    background = "#16121a"
+    foreground = "#cdc3d5"
+    frame_color = "#4b4453"
     timeout = 4
 
 [urgency_normal]
     # Surface Container High (Warna standar M3 untuk dialog/popup)
-    background = "#131319"
-    foreground = "#e5e1eb"
-    frame_color = "#4437a3"
+    background = "#16121a"
+    foreground = "#e8dfec"
+    frame_color = "#6019ad"
     timeout = 8
 
 [urgency_critical]

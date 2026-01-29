@@ -9,8 +9,8 @@ if [ -z "$window_title" ]; then
     echo "Desktop"
 else
     # Truncate and add ellipsis if needed
-    if [ ${#window_title} -gt 50 ]; then
-        echo "${window_title:0:50}..."
+    if [ ${#window_title} -gt 25 ]; then
+        echo "${window_title:0:25}..."
     else
         echo "$window_title"
     fi

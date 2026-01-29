@@ -3,16 +3,16 @@
 /* Bar Container */
 .bar-container {
   background-color: transparent;
-  background-image: linear-gradient(135deg, 
-    $secondary-fixed,  
-    $surface-dim,
-    $primary-fixed-dim,
-    $surface-container,
-    $primary-fixed,
-    $surface-container,
-    $secondary-fixed-dim,
-  );
-  border: 1.5px solid $outline-variant;  
+  background-image: linear-gradient(135deg,
+      $secondary-fixed,
+      $surface-dim,
+      $primary-fixed-dim,
+      $surface-container,
+      $primary-fixed,
+      $surface-container,
+      $secondary-fixed-dim,
+    );
+  border: 1.5px solid $outline-variant;
   border-radius: 10px;
   padding: 0px 5px 0px 5px;
   min-height: 27px;
@@ -55,6 +55,67 @@
   min-height: 18px;
 }
 
+/* === TOOLTIPS === */
+
+.weather-tooltips-container {
+  background-color: transparent;
+
+  background-image: linear-gradient(135deg,
+      $secondary-fixed,
+      $surface-container,
+      $primary-fixed,
+      $surface-container,
+    );
+
+  border-radius: 10px;
+  padding: 10px;
+  border: 2px solid $outline-variant;
+}
+
+.icon-weather-tool {
+  font-size: 20px;
+}
+
+.weather-coord {
+  font-size: 9px;
+}
+
+.weather-temp {
+  font-size: 10px;
+}
+
+.weather-temp-now {
+  font-size: 30px;
+}
+
+.wifi-tooltip-container {
+  background-color: transparent;
+  background-image: linear-gradient(135deg,
+      $secondary-fixed,
+      $surface-container,
+      $primary-fixed,
+      $surface-container,
+    );
+
+  border-radius: 10px;
+  padding: 10px;
+  border: 2px solid $outline-variant;
+}
+
+.battery-tooltip-container {
+  background-color: transparent;
+  background-image: linear-gradient(135deg,
+      $secondary-fixed,
+      $surface-container,
+      $primary-fixed,
+      $surface-container,
+    );
+
+  border-radius: 10px;
+  padding: 10px;
+  border: 2px solid $outline-variant;
+}
+
 .i3-section {
   border-radius: 15px;
   padding: 0px;
@@ -70,6 +131,7 @@
 .ws-btn.focused {
   background-color: $inverse-primary;
   border-radius: 15px;
+  color: $on-surface;
 }
 
 /* Hover effect untuk semua button */
@@ -134,7 +196,7 @@
 
 .time-icon {
   padding: 0px 0px 0px 0px;
-  font-size: 11px;  
+  font-size: 11px;
 }
 
 .time-text {
@@ -147,7 +209,3 @@
   color: $on-secondary-container;
   font-size: 12px;
 }
-
-
-
-

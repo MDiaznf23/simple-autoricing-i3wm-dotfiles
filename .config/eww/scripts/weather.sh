@@ -83,6 +83,14 @@ COLD_TEMP=0
 # Display the weather description. yes/no
 DISPLAY_LABEL="yes"
 
+# Forecast settings ___________________________________________________________
+
+# Number of days for forecast (1-16)
+FORECAST_DAYS=5
+
+# Display forecast or not. yes/no
+DISPLAY_FORECAST="yes"
+
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 if [ "$COLOR_TEXT" != "" ]; then
@@ -118,6 +126,7 @@ if [ -z "$LATITUDE" ] || [ -z "$LONGITUDE" ]; then
 fi
 
 RESPONSE=""
+RESPONSE_FORECAST=""
 ERROR=0
 ERR_MSG=""
 
@@ -137,8 +146,11 @@ else
     WIND_UNIT_PARAM="windspeed_unit=kmh"
 fi
 
-# Open-Meteo API URL
+# Open-Meteo API URL untuk current weather
 URL="https://api.open-meteo.com/v1/forecast?latitude=$LATITUDE&longitude=$LONGITUDE&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=sunrise,sunset&${TEMP_UNIT_PARAM}&${WIND_UNIT_PARAM}&timezone=auto"
+
+# Open-Meteo API URL untuk forecast 5 hari
+URL_FORECAST="https://api.open-meteo.com/v1/forecast?latitude=$LATITUDE&longitude=$LONGITUDE&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max&forecast_days=$FORECAST_DAYS&${TEMP_UNIT_PARAM}&${WIND_UNIT_PARAM}&timezone=auto"
 
 function getData {
     ERROR=0
@@ -160,6 +172,34 @@ function getData {
     else
         # Check if response contains error
         HAS_ERROR=$(echo $RESPONSE | jq -r '.error // false')
+        if [ "$HAS_ERROR" = "true" ]; then
+            ERR_MSG="API Error"
+            ERROR=1
+        fi
+    fi
+}
+
+# FUNGSI BARU: Ambil data forecast 5 hari
+function getForecastData {
+    ERROR=0
+    RESPONSE_FORECAST=`curl -s "$URL_FORECAST"`
+    CODE="$?"
+    
+    if [ "$1" = "-d" ]; then
+        echo "Forecast URL: $URL_FORECAST"
+        echo "Forecast Response: $RESPONSE_FORECAST"
+        echo ""
+    fi
+    
+    if [ $CODE -ne 0 ]; then
+        ERR_MSG="curl Error $CODE"
+        ERROR=1
+    elif [ -z "$RESPONSE_FORECAST" ]; then
+        ERR_MSG="Empty Response"
+        ERROR=1
+    else
+        # Check if response contains error
+        HAS_ERROR=$(echo $RESPONSE_FORECAST | jq -r '.error // false')
         if [ "$HAS_ERROR" = "true" ]; then
             ERR_MSG="API Error"
             ERROR=1
@@ -244,7 +284,7 @@ function setIcons {
                 ICON="󰅟 " 
             else
                 ICON_COLOR=$COLOR_MOON
-                ICON=" "
+                ICON="󰅟 "
             fi
         else
             # Overcast
@@ -335,9 +375,119 @@ function setIcons {
     fi
 }
 
+# FUNGSI BARU: Set icon untuk forecast (tanpa logika day/night)
+function setIconSimple {
+    WID=$1
+    
+    if [ $WID -ge 95 ]; then
+        ICON_COLOR=$COLOR_THUNDER
+        ICON=" "
+    elif [ $WID -ge 85 ]; then
+        ICON_COLOR=$COLOR_SNOW
+        ICON=" "
+    elif [ $WID -ge 80 ]; then
+        ICON_COLOR=$COLOR_HEAVY_RAIN
+        ICON="殺"
+    elif [ $WID -ge 71 ]; then
+        ICON_COLOR=$COLOR_SNOW
+        ICON=" "
+    elif [ $WID -ge 61 ]; then
+        ICON_COLOR=$COLOR_HEAVY_RAIN
+        ICON=" "
+    elif [ $WID -ge 51 ]; then
+        ICON_COLOR=$COLOR_LIGHT_RAIN
+        ICON=" "
+    elif [ $WID -ge 45 ]; then
+        ICON_COLOR=$COLOR_FOG
+        ICON=" "
+    elif [ $WID -eq 0 ]; then
+        ICON_COLOR=$COLOR_SUN
+        ICON=" "
+    elif [ $WID -ge 1 ] && [ $WID -le 3 ]; then
+        if [ $WID -eq 1 ]; then
+            ICON_COLOR=$COLOR_SUN
+            ICON="󰅟 "
+        else
+            ICON_COLOR=$COLOR_CLOUD
+            ICON="󰅟 "
+        fi
+    else
+        ICON_COLOR=$COLOR_ERR
+        ICON=" "
+    fi
+}
+
 function outputCompact {
     OUTPUT="%{T$WEATHER_FONT_CODE}%{F$ICON_COLOR}$ICON%{F-}%{T-} $ERR_MSG$COLOR_TEXT_BEGIN$DESCRIPTION$COLOR_TEXT_END"
     echo "$OUTPUT"
+}
+
+# Output forecast 5 hari
+function outputForecast {
+    if [ "$DISPLAY_FORECAST" != "yes" ]; then
+        return
+    fi
+    
+    if [ "$UNITS" == "imperial" ]; then
+        TEMP_UNIT="°F"
+    else
+        TEMP_UNIT="°C"
+    fi
+    
+    for i in {0..4}; do
+        # Parse data untuk setiap hari
+        DATE_ISO=$(echo $RESPONSE_FORECAST | jq -r ".daily.time[$i]")
+        WEATHER_CODE=$(echo $RESPONSE_FORECAST | jq -r ".daily.weather_code[$i]")
+        TEMP_MAX=$(echo $RESPONSE_FORECAST | jq -r ".daily.temperature_2m_max[$i]" | cut -d "." -f 1)
+        TEMP_MIN=$(echo $RESPONSE_FORECAST | jq -r ".daily.temperature_2m_min[$i]" | cut -d "." -f 1)
+        PRECIPITATION=$(echo $RESPONSE_FORECAST | jq -r ".daily.precipitation_sum[$i]")
+        WIND_MAX=$(echo $RESPONSE_FORECAST | jq -r ".daily.wind_speed_10m_max[$i]")
+        
+        # Format tanggal
+        DATE_FORMATTED=$(date -d "$DATE_ISO" +"%a, %b %d" 2>/dev/null || date -j -f "%Y-%m-%d" "$DATE_ISO" +"%a, %b %d" 2>/dev/null)
+        DAY_NAME=$(date -d "$DATE_ISO" +"%A" 2>/dev/null || date -j -f "%Y-%m-%d" "$DATE_ISO" +"%A" 2>/dev/null)
+        
+        # Set icon
+        setIconSimple $WEATHER_CODE
+        
+        # Get description
+        DESCRIPTION=$(getWeatherDescription $WEATHER_CODE)
+        
+        # Print dalam format yang mudah di-parse
+        # Format: DAY|ICON|DESC|MAX|MIN|RAIN|WIND
+        echo "FORECAST_DAY_${i}|${DAY_NAME}|${ICON}|${DESCRIPTION}|${TEMP_MAX}${TEMP_UNIT}|${TEMP_MIN}${TEMP_UNIT}|${PRECIPITATION}mm|${WIND_MAX}"
+    done
+}
+
+# FUNGSI TAMBAHAN: Output forecast dalam format JSON-friendly untuk eww
+function outputForecastJSON {
+    if [ "$UNITS" == "imperial" ]; then
+        TEMP_UNIT="°F"
+    else
+        TEMP_UNIT="°C"
+    fi
+    
+    for i in {0..4}; do
+        # Parse data untuk setiap hari
+        DATE_ISO=$(echo $RESPONSE_FORECAST | jq -r ".daily.time[$i]")
+        WEATHER_CODE=$(echo $RESPONSE_FORECAST | jq -r ".daily.weather_code[$i]")
+        TEMP_MAX=$(echo $RESPONSE_FORECAST | jq -r ".daily.temperature_2m_max[$i]" | cut -d "." -f 1)
+        TEMP_MIN=$(echo $RESPONSE_FORECAST | jq -r ".daily.temperature_2m_min[$i]" | cut -d "." -f 1)
+        PRECIPITATION=$(echo $RESPONSE_FORECAST | jq -r ".daily.precipitation_sum[$i]")
+        WIND_MAX=$(echo $RESPONSE_FORECAST | jq -r ".daily.wind_speed_10m_max[$i]" | cut -d "." -f 1)
+        
+        # Format tanggal
+        DAY_NAME=$(date -d "$DATE_ISO" +"%a" 2>/dev/null || date -j -f "%Y-%m-%d" "$DATE_ISO" +"%a" 2>/dev/null)
+        
+        # Set icon
+        setIconSimple $WEATHER_CODE
+        
+        # Get description
+        DESCRIPTION=$(getWeatherDescription $WEATHER_CODE)
+        
+        # Output JSON line
+        echo "{\"day\":\"$DAY_NAME\",\"icon\":\"$ICON\",\"desc\":\"$DESCRIPTION\",\"max\":\"$TEMP_MAX\",\"min\":\"$TEMP_MIN\",\"rain\":\"$PRECIPITATION\",\"wind\":\"$WIND_MAX\"}"
+    done
 }
 
 # Weather code description mapping
@@ -373,7 +523,30 @@ function getWeatherDescription {
     esac
 }
 
-getData $1
+# Check mode dari parameter
+MODE="current"  # default mode
+DEBUG_MODE=""
+
+# Parse parameters
+for arg in "$@"; do
+    case $arg in
+        -d)
+            DEBUG_MODE="-d"
+            ;;
+        current)
+            MODE="current"
+            ;;
+        forecast)
+            MODE="forecast"
+            ;;
+        both)
+            MODE="both"
+            ;;
+    esac
+done
+
+# Ambil data cuaca saat ini (FUNGSI ASLI)
+getData $DEBUG_MODE
 
 if [ $ERROR -eq 0 ]; then
     # Parse current weather dari Open-Meteo
@@ -398,7 +571,24 @@ if [ $ERROR -eq 0 ]; then
     
     WIND=""
     setIcons $WID
-    outputCompact
+    
+    # Output berdasarkan mode
+    if [ "$MODE" = "current" ]; then
+        outputCompact
+    elif [ "$MODE" = "forecast" ]; then
+        # Hanya tampilkan forecast
+        getForecastData $DEBUG_MODE
+        if [ $ERROR -eq 0 ]; then
+            outputForecast
+        fi
+    elif [ "$MODE" = "both" ]; then
+        # Tampilkan keduanya
+        outputCompact
+        getForecastData $DEBUG_MODE
+        if [ $ERROR -eq 0 ]; then
+            outputForecast
+        fi
+    fi
 else
     echo " "
 fi

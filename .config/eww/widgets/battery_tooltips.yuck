@@ -1,0 +1,26 @@
+;;; WIFI TOOLTIPS WIDGET
+
+(defpoll battery_info :interval "10s"
+  "~/.config/eww/scripts/get_battery_info.sh")
+
+(defvar show_battery_tooltip false)
+
+(defwidget battery_tooltips []
+  (box :orientation "v"
+       :space-evenly true 
+       :spacing 5
+       :class "battery-tooltip-container"
+    (label :text "Model: ${battery_info.battery_name}")
+    (label :text "Mode: ${battery_info.profile}"))
+)
+
+(defwindow battery-tooltip-window
+  :stacking "overlay"
+  :focusable false
+  :exclusive false
+  :geometry (geometry 
+    :x "-140px"
+    :y "45px"
+    :anchor "top right")
+  (battery_tooltips))
+

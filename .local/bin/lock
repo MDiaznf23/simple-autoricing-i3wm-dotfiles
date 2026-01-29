@@ -1,11 +1,11 @@
 #!/bin/bash
-source ~/.cache/wal/colors.sh
+source ~/.cache/m3-colors/colors.sh
 # Cache wallpaper path
-WALLPAPER=~/.config/wpg/.current-rofi.jpg
+WALLPAPER=~/.config/m3-colors/current-rofi.jpg
 LOCK_IMG="/tmp/lockscreen.png"
 
 # Darken dan blur wallpaper (adjust -50 untuk lebih/kurang gelap)
-convert "$WALLPAPER" -brightness-contrast -20x0 -blur 0x5 "$LOCK_IMG"
+magick "$WALLPAPER" -brightness-contrast -20x0 -blur 0x5 "$LOCK_IMG"
 
 # Lock dengan minimal processing
 i3lock \
@@ -26,8 +26,8 @@ i3lock \
   --ringver-color="${color5}ff" \
   --insidewrong-color="${color1}33" \
   --ringwrong-color="${color1}ff" \
-  --time-color="${color7}ff" \
-  --date-color="${color6}ff" \
+  --time-color="${on_surface}ff" \
+  --date-color="${on_surface_variant}ff" \
   --verif-color="${color7}ff" \
   --wrong-color="${color1}ff" \
   --nofork

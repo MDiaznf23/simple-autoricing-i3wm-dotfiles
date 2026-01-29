@@ -58,7 +58,7 @@ mainbox {
 inputbar {
     enabled:                     true;
     spacing:                     0px;
-    padding:                     100px 80px;
+    padding:                     70px 80px;
     background-color:            transparent;
     background-image:            url("~/.config/m3-colors/current-rofi.jpg", width);
     children:                    [ "textbox-prompt-colon", "dummy","prompt"];

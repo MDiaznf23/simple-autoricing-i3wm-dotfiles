@@ -1,38 +1,42 @@
 #!/bin/bash
 # Autostart script for i3
-# Set wallpaper
+
+# 1. System Settings 
+# Mengatur layout keyboard setiap restart memastikan setting tetap aktif
+setxkbmap -layout "us,ru" -option "grp:win_space_toggle" &
+
+# 2. Wallpaper
 ~/.fehbg &
 
+# 3. Compositor 
 # Kill all existing compositors first
 killall -q picom compton xcompmgr
 while pgrep -x picom >/dev/null || pgrep -x compton >/dev/null; do
     sleep 0.1
 done
 
-# Start compositor
 if command -v picom &> /dev/null; then
     picom &
 elif command -v compton &> /dev/null; then
     compton &
 fi
 
-# Start xsettingsd
+# 4. Settings Daemon
 pgrep -x xsettingsd > /dev/null || xsettingsd &
 
-# Start eww dengan cara yang BENAR
+# 5. Widgets (Eww)
 killall -q eww
 eww daemon &
 
-# Tunggu sampai daemon benar-benar ready dengan eww ping
 while ! eww ping &>/dev/null; do
     sleep 0.1
 done
 
-# Sekarang daemon sudah ready, buka bar
 eww open bar &
 
-# Kill existing fullscreen monitor
-pkill -f fullscreen-monitor
+pgrep -x dunst > /dev/null || dunst &
 
-# Start fullscreen monitor (tanpa handle eww daemon lagi)
+# 6. Monitor Scripts
+pkill -f fullscreen-monitor
 ~/.config/eww/scripts/fullscreen-monitor.sh &
+

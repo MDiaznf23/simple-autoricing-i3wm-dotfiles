@@ -39,10 +39,10 @@ mkdir -p $BACKUP_DIR
 # Install system packages
 echo "Installing system packages..."
 sudo pacman -S --needed --noconfirm \
-    i3-wm i3status i3lock alacritty pcmanfm rofi picom feh scrot xclip xdotool \
+    i3-wm i3status alacritty pcmanfm rofi picom feh scrot xclip xdotool \
     brightnessctl firefox playerctl lm_sensors imagemagick xsettingsd \
-    python python-pip python-pipx fish redshift \
-    jq bc dunst rsync fastfetch pamixer python-i3ipc qt5ct cava 
+    python python-pip python-pipx fish redshift inotify-tools\
+    jq bc dunst rsync fastfetch pamixer python-i3ipc qt5ct cava tex-gyre-fonts 
 
 # Install fonts
 echo "Installing fonts..."
@@ -50,6 +50,11 @@ sudo pacman -S --needed --noconfirm \
     noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra \
     ttf-jetbrains-mono ttf-fira-code ttf-dejavu \
     ttf-liberation ttf-font-awesome
+
+if pacman -Qi i3lock &> /dev/null; then
+    echo "Removing i3lock (will be replaced by i3lock-color)..."
+    sudo pacman -Rdd --noconfirm i3lock
+fi
 
 # Install AUR packages
 echo "Installing AUR packages..."
@@ -60,7 +65,9 @@ $AUR_HELPER -S --needed --noconfirm \
     ttf-iosevka-nerd \
     ttf-twemoji \
     ueberzugpp \
-    qt6ct-kde
+    qt6ct-kde \
+    i3lock-color \
+    m3wal
 
 # Install custom fonts if available
 if [ -d "fonts" ]; then
@@ -75,13 +82,7 @@ fi
 # Set fish as default shell
 echo "Setting fish as default shell..."
 sudo chsh -s $(which fish) $USER
-
-# Install m3wal via pipx
-echo "Installing m3wal..."
-pipx ensurepath
-pipx install m3wal
 export PATH="$HOME/.local/bin:$PATH"
-success "m3wal installed"
 
 # Create necessary directories
 echo "Creating directories..."
@@ -137,7 +138,7 @@ fi
 
 # Make scripts executable
 echo "Setting permissions..."
-find ~/.config -type f -name "*.sh" -exec chmod +x {} \; 2>/dev/null
+find ~/.config -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod +x {} \; 2>/dev/null
 find ~/.config/Scripts -type f -name "*.py" -exec chmod +x {} \; 2>/dev/null
 chmod +x ~/.local/bin/* 2>/dev/null || true
 

@@ -1,2 +1,17 @@
 #!/bin/bash
-printf "[general]\nframerate=30\nbars=8\n[output]\nmethod=raw\nraw_target=/dev/stdout\ndata_format=ascii\nascii_max_range=7\n" | cava -p /dev/stdin | sed -u 's/;//g;s/0/▁/g;s/1/▂/g;s/2/▃/g;s/3/▄/g;s/4/▅/g;s/5/▆/g;s/6/▇/g;s/7/█/g;'
+
+while true; do
+    if pactl list sink-inputs | grep -q "Corked: no"; then
+        echo "▂▃▄▅▄▃▂▁"
+        sleep 0.4
+        echo "▃▄▅▆▅▄▃▂"
+        sleep 0.4
+        echo "▄▅▆▇▆▅▄▃"
+        sleep 0.4
+        echo "▃▄▅▆▅▄▃▂"
+        sleep 0.4
+    else
+        echo "▁▁▁▁▁▁▁▁"
+        sleep 1
+    fi
+done

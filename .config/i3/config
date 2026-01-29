@@ -24,9 +24,11 @@ smart_borders no_gaps
 
 # FLOATING APPLICATIONS
 for_window [class="Blueman-manager"] floating enable
-for_window [class="Viewnior"] floating enable, sticky enable, resize set 960 540, move position center
+for_window [class="gwenview"] floating enable, sticky enable, resize set 960 540, move position center
 for_window [class="mpv"] floating enable, resize set 1090 615, move position center
 for_window [class="Engrampa"] floating enable, resize set 890 500, move position center
+for_window [class="Xdg-desktop-portal-gtk"] floating enable, resize set 890 500, move position center
+for_window [class="com-abdownloadmanager-desktop-AppKt"] floating enable, move position center
 for_window [class="copyq"] floating enable, resize set 550 410, move position center
 for_window [class="Audacious"] floating enable, resize set 550 410, move position center
 set $mod Mod4
@@ -67,13 +69,12 @@ bindsym Ctrl+Mod4+Left exec --no-startup-id ~/.config/Scripts/ws_cycle.py prev
 bindsym $mod+l exec --no-startup-id lock
 
 # Pulse Audio controls
-bindsym XF86AudioRaiseVolume exec --no-startup-id pamixer -i 1 --set-limit 100 && ~/.config/eww/scripts/volume-popup.sh
-bindsym XF86AudioLowerVolume exec --no-startup-id pamixer -d 1 && ~/.config/eww/scripts/volume-popup.sh
+bindsym $mod+Ctrl+Up exec --no-startup-id pamixer -i 1 --set-limit 100 && ~/.config/eww/scripts/volume-popup.sh
+bindsym $mod+Ctrl+Down exec --no-startup-id pamixer -d 1 && ~/.config/eww/scripts/volume-popup.sh
 bindsym XF86AudioMute exec --no-startup-id pamixer -t && ~/.config/eww/scripts/volume-popup.sh
 
-# Sreen brightness controls
-bindsym $mod+Ctrl+Up exec --no-startup-id brightnessctl set +10% && ~/.config/eww/scripts/brightness-popup.sh
-bindsym $mod+Ctrl+Down exec --no-startup-id brightnessctl set 10%- && ~/.config/eww/scripts/brightness-popup.sh
+bindsym XF86MonBrightnessUp exec --no-startup-id ~/.config/i3/brightness.sh up && ~/.config/eww/scripts/brightness-popup.sh
+bindsym XF86MonBrightnessDown exec --no-startup-id ~/.config/i3/brightness.sh down && ~/.config/eww/scripts/brightness-popup.sh
 
 # is used in the bar {} block below.
 font terminess:monospace 9
@@ -101,17 +102,20 @@ bindsym $mod+Return exec alacritty
 # start file manager
 bindsym $mod+Shift+f exec pcmanfm
 
+# Browser binding
+bindsym $mod+b exec firefox
+
 # start powermenu
 bindsym $mod+Shift+e exec ~/.config/rofi/powermenu/type-5/powermenu.sh
 
 # start wpg
 bindsym $mod+Shift+b exec ~/.config/rofi/wpg-select.sh
 
-# Multi-screen screenshots with scrot
-bindsym --release Print exec scrot 'screenshot_%Y%m%d_%H%M%S.png' -e 'mkdir -p ~/Pictures/Screenshots && mv $f ~/Pictures/Screenshots && xclip -selection clipboard -t image/png -i ~/Pictures/Screenshots/`ls -1 -t ~/Pictures/Screenshots | head -1`'
+# Multi-screen screenshots 
+bindsym --release Print exec spectacle -fbo ~/Pictures/Screenshots/screenshot_$(date +%Y%m%d_%H%M%S).png
 
 # OSX-like area selection screenshots
-bindsym --release $mod+Shift+s exec scrot -s 'screenshot_%Y%m%d_%H%M%S.png' -e 'mkdir -p ~/Pictures/Screenshots && mv $f ~/Pictures/Screenshots && xclip -selection clipboard -t image/png -i ~/Pictures/Screenshots/`ls -1 -t ~/Pictures/Screenshots | head -1`' 
+bindsym --release $mod+Shift+s exec spectacle -rbo ~/Pictures/Screenshots/screenshot_$(date +%Y%m%d_%H%M%S).png
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -210,18 +214,23 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-# Initial commands that execute on i3 start.
-exec_always --no-startup-id picom
-exec_always --no-startup-id setxkbmap -layout "us,ru" -option "grp:win_space_toggle"
-
 # Set screen timeout
 exec --no-startup-id xset s 600 600
 
 # Auto lock dengan xss-lock
 exec --no-startup-id xss-lock -- lock
 
-# Browser binding
-bindsym $mod+b exec firefox
+# Start KWallet daemon
+exec --no-startup-id /usr/lib/pam_kwallet_init
+exec --no-startup-id kwalletd6
+
+# Set volume default saat startup 
+exec --no-startup-id sleep 2 && pactl set-sink-volume @DEFAULT_SINK@ 70%
+
+# Jalankan semua aplikasi autostart
+exec --no-startup-id dex --autostart --environment i3 
+
+exec --no-startup-id ~/.config/i3/audio-notify.sh 
 
 # Autostart
 exec_always --no-startup-id ~/.config/i3/autostart.sh

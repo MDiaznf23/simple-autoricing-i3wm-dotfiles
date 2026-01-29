@@ -15,11 +15,11 @@
 /* --- Kontainer Utama --- */
 .control-center-container {
   background-color: transparent;
-  background-image: linear-gradient(135deg, 
-    $secondary-fixed,  
-    $surface,
-    $primary-fixed-dim,
-  );
+  background-image: linear-gradient(135deg,
+      $secondary-fixed,
+      $surface,
+      $primary-fixed-dim,
+    );
   border-radius: 10px;
   padding: 15px;
   min-width: 240px;
@@ -69,18 +69,18 @@
 /* Styling saat aktif */
 .toggle-icon.bt-active {
   background-color: $primary-fixed;
-  color: $on-primary-fixed;
+  color: $on-surface;
 }
 
 /* Styling saat aktif */
 .toggle-icon.bt-active:hover {
   background-color: $primary-fixed-dim;
-  color: $on-primary-fixed;
+  color: $on-surface;
 }
 
 .toggle-icon.wifi-active {
   background-color: $secondary-fixed;
-  color: $on-secondary-container;
+  color: $on-surface;
 }
 
 .toggle-icon.wifi-active:hover {
@@ -142,6 +142,72 @@
   margin: -4px 0;
 }
 
+/*======================================*/
+/* Audio Menu Styling                   */
+/*======================================*/
+
+.audio-toggle-container {
+  min-width: 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  margin-left: 5px;
+  padding: 0px 5px 0px 10px;
+  background-color: $secondary-container;
+}
+
+.audio-toggle-container:hover {
+  background-color: $on-secondary-fixed;
+}
+
+.audio-menu-container {
+  border-radius: 12px;
+  min-width: 100px;
+}
+
+.back-btn {
+  background: transparent;
+  border-radius: 6px;
+  color: $on-surface;
+}
+
+.back-btn:hover {
+  background: $surface-container-high;
+}
+
+.section-title-header {
+  font-size: 16px;
+  font-weight: bold;
+  color: $on-surface;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: $on-surface;
+}
+
+.audio-item-container {
+  border-radius: 10px;
+  padding: 5px 5px 5px 5px;
+  background: $surface-container;
+  border: 1px solid transparent;
+}
+
+.audio-text {
+  font-size: 12px;
+}
+
+.indicator-audio {
+  border-radius: 100%;
+  background: $on-primary;
+  padding: 2px 8px;
+}
+
+.indicator-audio.active {
+  background: $primary;
+}
+
+
 /* --- 4. Notifications --- */
 .notification-center-container {
   padding: 0px;
@@ -172,7 +238,7 @@
 
 .notification-list-scroll {
   padding: 0px 10px 0px 0px;
-}  
+}
 
 /* Kotak untuk setiap item notifikasi */
 .notification-item {
@@ -189,6 +255,7 @@
   border-radius: 8px;
   background-color: $surface;
 }
+
 .notification-app-icon {
   border-radius: 8px;
 }
@@ -199,6 +266,7 @@
   font-weight: bold;
   color: $on-surface;
 }
+
 .notification-summary {
   font-size: 12px;
   color: $on-surface-variant;
@@ -228,6 +296,12 @@
   border-radius: 10px;
 }
 
+.wifi-panel-container {
+  padding: 0px;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
 .wifi-current-icon {
   font-size: 16px;
 }
@@ -239,15 +313,17 @@
 }
 
 /* Scan/Refresh Button */
-.wifi-scan-btn {
-  padding: 8px;
-  margin-top: 10px;
-  margin-bottom: 3px;
+.wifi-scan-container {
   border-radius: 8px;
-  font-size: 12px;
-  color: $on-surface-variant;
+}
+
+.wifi-scan-btn {
+  border-radius: 8px;
+  min-width: 30px;
+  min-height: 20px;
   transition: background-color 0.2s ease;
 }
+
 .wifi-scan-btn:hover {
   background-color: $surface-dim;
   color: $on-surface;
@@ -265,6 +341,7 @@
   margin: 2px 0;
   transition: all 0.2s ease;
 }
+
 .wifi-network-item:hover {
   background-color: $surface-dim;
 }
@@ -306,23 +383,29 @@
 
 /* WiFi Power Toggle Button */
 .wifi-power-toggle {
-  border-radius: 8px;
-  padding: 10px;
+  background-color: $on-primary;
+  border-radius: 40px;
+  padding: 1px 3px;
+  min-width: 35px;
+  min-height: 20px;
   font-size: 12px;
-  color: $on-surface-variant;
+  margin-right: 5px;
   transition: background-color 0.2s ease;
 }
+
 .wifi-power-toggle:hover {
   background-color: $surface-dim;
   color: $on-surface;
 }
 
 .wifi-loading {
-    animation: spin 1s linear infinite;
+  animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-    to { -gtk-icon-transform: rotate(1turn); }
+  to {
+    -gtk-icon-transform: rotate(1turn);
+  }
 }
 
 /*-----------------------------------*/
@@ -334,16 +417,23 @@
   border-radius: 10px;
 }
 
-/* Scan/Refresh Button */
-.bt-scan-btn {
-  padding: 8px;
+.bt-panel-container {
+  padding: 0px;
   margin-top: 5px;
-  margin-bottom: 3px;
-  border-radius: 8px;
-  font-size: 12px;
-  color: $on-surface-variant;
-  transition: background-color 0.2s ease;
+  margin-bottom: 5px;
 }
+
+/* Scan/Refresh Button */
+.bt-scan-container {
+  border-radius: 8px;
+}
+
+.bt-scan-btn {
+  min-height: 20px;
+  min-width: 30px;
+  border-radius: 8px;
+}
+
 .bt-scan-btn:hover {
   background-color: $surface-dim;
   color: $on-surface;
@@ -357,11 +447,13 @@
 /* Individual Bluetooth Device Item */
 .bt-device-item {
   background-color: $surface-container;
+  min-width: 200px;
   border-radius: 8px;
-  padding: 10px 12px;
+  padding: 10px 10px;
   margin: 2px 0;
   transition: all 0.2s ease;
 }
+
 .bt-device-item:hover {
   background-color: $surface-container-high;
 }
@@ -395,9 +487,11 @@
   font-size: 14px;
   transition: background-color 0.2s ease;
 }
+
 .bt-action-btn:hover {
   background-color: $tertiary-fixed-dim;
 }
+
 .bt-action-btn.bt-unpair:hover {
   background-color: $inverse-primary;
   color: $on-error-container;
@@ -412,12 +506,31 @@
 
 /* Bluetooth Power Toggle Button */
 .bt-power-toggle {
-  border-radius: 8px;
-  padding: 10px;
+  background-color: $on-primary;
+  border-radius: 40px;
+  padding: 1px 3px;
+  min-width: 35px;
+  min-height: 20px;
   font-size: 12px;
+  margin-right: 5px;
   color: $on-surface-variant;
   transition: background-color 0.2s ease;
 }
+
+.circle-indicator-on {
+  background-color: $on-surface-variant;
+  border-radius: 100%;
+  min-height: 16px;
+  min-width: 16px;
+}
+
+.circle-indicator-off {
+  background-color: $on-surface-variant;
+  border-radius: 100%;
+  min-height: 16px;
+  min-width: 16px;
+}
+
 .bt-power-toggle:hover {
   background-color: $surface-dim;
   color: $on-surface;

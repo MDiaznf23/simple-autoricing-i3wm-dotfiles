@@ -2,6 +2,7 @@
 ; SYSTEM MONITOR WITH TABS - UPDATED VERSION
 ;-------------------------------------------------------
 (defvar performance_monitor_visible false)
+
 ;; Variable active tab
 (defvar active_tab "dashboard")
 
@@ -31,6 +32,11 @@
 (defpoll WEATHER_ICON :interval "1800s" "~/.config/eww/scripts/weather-wrapper.sh icon")  
 (defpoll WEATHER_DESC :interval "1800s" "~/.config/eww/scripts/weather-wrapper.sh desc")
 (defpoll WEATHER_CITY :interval "86400s" "~/.config/eww/scripts/weather-wrapper.sh city")
+(defpoll WEATHER_TEMP :interval "86400s" "~/.config/eww/scripts/weather_wrapper_forecast.sh day0 max")
+(defpoll WEATHER_LAT :interval "86400s" "~/.config/eww/scripts/weather-wrapper.sh lat")
+(defpoll WEATHER_LONG :interval "86400s" "~/.config/eww/scripts/weather-wrapper.sh long")
+(defpoll weather_forecast_data :interval "1h"
+  "~/.config/eww/scripts/weather_wrapper_forecast.sh json")
 
 ;; ===== CLOCK POLLING =====
 (defpoll times 
@@ -287,6 +293,7 @@
            :halign "center"
         (label :class "media-widget-name"
                :text {media_info.player}
+               :limit-width 10
                :visible {media_info.player != ""}
                :xalign 0.5)
         (label :class "media-widget-title"
@@ -500,7 +507,7 @@
     ;; Kita mapping logic: dashboard=0, performance=1, information=2
     (box :class "content-area"
       (stack :selected {active_tab == "dashboard" ? 0 : active_tab == "performance" ? 1 : 2}
-             :transition "slideleft" ;; Animasi gratis! (bisa crossfade, slideright, dll)
+             :transition "crossfade" ;; Animasi gratis! (bisa crossfade, slideright, dll)
         
         ;; Index 0: Dashboard Content
         (dashboard_content)
@@ -526,9 +533,9 @@
                       :height "100px"
                       :anchor "top center")
   :stacking "overlay"
-  :exclusive true
+  :exclusive false
   :windowtype "dialog"
-  :wm-ignore true
+  :wm-ignore false
   :focusable false
   :resizable false
   (main_widget))

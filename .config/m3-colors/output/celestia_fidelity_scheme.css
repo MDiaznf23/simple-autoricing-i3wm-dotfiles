@@ -1,0 +1,71 @@
+/* Material 3 Color Scheme - fidelity */
+    /* Generated from: celestia */
+    /* Mode: light */
+
+    :root {
+    /* Source Color */
+    --source-color: #c2baaa;
+    
+    /* Primary Colors */
+    --primary: #645e51;
+    --on-primary: #ffffff;
+    --primary-container: #c2baaa;
+    --on-primary-container: #4f4a3e;
+    --primary-fixed: #eae2d1;
+    --primary-fixed-dim: #cec6b5;
+    --on-primary-fixed: #1f1b11;
+    --on-primary-fixed-variant: #4b463a;
+    
+    /* Secondary Colors */
+    --secondary: #625e57;
+    --on-secondary: #ffffff;
+    --secondary-container: #e8e2d9;
+    --on-secondary-container: #68645d;
+    --secondary-fixed: #e8e2d9;
+    --secondary-fixed-dim: #cbc6be;
+    --on-secondary-fixed: #1d1b16;
+    --on-secondary-fixed-variant: #494640;
+    
+    /* Tertiary Colors */
+    --tertiary: #586063;
+    --on-tertiary: #ffffff;
+    --tertiary-container: #b4bcc0;
+    --on-tertiary-container: #444c4f;
+    --tertiary-fixed: #dce4e8;
+    --tertiary-fixed-dim: #c0c8cc;
+    --on-tertiary-fixed: #151d20;
+    --on-tertiary-fixed-variant: #40484b;
+    
+    /* Error Colors */
+    --error: #ba1a1a;
+    --on-error: #ffffff;
+    --error-container: #ffdad6;
+    --on-error-container: #93000a;
+    
+    /* Surface Colors */
+    --surface: #fdf8f6;
+    --on-surface: #1c1b1a;
+    --surface-variant: #e9e2d6;
+    --on-surface-variant: #4a463e;
+    --surface-dim: #ddd9d7;
+    --surface-bright: #fdf8f6;
+    --surface-container-lowest: #ffffff;
+    --surface-container-low: #f7f3f0;
+    --surface-container: #f2edea;
+    --surface-container-high: #ece7e5;
+    --surface-container-highest: #e6e2df;
+    
+    /* Outline Colors */
+    --outline: #7b766d;
+    --outline-variant: #ccc6bb;
+    
+    /* Inverse Colors */
+    --inverse-surface: #31302f;
+    --inverse-on-surface: #f4f0ed;
+    --inverse-primary: #cec6b5;
+    
+    /* Shadow & Scrim */
+    --shadow: #000000;
+    --scrim: #000000;
+    }
+    

@@ -14,7 +14,6 @@
 
 ## Screenshots
 
-
 **Clean Desktop**
 
 ![Clean Desktop](./Screenshot/clean.png)
@@ -26,6 +25,14 @@
 **Minimalist Desktop**
 
 ![Rofi Launcher](./Screenshot/minimal.png)
+
+**Daily Desktop**
+
+![Daily Desktop](./Screenshot/aurora.png)
+
+**Colorful Desktop**
+
+![Colorful Desktop](./Screenshot/aurora.png)
 
 ---
 
@@ -40,16 +47,16 @@
 
 ## Stack
 
-| Component | App | 
-|:---|:---|
-| WM | i3-wm | 
-| Bar | Eww |
-| Theming | m3wal | 
-| Compositor | Picom | 
-| Terminal | Alacritty |
-| Shell | Fish |
-| Launcher | Rofi |
-| Notifications | Dunst |
+| Component     | App       |
+| :------------ | :-------- |
+| WM            | i3-wm     |
+| Bar           | Eww       |
+| Theming       | m3wal     |
+| Compositor    | Picom     |
+| Terminal      | Alacritty |
+| Shell         | Fish      |
+| Launcher      | Rofi      |
+| Notifications | Dunst     |
 
 ---
 
@@ -63,6 +70,7 @@ chmod +x install.sh
 ```
 
 **Script will:**
+
 - Install all packages (repos + AUR)
 - Backup existing configs to `~/dotfiles_backup_YYYYMMDD_HHMMSS`
 - Install yay if needed
@@ -79,25 +87,27 @@ chmod +x install.sh
 
 ### Keybindings
 
-| Key | Action |
-|:---|:---|
-| `Super + Enter` | Terminal | 
-| `Super + Shift + q` | Close window | 
-| `Super + h/j` | Focus | 
-| `Super + 1-9` | Workspace | 
-| `Super + d` | Launcher |
-| `Super + Shift + r` | Reload i3 |
-| `Super + Shift + h/j/k/l` | Move window |
+| Key                 | Action           |
+| :------------------ | :--------------- |
+| `Super + Enter`     | Terminal         |
+| `Super + Shift + q` | Close window     |
+| `Super + h/j`       | Focus            |
+| `Super + 1-9`       | Workspace        |
+| `Super + d`         | Launcher         |
+| `Super + Shift + r` | Reload i3        |
+| `Super + Shift + h` | Move window      |
 | `Super + Shift + b` | Change wallpaper |
 
 ### Theming
 
 **Change wallpaper:**
+
 ```bash
 m3wal /path/to/wallpaper.jpg --full
 ```
 
 **With options:**
+
 ```bash
 m3wal wallpaper.jpg --full --mode dark --variant VIBRANT
 m3wal wallpaper.jpg --full --mode light --variant EXPRESSIVE
@@ -113,6 +123,7 @@ m3wal wallpaper.jpg --full  # auto-detect (recommended)
 ## Configuration
 
 ### m3wal Config
+
 `~/.config/m3-colors/m3-colors.conf`
 
 ```ini
@@ -128,6 +139,7 @@ generate_palette_preview = true
 ```
 
 ### Custom Templates
+
 Create in `~/.config/m3-colors/templates/`:
 
 ```
@@ -142,12 +154,13 @@ Deploy via `~/.config/m3-colors/deploy.json`:
 ```json
 {
   "deployments": [
-    {"source": "myapp.conf", "destination": "~/.config/myapp/colors.conf"}
+    { "source": "myapp.conf", "destination": "~/.config/myapp/colors.conf" }
   ]
 }
 ```
 
 ### Hook Scripts
+
 Create in `~/.config/m3-colors/hooks/`:
 
 ```bash
@@ -158,6 +171,7 @@ i3-msg reload
 ```
 
 Enable:
+
 ```ini
 [Hook.Scripts]
 enabled = true
@@ -189,21 +203,25 @@ scripts = reload-apps.sh
 ## Troubleshooting
 
 **m3wal not found:**
+
 ```bash
 export PATH="$HOME/.local/bin:$PATH"
 ```
 
 **Fonts missing:**
+
 ```bash
 fc-cache -fv
 ```
 
 **Transparency broken:**
+
 ```bash
 picom --config ~/.config/picom/picom.conf &
 ```
 
 **Manual wallpaper:**
+
 ```bash
 feh --bg-scale /path/to/wallpaper.jpg
 ```
@@ -213,6 +231,7 @@ feh --bg-scale /path/to/wallpaper.jpg
 ## Advanced
 
 ### Python API
+
 ```python
 from m3wal import M3WAL
 
@@ -224,6 +243,7 @@ m3.deploy_configs()
 ```
 
 ### Random Wallpaper
+
 ```bash
 m3wal $(find ~/Pictures/Wallpapers -type f | shuf -n1) --full
 ```

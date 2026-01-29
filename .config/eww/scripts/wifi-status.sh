@@ -1,10 +1,8 @@
 #!/bin/bash
 # ~/.config/eww/scripts/system-status.sh
-
 # === WiFi Status ===
 wifi_interface="wlan0"
 wifi_state=$(cat /sys/class/net/$wifi_interface/operstate 2>/dev/null)
-
 if [ "$wifi_state" = "up" ]; then
     # Get signal strength
     wifi_signal=$(nmcli -t -f SIGNAL dev wifi | head -n1 2>/dev/null)
@@ -62,16 +60,75 @@ else
     wifi_display="󰤮 Disconnected"
 fi
 
+# === Battery ===
+bat_capacity=$(cat /sys/class/power_supply/BAT1/capacity 2>/dev/null)
+bat_status=$(cat /sys/class/power_supply/BAT1/status 2>/dev/null)
+ac_online=$(cat /sys/class/power_supply/ADP1/online 2>/dev/null)
+
+# Pastikan bat_capacity tidak kosong
+if [ -z "$bat_capacity" ] || ! [[ "$bat_capacity" =~ ^[0-9]+$ ]]; then
+    bat_capacity=0
+fi
+
+# Tentukan icon berdasarkan status dan kapasitas
+if [ "$bat_status" = "Charging" ] || [ "$ac_online" = "1" ]; then
+    # Sedang charging
+    if [ "$bat_capacity" -le 10 ]; then
+        bat_icon="󰢟"
+    elif [ "$bat_capacity" -le 20 ]; then
+        bat_icon="󰢜"
+    elif [ "$bat_capacity" -le 30 ]; then
+        bat_icon="󰂆"
+    elif [ "$bat_capacity" -le 40 ]; then
+        bat_icon="󰂇"
+    elif [ "$bat_capacity" -le 50 ]; then
+        bat_icon="󰂈"
+    elif [ "$bat_capacity" -le 60 ]; then
+        bat_icon="󰢝"
+    elif [ "$bat_capacity" -le 70 ]; then
+        bat_icon="󰂉"
+    elif [ "$bat_capacity" -le 80 ]; then
+        bat_icon="󰢞"
+    elif [ "$bat_capacity" -le 90 ]; then
+        bat_icon="󰂊"
+    else
+        bat_icon="󰂅"
+    fi
+else
+    # Sedang discharging
+    if [ "$bat_capacity" -le 10 ]; then
+        bat_icon="󰂎"
+    elif [ "$bat_capacity" -le 20 ]; then
+        bat_icon="󰁺"
+    elif [ "$bat_capacity" -le 30 ]; then
+        bat_icon="󰁻"
+    elif [ "$bat_capacity" -le 40 ]; then
+        bat_icon="󰁼"
+    elif [ "$bat_capacity" -le 50 ]; then
+        bat_icon="󰁽"
+    elif [ "$bat_capacity" -le 60 ]; then
+        bat_icon="󰁾"
+    elif [ "$bat_capacity" -le 70 ]; then
+        bat_icon="󰁿"
+    elif [ "$bat_capacity" -le 80 ]; then
+        bat_icon="󰂀"
+    elif [ "$bat_capacity" -le 90 ]; then
+        bat_icon="󰂁"
+    else
+        bat_icon="󰂂"
+    fi
+fi
+
+bat_display="$bat_icon ${bat_capacity}%"
+
 # === Brightness ===
 brightness=$(cat /sys/class/backlight/acpi_video0/brightness 2>/dev/null)
 max_brightness=$(cat /sys/class/backlight/acpi_video0/max_brightness 2>/dev/null)
-
 if [ -n "$brightness" ] && [ -n "$max_brightness" ] && [ "$max_brightness" -gt 0 ]; then
     bright_pct=$((brightness * 100 / max_brightness))
 else
     bright_pct=0
 fi
-
 if [ "$bright_pct" -le 25 ]; then
     bright_icon="󰃞 "
 elif [ "$bright_pct" -le 50 ]; then
@@ -85,12 +142,10 @@ fi
 # === Volume ===
 muted=$(pactl get-sink-mute @DEFAULT_SINK@ 2>/dev/null | grep -o 'yes')
 vol_pct=$(pactl get-sink-volume @DEFAULT_SINK@ 2>/dev/null | grep -Po '\d+(?=%)' | head -1)
-
 # Pastikan vol_pct tidak kosong
 if [ -z "$vol_pct" ] || ! [[ "$vol_pct" =~ ^[0-9]+$ ]]; then
     vol_pct=0
 fi
-
 if [ "$muted" = "yes" ]; then
     vol_icon="󰖁"
 else
@@ -107,6 +162,7 @@ fi
 cat << EOF
 {
   "wifi": "$wifi_display",
+  "battery": "$bat_display",
   "brightness": "$bright_icon",
   "volume": "$vol_icon"
 }
