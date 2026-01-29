@@ -1,6 +1,3 @@
-(deflisten volume :initial "50"
-  "~/.config/eww/scripts/get_volume_listen.sh")
-
 (defpoll volume-muted :interval "100ms"
   "pamixer --get-mute")
 
@@ -17,12 +14,12 @@
       (scale :class "volume-slider-popup"
              :orientation "v"    
              :flipped true       
-             :value volume
+             :value volume_level
              :min 0
              :max 100
              :onchange "pamixer --set-volume {} && ~/.config/eww/scripts/volume-popup.sh")
       (label :class "volume-percent-popup" 
-             :text "${volume}%"))))
+             :text "${volume_level}%"))))
 
 (defwindow volume-popup
   :monitor 0

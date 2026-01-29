@@ -5,12 +5,31 @@ get_vol() {
     pactl get-sink-volume @DEFAULT_SINK@ 2>/dev/null | grep 'Volume:' | head -n1 | awk '{print $5}' | tr -d '%'
 }
 
-# 1. Print volume saat script pertama jalan (agar slider tidak 0 di awal)
-get_vol
+# Simpan volume terakhir
+last_vol=$(get_vol)
+echo "$last_vol"
 
-# 2. Jalan loop listener
-# 'pactl subscribe' akan diam sampai ada event audio.
-# Kita filter hanya event 'change' pada 'sink' (output device).
-pactl subscribe | grep --line-buffered "Event 'change' on sink" | while read -r _; do
-    get_vol
+# Background polling setiap 0.5 detik sebagai safety net
+(
+    while true; do
+        sleep 0.5
+        current=$(get_vol)
+        if [ "$current" != "$last_vol" ]; then
+            echo "$current"
+            last_vol="$current"
+        fi
+    done
+) &
+polling_pid=$!
+
+# Main listener dari pactl subscribe
+pactl subscribe 2>/dev/null | grep --line-buffered "Event 'change' on sink" | while read -r _; do
+    current_vol=$(get_vol)
+    if [ "$current_vol" != "$last_vol" ]; then
+        echo "$current_vol"
+        last_vol="$current_vol"
+    fi
 done
+
+# Cleanup jika listener mati
+kill $polling_pid 2>/dev/null
