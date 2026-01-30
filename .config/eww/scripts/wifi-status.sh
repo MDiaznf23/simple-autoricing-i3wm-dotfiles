@@ -122,8 +122,9 @@ fi
 bat_display="$bat_icon ${bat_capacity}%"
 
 # === Brightness ===
-brightness=$(cat /sys/class/backlight/acpi_video0/brightness 2>/dev/null)
-max_brightness=$(cat /sys/class/backlight/acpi_video0/max_brightness 2>/dev/null)
+brightness=$(brightnessctl get 2>/dev/null)
+max_brightness=$(brightnessctl max 2>/dev/null)
+
 if [ -n "$brightness" ] && [ -n "$max_brightness" ] && [ "$max_brightness" -gt 0 ]; then
     bright_pct=$((brightness * 100 / max_brightness))
 else
