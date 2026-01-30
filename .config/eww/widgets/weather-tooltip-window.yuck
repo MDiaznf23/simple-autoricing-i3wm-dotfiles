@@ -74,6 +74,7 @@
   :stacking "overlay"
   :focusable false
   :exclusive false
+  :windowtype "dialog"
   :geometry (geometry 
     :x "150px"
     :y "45px"

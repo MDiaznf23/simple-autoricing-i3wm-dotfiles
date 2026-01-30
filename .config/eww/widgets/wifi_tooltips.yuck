@@ -12,13 +12,14 @@
        :class "wifi-tooltip-container"
     (label :text {wifi_connected != "" ? "Connected to: ${wifi_connected.ssid}" : "Disconnected"})
     (label :text "Signal Strength: ${wifi_connected.signal}%")
-    (label :text "Security: ${wifi_connected.security} ${wifi_connected.sec_icon}"))
+    (label :text "Security: ${wifi_connected.security}"))
 )
 
 (defwindow wifi-tooltip-window
   :stacking "overlay"
   :focusable false
   :exclusive false
+  :windowtype "dialog"
   :geometry (geometry 
     :x "-200px"
     :y "45px"

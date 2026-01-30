@@ -12,7 +12,7 @@ min=$(( max * MIN_PERCENT / 100 ))
 
 case "$1" in
     up)
-        brightnessctl set +5%
+        brightnessctl set +1%
         ;;
     down)
         current=$(brightnessctl get)
@@ -24,7 +24,7 @@ case "$1" in
         if [ $new -lt $min ]; then
             brightnessctl set $min
         else
-            brightnessctl set 5%-
+            brightnessctl set 1%-
         fi
         ;;
     set)
