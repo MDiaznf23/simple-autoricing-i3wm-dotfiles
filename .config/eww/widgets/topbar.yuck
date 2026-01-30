@@ -7,7 +7,7 @@
   "~/.config/eww/scripts/i3-mode.sh")
 
 ;; Definisi variable untuk window title
-(defpoll active_window :interval "1s"
+(deflisten active_window
   "~/.config/eww/scripts/xwindow-clickable.sh")
 
 ;; Definisi variable untuk WiFi
@@ -66,7 +66,7 @@
                 :onhoverlost "eww update show_weather_tooltip=false && eww close weather-tooltip-window"
         (box :orientation "h" 
              :space-evenly false
-             :spacing 5
+             :spacing 10
           (label :class "weather-bar"
                  :text WEATHER_ICON)
           (label :class "text-weather-bar"
