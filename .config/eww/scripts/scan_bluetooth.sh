@@ -1,17 +1,12 @@
 #!/bin/bash
 
-# Pastikan bluetooth aktif
+# Bluetooth Device List - Cache-Only Version (FAST & BATTERY FRIENDLY)
+
+# Check if bluetooth is powered
 if ! bluetoothctl show | grep -q "Powered: yes"; then
     echo "[]"
     exit 0
 fi
-
-# Scan devices (timeout 3 detik)
-timeout 3 bluetoothctl scan on &>/dev/null &
-SCAN_PID=$!
-sleep 3
-kill $SCAN_PID 2>/dev/null
-bluetoothctl scan off &>/dev/null
 
 # Function untuk cek connected status (cek Device1 OR MediaControl1)
 check_connected() {
@@ -39,29 +34,27 @@ check_connected() {
     fi
 }
 
-# Array untuk menyimpan JSON
+# Array untuk JSON
 devices_json="["
 first=true
 
+# Read devices dari cache (FAST - no scan!)
 while read -r line; do
     mac=$(echo "$line" | awk '{print $2}')
     name=$(echo "$line" | cut -d' ' -f3-)
-
+    
     # Skip jika nama kosong
     [ -z "$name" ] && continue
-
-    # Check connected - GUNAKAN FUNCTION BARU
-    connected=$(check_connected "$mac")
-
-    # Check paired
-    if bluetoothctl info "$mac" 2>/dev/null | grep -q "Paired: yes"; then
-        paired="true"
-    else
-        paired="false"
-    fi
-
-    # Get device type
-    dev_type=$(bluetoothctl info "$mac" 2>/dev/null | grep "Icon:" | awk '{print $2}')
+    
+    # OPTIMASI: Call bluetoothctl info SEKALI saja, simpan hasil
+    info=$(bluetoothctl info "$mac" 2>/dev/null)
+    
+    # Parse semua data dari info yang sudah di-cache
+    connected=$(check_connected "$mac")  
+    paired=$(echo "$info" | grep -q "Paired: yes" && echo "true" || echo "false")
+    dev_type=$(echo "$info" | grep "Icon:" | awk '{print $2}')
+    
+    # Determine type icon (format sama dengan script asli)
     case "$dev_type" in
         *phone*|*mobile*) type_icon="phone";;
         *audio*|*headset*|*headphone*) type_icon="headphone";;
@@ -70,19 +63,19 @@ while read -r line; do
         *mouse*) type_icon="mouse";;
         *) type_icon="device";;
     esac
-
+    
     # Escape name untuk JSON
-    name_escaped=$(echo -n "$name" | sed 's/\\/\\\\/g; s/"/\\"/g; s/\t/\\t/g; s/\n/\\n/g; s/\r/\\r/g')
-
+    name_escaped=$(echo -n "$name" | sed 's/\\/\\\\/g; s/"/\\"/g')
+    
     # Build JSON
     if [ "$first" = false ]; then
         devices_json+=","
     fi
     devices_json+="{\"name\":\"$name_escaped\",\"mac\":\"$mac\",\"connected\":$connected,\"paired\":$paired,\"type\":\"$type_icon\"}"
     first=false
-done < <(bluetoothctl devices 2>/dev/null | head -20)
+    
+done < <(bluetoothctl devices 2>/dev/null)
 
 devices_json+="]"
 
-# Output JSON
 echo "$devices_json"

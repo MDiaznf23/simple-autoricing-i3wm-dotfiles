@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# WiFi Scan Script - Cache-First Version (FAST & BATTERY FRIENDLY)
+
 # Check if WiFi is enabled
 if [ "$(nmcli radio wifi)" != "enabled" ]; then
     echo "[]"
@@ -9,8 +11,8 @@ fi
 # Get current connected network
 CURRENT_SSID=$(nmcli -t -f active,ssid dev wifi | grep '^yes' | cut -d':' -f2)
 
-# Scan and format as JSON
-nmcli -t -f SSID,SIGNAL,SECURITY dev wifi list --rescan yes 2>/dev/null | \
+# Scan without --rescan 
+nmcli -t -f SSID,SIGNAL,SECURITY dev wifi list 2>/dev/null | \
     grep -v '^$' | \
     awk -F: -v current="$CURRENT_SSID" '
     BEGIN { 
@@ -36,7 +38,7 @@ nmcli -t -f SSID,SIGNAL,SECURITY dev wifi list --rescan yes 2>/dev/null | \
             sec_icon = ""
             secured = "false"
         } else {
-            sec_icon = ""
+            sec_icon = ""
             secured = "true"
         }
         

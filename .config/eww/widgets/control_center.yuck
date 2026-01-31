@@ -331,7 +331,7 @@
                      :active_class {bluetooth_status == "yes" ? "bt-active" : ""})
 
       ;; 3. Night Mode (UPDATED)
-      (toggle_widget :icon "🌙"
+      (toggle_widget :icon ""
                      :label {night_mode_status == "on" ? "On" : "Off"}
                      :onclick "~/.config/eww/scripts/toggle_night_mode.sh"
                      :active_class {night_mode_status == "on" ? "night-active" : ""})
