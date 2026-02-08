@@ -40,6 +40,10 @@ https://github.com/user-attachments/assets/682f1f48-9b7e-4324-b358-15c5abfb815f
 
 ![Colorful Desktop](./Screenshot/city.png)
 
+**Wonderful Desktop**
+
+![Wonderful Desktop](./Screenshot/bali.png)
+
 ---
 
 ## Features
