@@ -53,14 +53,21 @@ done &
 SUBSCRIBE_PID=$!
 trap "kill $SUBSCRIBE_PID 2>/dev/null; rm -f $STATE_FILE" EXIT
 
-# Cek enabled/disabled di awal
-dock_enabled=$(load_dock_enabled)
-
 while true; do
-  # Kalau disabled, idle saja sambil tetap watch
-  if [ "$(cat $STATE_FILE)" = "disabled" ] || [ "$(load_dock_enabled)" = "false" ]; then
+  if [ "$(load_dock_enabled)" = "false" ]; then
+    if [ "$dock_visible" = "true" ]; then
+      eww close dock-window
+      dock_visible=false
+      last_near=false
+    fi
+    echo "disabled" > "$STATE_FILE"
     sleep 1
     continue
+  fi
+
+  # Kalau baru saja dari disabled, reset state file
+  if [ "$(cat $STATE_FILE)" = "disabled" ]; then
+    update_window_state
   fi
 
   cursor_y=$(xdotool getmouselocation 2>/dev/null | grep -o 'y:[0-9]*' | cut -d':' -f2)
