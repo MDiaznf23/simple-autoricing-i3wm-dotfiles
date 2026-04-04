@@ -52,6 +52,11 @@ https://github.com/user-attachments/assets/682f1f48-9b7e-4324-b358-15c5abfb815f
 - **Lightweight** - Minimal resources, fast performance
 - **Complete Setup** - i3wm, Eww, Alacritty, Fish, Rofi, all themed
 - **One-Click Install** - Automated with backup
+- **Robust System Info** - CPU, RAM, disk read directly from `/proc` and `free -k`, no dependency on `top` output format
+- **Universal Hardware Detection** - WiFi, battery, AC adapter auto-detected via glob patterns, works with any naming convention
+- **Persistent Workspaces** - Visual-only in Eww bar, does not modify i3 behavior
+- **Config GUI** - Eww widget to configure `MAX_WORKSPACES`, `ICON_THEME`, `DOCK_ENABLED`, etc. without editing files manually
+- **Integrated Dock & Start Menu** - Bottom dock linked to start menu, manage dock apps without touching config files
 
 ---
 
@@ -212,6 +217,29 @@ scripts = reload-apps.sh
 ~/.local/bin/     # Scripts
 ~/Pictures/Wallpapers/  # Your wallpapers
 ```
+
+---
+
+## What's New
+
+### Robust System Info
+
+- **CPU Usage** — reads `/proc/stat` twice and calculates the diff, instead of parsing `top` output
+- **CPU Temp** — priority order: hwmon with label → `thermal_zone` filtered by type (`x86_pkg_temp`/`acpitz`), not blindly using `zone0`
+- **RAM** — uses `free -k` (pure kilobytes), human-readable format calculated manually without `sed 's/i//g'`
+
+### Universal Hardware Detection
+
+- **WiFi** — loops through `/sys/class/net/*/wireless/`, auto-detects `wlan0`, `wlp2s0`, `wlpXsY`, and any other name
+- **Battery** — globs `BAT*`, `BATT*`, `battery*`, picks the first one with a `capacity` file
+- **AC Adapter** — globs `ADP*`, `AC*`, `ACAD*`, works across different laptop models
+
+### Eww Extras
+
+- **Persistent Workspaces** — workspace indicator always visible in the bar, visual-only, no i3 config changes
+- **Config GUI** — widget to edit `config-dotfiles` (`MAX_WORKSPACES`, `ICON_THEME`, `DOCK_ENABLED`, `MAX_DOCK_APPS`) directly from the desktop
+- **Bottom Dock** — app launcher dock at the bottom of the screen, built with Eww
+- **Start Menu** — application menu integrated with the dock; add or remove dock apps directly from the menu without editing any config file
 
 ---
 

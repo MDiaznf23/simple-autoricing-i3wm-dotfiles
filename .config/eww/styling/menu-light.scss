@@ -1,0 +1,131 @@
+.start-menu-root {
+  background-color: transparent;
+  background-image: linear-gradient(90deg,
+      $secondary-fixed,
+      $primary-fixed,
+      $surface-container,
+    );
+  border-radius: 10px;
+  border: 1px solid $outline-variant;
+}
+
+.sidebar-container {
+  background: $surface-container-low;
+  border-radius: 10px 0 0 10px;
+}
+
+.cat-bar {
+  padding: 12px 0;
+}
+
+button.cat-tab {
+  all: unset;
+  padding: 12px 4px;
+  margin: 4px 8px;
+  border-radius: 8px;
+
+  .cat-label {
+    font-size: 10px;
+    color: $on-surface-variant;
+    font-weight: bold;
+  }
+
+  &:hover {
+    background: $surface-container-high;
+
+    .cat-label {
+      color: $on-surface;
+    }
+  }
+
+  &.active {
+    background: transparentize($inverse-primary, 0.5);
+
+    .cat-label {
+      color: $on-surface;
+    }
+  }
+}
+
+.vertical-divider {
+  min-width: 1px;
+  background: $outline-variant;
+}
+
+.app-list-container {
+  padding: 8px;
+}
+
+button.app-item {
+  all: unset;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 2px;
+
+  .app-name {
+    font-size: 13px;
+    color: $on-surface;
+  }
+
+  .app-desc {
+    font-size: 11px;
+    color: $on-surface-variant;
+  }
+
+  &:hover {
+    background: transparentize($inverse-primary, 0.5);
+  }
+}
+
+.app-scroll {
+  scrollbar {
+    min-width: 4px;
+
+    slider {
+      background: $outline-variant;
+      border-radius: 10px;
+    }
+  }
+}
+
+/* --- Menu Header - Light Mode (Material 3) --- */
+
+.menu-header {
+  padding: 10px 12px;
+  border-bottom: 1px solid $outline-variant;
+}
+
+.search-bar {
+  background: $surface-container-high;
+  border-radius: 10px;
+  padding: 6px 14px;
+
+  label {
+    font-size: 12px;
+    color: $on-surface-variant;
+  }
+}
+
+.header-divider {
+  min-height: 1px;
+  background: $outline-variant;
+}
+
+button.power-btn {
+  all: unset;
+  padding: 6px 8px;
+  border-radius: 8px;
+
+  label {
+    font-size: 18px;
+    color: $on-surface-variant;
+  }
+
+  &:hover {
+    background: $surface-container-highest;
+
+    label {
+      color: $error;
+    }
+  }
+}

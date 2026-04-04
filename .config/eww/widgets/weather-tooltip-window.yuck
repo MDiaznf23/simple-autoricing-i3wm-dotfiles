@@ -5,7 +5,7 @@
 (defwidget weather_forecast []
   (box :orientation "v"
        :space-evenly true
-       :spacing 2
+       :spacing 5
        :class "weather-tooltips-container"
 
     (box :orientation "h"
@@ -17,7 +17,7 @@
            :spacing 0
            :hexpand true
            :halign "start"
-         (label :class ""
+         (label :class "weather-text-tooltip"
                 :xalign 0
                 :text WEATHER_CITY )
          (label :class "weather-temp-now"

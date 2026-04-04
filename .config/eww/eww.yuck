@@ -3,7 +3,6 @@
 ;; ========================================
 
 (include "./widgets/dashboard.yuck")
-(include "./widgets/calendar.yuck")
 (include "./widgets/control_center.yuck")
 (include "./widgets/topbar.yuck")
 (include "./widgets/brightness_popup.yuck")
@@ -11,3 +10,11 @@
 (include "./widgets/weather-tooltip-window.yuck")
 (include "./widgets/wifi_tooltips.yuck")
 (include "./widgets/battery_tooltips.yuck")
+(include "./widgets/wifi_panel.yuck")
+(include "./widgets/bluetooth_panel.yuck")
+(include "./widgets/audio_panel.yuck")
+(include "./widgets/notification_center.yuck")
+(include "./widgets/menu.yuck")
+(include "./widgets/media_panel.yuck")
+(include "./widgets/bottombar.yuck")
+(include "./widgets/gui-settings.yuck")

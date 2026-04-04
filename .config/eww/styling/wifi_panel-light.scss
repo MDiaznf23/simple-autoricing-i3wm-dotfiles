@@ -1,0 +1,116 @@
+/* EWW WiFi Panel - Light Mode */
+
+.wifi-expanded-panel {
+  background-color: transparent;
+  background-image: linear-gradient(90deg,
+      $surface,
+      $primary-fixed,
+    );
+  border-radius: 10px;
+  padding: 10px;
+  min-width: 240px;
+  border: 1.5px solid $outline-variant;
+}
+
+.wifi-panel-container {
+  padding: 0px;
+  margin-bottom: 5px;
+}
+
+.panel-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: $on-surface;
+}
+
+.wifi-power-toggle {
+  background-color: $inverse-primary;
+  border-radius: 40px;
+  padding: 1px 3px;
+  min-width: 35px;
+  min-height: 20px;
+  font-size: 12px;
+  color: $on-surface-variant;
+  transition: background-color 0.2s ease;
+}
+
+.wifi-power-toggle:hover {
+  background-color: $secondary-container;
+  color: $on-secondary-container;
+}
+
+.circle-indicator-on {
+  background-color: $on-surface-variant;
+  border-radius: 100%;
+  min-height: 16px;
+  min-width: 16px;
+}
+
+.circle-indicator-off {
+  background-color: $on-surface-variant;
+  border-radius: 100%;
+  min-height: 16px;
+  min-width: 16px;
+}
+
+.wifi-scan-btn {
+  border-radius: 8px;
+  min-width: 30px;
+  min-height: 20px;
+}
+
+.wifi-scan-btn:hover {
+  background-color: $surface-container-high;
+  color: $on-surface;
+}
+
+.wifi-networks-scroll {
+  margin-bottom: 8px;
+  margin-top: 5px;
+}
+
+.wifi-network-item {
+  background-color: transparentize($surface-container-highest, 0.1);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin: 2px 0;
+  transition: all 0.2s ease;
+}
+
+.wifi-network-item:hover {
+  background-color: $inverse-primary;
+}
+
+.wifi-network-item.wifi-connected {
+  background-color: transparentize($surface-container, 0.1);
+  border-left: 3px solid $primary;
+}
+
+.wifi-signal-icon {
+  font-size: 16px;
+  min-width: 24px;
+  color: $on-surface;
+}
+
+.wifi-ssid-label {
+  font-size: 13px;
+  color: $on-surface;
+}
+
+.wifi-security-icon {
+  font-size: 14px;
+  color: $on-surface-variant;
+  min-width: 20px;
+}
+
+.wifi-connected-icon {
+  font-size: 16px;
+  color: $primary;
+  font-weight: bold;
+}
+
+.wifi-no-networks {
+  padding: 20px;
+  color: $on-surface-variant;
+  font-size: 13px;
+}

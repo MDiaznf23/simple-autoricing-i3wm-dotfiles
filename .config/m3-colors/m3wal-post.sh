@@ -23,8 +23,11 @@ dunst &
 # Tambahkan ini di wallpaper generator script setelah generate custom.lua
 nvim --headless -c "lua require('base46').compile()" -c "qa"
 
+# ── Dolphin color reload ──────────────────────────────────────────────────────
+pkill -x dolphin 2>/dev/null || true
+notify-send "[kde] Dolphin killed — New color will be applied"
+
 # Reload i3 config
 i3-msg reload &
 
 exit 0
-

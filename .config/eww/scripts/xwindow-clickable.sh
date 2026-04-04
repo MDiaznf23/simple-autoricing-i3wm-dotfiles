@@ -14,27 +14,28 @@ format_title() {
     fi
 }
 
-# Track active window and monitor its title changes
 xprop -spy -root _NET_ACTIVE_WINDOW | while read -r line; do
-    # Get window ID from the root property
     window_id=$(echo "$line" | awk '{print $NF}' | tr -d ',')
     
-    # Skip if no valid window
     if [ "$window_id" = "0x0" ]; then
         format_title ""
         continue
     fi
     
-    # Kill previous xprop spy if exists
     if [ ! -z "$WATCH_PID" ]; then
         kill "$WATCH_PID" 2>/dev/null
     fi
+
+    # Cek apakah window adalah eww
+    wm_class=$(xprop -id "$window_id" WM_CLASS 2>/dev/null)
+    if echo "$wm_class" | grep -qi "eww"; then
+        echo "Desktop"
+        continue
+    fi
     
-    # Get initial title
     title=$(xdotool getwindowname "$window_id" 2>/dev/null)
     format_title "$title"
     
-    # Watch for WM_NAME changes on this specific window
     xprop -spy -id "$window_id" _NET_WM_NAME WM_NAME 2>/dev/null | while read -r prop; do
         title=$(xdotool getwindowname "$window_id" 2>/dev/null)
         format_title "$title"

@@ -2,134 +2,73 @@
 @import "~/.cache/m3-colors/rofi.rasi"
 
 * {
-    /* Gunakan font yang bagus */
     font: "JetBrains Mono Nerd Font Bold 10";
     background-color: transparent;
     text-color: @foreground;
     margin: 0px;
     padding: 0px;
-    border-color: transparent;
-    separatorcolor: transparent;
 }
 
 window {
-    width: 60%;  /* Lebar window proporsional */
-    height: 46%; /* Tinggi window proporsional */
+    width: 200px;
+    height: 0px; 
     
-    /* Posisi tengah */
-    location: center;
-    anchor: center;
+    location: east;
+    anchor: east;
+    x-offset: -15px;
     
     background-color: @background;
-    border: 0px solid;
-    border-color: transparent;
-    border-radius: 15px; /* Sudut membulat yang halus */
-    padding: 20px;
+    border: 2px solid;
+    border-color: @selected-normal-background;
+    border-radius: 5px;
 }
 
 mainbox {
-    children: [ inputbar, listview ];
-    spacing: 20px;
-    border: 0px solid;
-    border-color: transparent;
+    spacing: 0px;
+    padding: 0px;
 }
 
-/* --- Input Bar (Pencarian) --- */
 inputbar {
-    children: [ prompt, entry ];
+    children: [ entry ];
     background-color: @active-background;
-    border: 0px solid;
-    border-radius: 10px;
-    border-color: transparent;
-    padding: 5px;
-    margin: 0px 0px 10px 0px; /* Jarak ke galeri */
+    border-radius: 5px;
+    padding: 8px;
+    margin: 0px 0px 10px 0px;
 }
 
-prompt {
-    background-color: @selected-normal-background;
-    text-color: @selected-normal-foreground;
-    padding: 10px 20px;
-    border: 0px solid;
-    border-radius: 8px;
-    border-color: transparent;
-    margin: 5px;
-}
-
-entry {
-    placeholder: "Search Wallpaper...";
-    placeholder-color: @foreground;
-    background-color: transparent;
-    text-color: @active-foreground;
-    padding: 10px;
-    border: 0px solid;
-    border-color: transparent;
-    vertical-align: 0.5;
-}
-
-/* --- Tampilan Galeri (Grid) --- */
 listview {
-    columns: 4;      /* 4 Gambar per baris */
-    lines: 3;        /* Minimal 3 baris terlihat */
-    cycle: false;    /* Jangan looping otomatis */
+    columns: 1;
+    lines: 4;                
+    spacing: 0px;            
+    cycle: true;
     dynamic: true;
     layout: vertical;
-    flow: horizontal;
     scrollbar: false;
-    spacing: 15px;   /* Jarak antar kotak gambar */
-    border: 0px solid;
+    fixed-height: false;     
+    fixed-columns: true;
+
+    border: 0px;             
     border-color: transparent;
-    background-color: transparent;
 }
 
 element {
-    orientation: vertical; /* Gambar di atas, teks di bawah (jika ada) */
-    padding: 20px 10px;
-    border: 0px solid;
-    border-radius: 12px;
-    border-color: transparent;
-    cursor: pointer;
+    orientation: vertical;
+    padding: 0px;            
+    border-radius: 5px;
 }
 
-element normal.normal {
-    background-color: @alternate-normal-background;
-    text-color: @foreground;
-    border: 0px solid;
-    border-color: transparent;
-}
-
-/* Efek saat dipilih/highlight */
-element selected.normal {
-    background-color: @selected-normal-background; /* Warna highlight */
-    text-color: @selected-normal-foreground;
-    border: 0px solid;
-    border-color: transparent;
-}
-
-element normal.active {
-    background-color: @active-background;
-    text-color: @active-foreground;
-}
-
-element selected.active {
-    background-color: @selected-active-background;
-    text-color: @selected-active-foreground;
-}
-
-/* Pengaturan Gambar Thumbnail */
 element-icon {
-    size: 140px;   /* Ukuran thumbnail besar */
+    size: 120px;            
     horizontal-align: 0.5;
-    background-color: transparent;
-    border: 0px solid;
-    border-color: transparent;
+    vertical-align: 0.5;
     cursor: inherit;
+    margin: 0px 0px; 
 }
 
-/* Teks nama file (Opsional, disembunyikan agar bersih) */
+element selected.normal {
+    background-color: @selected-normal-background;
+}
+
 element-text {
-    enabled: true; 
-    horizontal-align: 0.5;
-    margin: 10px 0px 0px 0px; /* Jarak dari gambar ke teks */
-    background-color: transparent;
-    text-color: inherit;
+    enabled: false;
 }

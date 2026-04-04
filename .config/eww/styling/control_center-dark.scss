@@ -1,0 +1,143 @@
+// EWW Control Center - eww.scss (M3 Style)
+// ======================================== */
+
+/* --- Global --- */
+* {
+  all: unset;
+  font-family: "JetBrains Mono Nerd Font", monospace;
+  font-size: 12px;
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+/* --- Kontainer Utama --- */
+.control-center-container {
+  background-color: transparent;
+  background-image: linear-gradient(to bottom right,
+      $on-secondary-fixed,
+      $surface,
+      $on-primary-fixed,
+    );
+  border-radius: 10px;
+  padding: 15px;
+  min-width: 240px;
+  border: 1.5px solid $outline-variant;
+}
+
+/* --- Garis Pemisah --- */
+.separator {
+  min-height: 1px;
+  background-color: $outline-variant;
+  margin: 0px 0;
+}
+
+/* --- Quick Toggles --- */
+.quick-toggles-container {
+  padding: 0px;
+  margin-bottom: 0px;
+}
+
+.quick-toggles-row {
+  margin-bottom: 0px;
+}
+
+.toggle-widget {
+  min-width: 45px;
+  margin-bottom: 0;
+}
+
+.toggle-icon {
+  font-size: 24px;
+  color: $on-surface-variant;
+  background-color: $surface-container-low;
+  border-radius: 10px;
+  padding: 12px;
+  min-width: 24px;
+  min-height: 24px;
+}
+
+.panel-icon {
+  font-size: 24px;
+  color: $on-surface-variant;
+}
+
+.toggle-icon:hover {
+  background-color: $surface-container-high;
+}
+
+.toggle-icon.wifi-active {
+  background-color: $on-secondary;
+  color: $on-surface;
+}
+
+.toggle-icon.wifi-active:hover {
+  background-color: $surface-container-high;
+  color: $on-secondary-container;
+}
+
+.toggle-icon.bt-active {
+  background-color: $on-primary;
+  color: $on-surface;
+}
+
+.toggle-icon.bt-active:hover {
+  background-color: $surface-container-high;
+  color: $on-surface;
+}
+
+.toggle-icon.night-active {
+  background-color: $on-tertiary;
+  color: $on-tertiary-container;
+}
+
+.toggle-icon.night-active:hover {
+  background-color: $surface-container-high;
+}
+
+.toggle-label {
+  font-size: 10px;
+  color: $on-surface-variant;
+}
+
+/* --- Sliders --- */
+.sliders-container {
+  padding: 8px;
+  border-radius: 10px;
+  background: transparentize($surface-container, 0.3);
+}
+
+.slider-row {
+  margin: 0px;
+}
+
+.slider-icon {
+  font-size: 16px;
+  color: $on-surface-variant;
+}
+
+.slider-percentage {
+  font-size: 12px;
+  color: $on-surface-variant;
+}
+
+.system-slider trough {
+  background: $surface-container-highest;
+  min-height: 14px;
+  border-radius: 4px;
+}
+
+.system-slider highlight {
+  background: $primary;
+  min-height: 14px;
+  min-width: 0px;
+  border-radius: 4px;
+}
+
+.system-slider slider {
+  background: $on-primary;
+  border-radius: 0;
+  min-width: 8px;
+  min-height: 14px;
+  margin: 0px;
+}

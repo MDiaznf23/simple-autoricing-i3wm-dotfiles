@@ -1,0 +1,502 @@
+/* ========================================
+   EWW Performance Monitor - M3 Style
+   ======================================== */
+
+/* ========================================
+   MAIN CONTAINER
+   ======================================== */
+
+.main-container {
+  background-color: transparent;
+  background-image: linear-gradient(90deg,
+      $primary-fixed-dim,
+      $secondary-fixed,
+      $primary-fixed,
+      $surface-container,
+    );
+  border-radius: 10px;
+  border: 1.5px solid $outline-variant;
+}
+
+/* ========================================
+   TAB NAVIGATION
+   ======================================== */
+
+.tab-navigation {
+  background-color: transparentize($surface, 1.0);
+  border-radius: 0px;
+  padding: 0px;
+}
+
+.tab-button {
+  padding: 8px 12px;
+}
+
+.tab-button:hover {
+  background-color: transparentize($surface-container, 0.3);
+  color: $on-surface;
+}
+
+.tab-button.active {
+  background-color: transparent;
+  border-bottom: 3px solid $primary;
+  color: $on-surface;
+}
+
+.tab-button.active:hover {
+  border-bottom: 3px solid $inverse-primary;
+  color: $on-surface;
+}
+
+.tab-icon {
+  font-size: 16px;
+  color: $on-surface-variant;
+}
+
+.tab-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: $on-surface-variant;
+}
+
+.dashboard_separator {
+  min-height: 1px;
+  background-color: $outline-variant;
+  margin: 0px;
+}
+
+/* ========================================
+   CONTENT AREA
+   ======================================== */
+
+.content-area {
+  padding: 12px;
+}
+
+.tab-content {
+  padding: 0px;
+}
+
+/* ========================================
+   METRIC BAR CONTAINER
+   ======================================== */
+
+.metric-bar-container {
+  padding: 0px 0px;
+  background-color: transparentize($surface-container-low, 0.3);
+  border-radius: 10px;
+  border: 1.5px solid $outline-variant;
+}
+
+.metric-bar-container:hover {
+  background-color: $surface-container;
+  border-color: $outline;
+}
+
+/* ========================================
+   METRIC HEADER
+   ======================================== */
+
+.metric-header {
+  margin-bottom: 0px;
+}
+
+.metric-icon {
+  font-size: 64px;
+  padding: 0px 10px;
+}
+
+.metric-icon.cpu-color {
+  color: $tertiary;
+}
+
+.metric-icon.mem-color {
+  color: $primary;
+}
+
+.metric-icon.disk-color {
+  color: $secondary;
+}
+
+.description-metric {
+  padding: 0px 10px;
+}
+
+.metric-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: $on-surface-variant;
+}
+
+.metric-value-text {
+  font-size: 16px;
+  font-weight: bold;
+  color: $on-surface;
+}
+
+.metric-usage-text {
+  font-size: 14px;
+  color: $on-surface-variant;
+}
+
+/* ===================================
+   ADDITIONAL CSS for Profile & Weather
+   =================================== */
+
+.info-card {
+  background-color: transparentize($surface-container-low, 0.3);
+  border-radius: 10px;
+  padding: 5px 5px 5px 5px;
+  border: 1px solid $outline-variant;
+  min-height: 80px;
+}
+
+.info-card-weather {
+  background-color: transparentize($surface-container-low, 0.3);
+  border-radius: 10px;
+  padding: 5px 5px 5px 10px;
+  border: 1px solid $outline-variant;
+  min-height: 80px;
+  min-width: 221px;
+}
+
+.info-text {
+  font-family: "JetBrains Mono Nerd Font", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: $on-surface;
+}
+
+.info-weather {
+  font-family: "JetBrains Mono Nerd Font", sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+  color: $secondary;
+}
+
+.info-row {
+  padding: 0px;
+}
+
+.info-row-weather {
+  padding: 0px;
+}
+
+.info-icon {
+  color: $tertiary;
+  padding: 4px 4px 4px 0px;
+}
+
+.weather-icon {
+  font-size: 56px;
+  margin-left: -20px;
+  padding: 0px 0px 0px 0px;
+  color: $on-surface;
+}
+
+.card-content {
+  padding: 0px 0px 0px 0px;
+}
+
+/* ========================================
+   CALENDAR STYLE
+   ======================================== */
+
+.calendar-box {
+  background-color: transparentize($surface-container-low, 0.3);
+  border: 1px solid $outline-variant;
+  border-radius: 10px;
+  min-width: 217px;
+  padding: 3px 3px 3px 3px;
+}
+
+.cal-header {
+  padding: 6px 0;
+}
+
+.cal-month {
+  color: $on-surface;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.cal-sep {
+  color: $on-surface-variant;
+  font-size: 12px;
+}
+
+.cal-year {
+  color: $on-surface-variant;
+  font-size: 12px;
+}
+
+.cal-widget {
+  font-family: "JetBrainsMono Nerd Font", "Noto Sans", sans-serif;
+  font-size: 10px;
+  padding: 5px;
+
+  -GtkCalendar-inner-border: 0;
+  -GtkCalendar-vertical-separation: 0;
+  -GtkCalendar-horizontal-separation: 0;
+}
+
+/* Tanggal prev/next month */
+.cal-widget calendar:indeterminate {
+  color: $outline-variant;
+  opacity: 0.5;
+}
+
+/* Tanggal bulan aktif - normal */
+.cal-widget calendar {
+  color: $on-surface;
+}
+
+.cal-widget calendar:selected {
+  background: transparent;
+  color: $primary;
+  font-weight: bold;
+  border: none;
+  padding: 0;
+  margin: 0;
+  box-shadow: none;
+}
+
+.cal-widget label {
+  min-width: 28px;
+  min-height: 28px;
+}
+
+
+/* ========================================
+   CLOCK BOX STYLING
+   ======================================== */
+
+.clock-box {
+  background-color: transparentize($surface-container-low, 0.3);
+  border: 1px solid $outline-variant;
+  border-radius: 10px;
+  padding: 10px 10px 10px 10px;
+}
+
+.clock-time {
+  font-family: "JetBrains Mono Nerd Font", monospace;
+  font-size: 36px;
+  font-weight: bold;
+  color: $on-surface;
+}
+
+.clock-separator {
+  font-family: "JetBrains Mono Nerd Font", monospace;
+  font-size: 28px;
+  font-weight: bold;
+  color: $primary;
+  margin-top: -10px;
+  margin-bottom: -10px;
+}
+
+.clock-date {
+  font-family: "JetBrains Mono Nerd Font", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: $on-surface-variant;
+}
+
+/* ========================================
+   QUICK APPS BOX
+   ======================================== */
+
+.apps-box {
+  background-color: transparentize($surface-container-low, 0.3);
+  border: 1px solid $outline-variant;
+  border-radius: 10px;
+  padding: 5px;
+}
+
+.app-button {
+  background-color: $surface-container;
+  border: 1px solid $outline-variant;
+  border-radius: 8px;
+  padding: 5px;
+}
+
+.app-button:hover {
+  background-color: $surface-container-high;
+  border-color: $primary;
+}
+
+.app-icon {
+  font-size: 28px;
+  color: $on-surface;
+  padding: 2px 13px 2px 5px;
+}
+
+.app-icon-1 {
+  font-size: 28px;
+  color: $outline;
+  padding: 2px 13px 2px 5px;
+}
+
+.app-icon-2 {
+  font-size: 28px;
+  color: $secondary;
+  padding: 2px 13px 2px 5px;
+}
+
+.app-icon-3 {
+  font-size: 28px;
+  color: $tertiary;
+  padding: 2px 13px 2px 5px;
+}
+
+.app-icon-4 {
+  font-size: 28px;
+  color: $primary;
+  padding: 2px 13px 2px 5px;
+}
+
+.app-icon-5 {
+  font-size: 28px;
+  color: $tertiary;
+  padding: 2px 13px 2px 5px;
+}
+
+/* ========================================
+   MEDIA WIDGET
+   ======================================== */
+
+.media-widget-dashboard {
+  background-color: transparentize($surface-container-low, 0.3);
+  padding: 10px;
+  border: 1px solid $outline-variant;
+  border-radius: 10px;
+  min-height: 180px;
+}
+
+.media-cover-widget-dashboard {
+  min-width: 80px;
+  min-height: 80px;
+  background-color: transparent;
+  border-radius: 10px;
+}
+
+.media-widget-info-dashboard {
+  margin-bottom: 0px;
+}
+
+.media-widget-name-dashboard {
+  font-size: 11px;
+  color: $on-surface-variant;
+}
+
+.media-widget-title-dashboard {
+  font-size: 12px;
+  font-weight: bold;
+  color: $on-surface;
+}
+
+.media-widget-artist-dashboard {
+  font-size: 11px;
+  color: $on-surface-variant;
+}
+
+.media-widget-controls-dashboard {
+  padding: 0;
+}
+
+.media-widget-btn-dashboard {
+  margin: 0;
+  color: $on-surface;
+  font-size: 28px;
+}
+
+.media-widget-btn-play-dashboard {
+  margin: 0;
+  color: $on-surface;
+  font-size: 32px;
+}
+
+.media-btn-dashboard:hover {
+  color: $primary;
+}
+
+/* ========================================
+   NOTES BOX
+   ======================================== */
+.note-container {
+  background-color: transparentize($surface-container-low, 0.3);
+  border: 1px solid $outline-variant;
+  border-radius: 10px;
+  min-height: 66px;
+  min-width: 150px;
+}
+
+.edit-btn {
+  padding: 0px;
+}
+
+.note-text {
+  font-family: "TeX Gyre Chorus", cursive;
+  font-size: 20px;
+  font-weight: bold;
+  color: $primary;
+  padding: 0px;
+}
+
+/* ========================================
+   LAPTOP INFORMATION
+   ======================================== */
+
+.laptop-container {
+  background: transparentize($surface-container-low, 0.3);
+  border-radius: 10px;
+  padding: 5px 10px 10px 5px;
+  border: 1px solid $outline-variant;
+}
+
+.logo-section {
+  padding: 0px;
+  border-radius: 10px;
+  padding: 0px 30px 0px 30px;
+}
+
+.specs-section {
+  padding: 0px;
+}
+
+.spec-row {
+  padding: 0px 0px 0px 0px;
+  border-top: 1px solid $tertiary;
+  transition: all 0.3s ease;
+}
+
+.brand-row {
+  transition: all 0.3s ease;
+}
+
+.spec-icon {
+  font-size: 24px;
+  color: $primary-container;
+  min-width: 35px;
+}
+
+.spec-label {
+  font-size: 14px;
+  color: $on-secondary-container;
+  letter-spacing: 1px;
+  font-weight: 600;
+  padding: 5px;
+}
+
+.spec-value {
+  font-size: 14px;
+  color: $on-surface;
+  font-weight: 500;
+  padding: 5px;
+}
+
+.spec-brand {
+  color: $on-surface-variant;
+  font-size: 18px;
+  font-weight: 700;
+  padding: 0px 0px 10px 0px;
+}

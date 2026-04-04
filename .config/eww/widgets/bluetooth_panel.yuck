@@ -1,0 +1,130 @@
+;;-----------------------------------------------------
+;; POLLING VARIABEL
+;;-----------------------------------------------------
+
+(defpoll bluetooth_devices_listen :interval "2s"
+  :initial "[]"
+  `~/.config/eww/scripts/scan_bluetooth.sh`)
+
+;;-----------------------------------------------------
+;; WIDGETS
+;;-----------------------------------------------------
+
+(defwidget bluetooth_device_item [name mac connected paired type]
+  (eventbox :class "bt-device-item"
+            :cursor "pointer"
+    (box :class {connected ? "bt-device-inner bt-connected" : "bt-device-inner"}
+         :orientation "h"
+         :spacing 10
+         :space-evenly false
+      (box :spacing 5
+           :orientation "h"
+           :space-evenly false
+           :hexpand true
+           :halign "start"
+        (label :class "bt-type-icon"
+               :text {type == "phone" ? "󰄜 " :
+                      type == "headphone" ? "󰋎 " :
+                      type == "computer" ? "󰈸 " :
+                      type == "keyboard" ? "󰌌 " :
+                      type == "mouse" ? "󰍽 " : "󰑖 "})
+        (label :class "bt-name-label"
+               :text name
+               :xalign 0
+               :limit-width 20))
+      (box :spacing 5
+           :orientation "h"
+           :space-evenly false
+           :halign "end"
+        (button :class "bt-action-btn"
+                :onclick "~/.config/eww/scripts/connect_bluetooth.sh '${mac}' toggle && sleep 1"
+          (label :class "bt-name-label" :text {connected ? "󱘖 " : "󱘖 "}))
+        (button :class "bt-action-btn bt-unpair"
+                :visible {paired}
+                :onclick "~/.config/eww/scripts/connect_bluetooth.sh '${mac}' unpair && sleep 1"
+          (label :class "bt-name-label" :text "x"))))))
+
+(defwidget bluetooth_panel []
+  (box :class "bt-expanded-panel"
+       :orientation "v"
+       :spacing 0
+       :space-evenly false
+
+    ;; Header
+    (box :orientation "h"
+         :spacing 0
+         :halign "fill"
+         :class "bt-panel-container"
+         :space-evenly false
+
+      (box :orientation "h"
+           :space-evenly false
+           :spacing 10
+           :halign "fill"
+           :hexpand true
+
+        (label :class "panel-title" :text "Bluetooth" :hexpand true :halign "start")
+        (box :class "bt-power-toggle"
+             :halign "end" 
+        
+          (button :onclick "~/.config/eww/scripts/toggle_bluetooth.sh"
+            (stack :selected {bluetooth_status == "yes" ? 0 : 1}
+                   :transition "slideleft"
+                   :same-size true
+              (box :class "toggle-content on"
+                   :orientation "h"
+                   :space-evenly false
+                   :spacing 8
+                   :halign "end"
+                (label :text "")
+                (box :vexpand false :valign "center" :class "circle-indicator-on"))
+              (box :class "toggle-content off"
+                   :orientation "h"
+                   :space-evenly false
+                   :spacing 8
+                   :halign "start"
+                (box :vexpand false :valign "center" :class "circle-indicator-off")
+                (label :text ""))
+            )
+          )
+        )
+      ) 
+    )
+
+    (separator)
+
+    ;; Devices list
+    (scroll :class "bt-devices-scroll"
+            :height 220
+            :vscroll true
+            :hscroll false
+      (box :orientation "v"
+           :spacing 3
+           :space-evenly false
+        (for device in bluetooth_devices_listen
+          (bluetooth_device_item :name {device.name}
+                                 :mac {device.mac}
+                                 :connected {device.connected}
+                                 :paired {device.paired}
+                                 :type {device.type}))
+        (label :class "bt-no-devices"
+               :text "No devices found"
+               :visible {bluetooth_devices_listen == "[]" || bluetooth_status != "yes"})
+      )
+    )
+  )
+)
+
+;;-----------------------------------------------------
+;; WINDOW
+;;-----------------------------------------------------
+
+(defwindow bluetooth_window
+  :monitor 0
+  :geometry (geometry :x "-10px" :y "47px" :anchor "top right")
+  :stacking "overlay"
+  :exclusive false
+  :focusable false
+  :windowtype "dialog"
+  :wm-ignore false
+  (bluetooth_panel))

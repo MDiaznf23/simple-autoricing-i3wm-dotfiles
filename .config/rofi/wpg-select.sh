@@ -23,7 +23,7 @@ generate_thumb() {
     # Hanya generate jika file thumbnail belum ada atau ukurannya 0
     if [ ! -s "$thumb" ]; then
         # Menggunakan magick untuk resize, crop square (150x150), dan strip metadata agar ringan
-        magick "$img" -resize 300x300^ -gravity center -extent 300x300 -quality 80 -strip "$thumb" 2>/dev/null
+        magick "$img" -resize 280x200^ -gravity center -extent 280x200 -quality 85 -strip "$thumb" 2>/dev/null
     fi
     echo "$thumb"
 }

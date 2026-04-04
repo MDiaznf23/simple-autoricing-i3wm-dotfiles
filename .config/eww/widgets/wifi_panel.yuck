@@ -1,0 +1,111 @@
+;;-----------------------------------------------------
+;; POLLING VARIABEL
+;;-----------------------------------------------------
+
+(defpoll wifi_networks :interval "5s"
+  :initial "[]"
+  `~/.config/eww/scripts/scan_wifi.sh`)
+
+;;-----------------------------------------------------
+;; WIDGETS
+;;-----------------------------------------------------
+
+(defwidget wifi_network_item [ssid signal secured connected sig_icon sec_icon]
+  (button :class "wifi-network-item ${connected == 'true' ? 'wifi-connected' : ''}"
+          :onclick "~/.config/eww/scripts/connect_wifi.sh '${ssid}' &"
+    (box :orientation "h"
+         :spacing 10
+         :space-evenly false
+      (label :class "wifi-signal-icon" :text sig_icon)
+      (label :class "wifi-ssid-label"
+             :text ssid
+             :xalign 0
+             :limit-width 25
+             :hexpand true)
+      (label :class "wifi-security-icon"
+             :text sec_icon
+             :visible {secured == "true"})
+      (label :class "wifi-connected-icon"
+             :text "✓"
+             :visible {connected == "true"})
+    )
+  )
+)
+
+(defwidget wifi_panel []
+  (box :class "wifi-expanded-panel"
+       :orientation "v"
+       :spacing 0
+       :space-evenly false
+
+    (box :orientation "h"
+         :space-evenly false
+         :spacing 10
+      (label :class "panel-title" :text "WiFi" :hexpand true :halign "start")
+      (box :orientation "h"
+           :spacing 0
+           :space-evenly false
+           :class "wifi-panel-container"
+
+        (button :class "wifi-power-toggle"
+                :onclick "~/.config/eww/scripts/toggle_wifi.sh"
+          (stack :selected {wifi_status == "enabled" ? 0 : 1}
+                 :transition "slideleft"
+                 :same-size true
+            (box :class "toggle-content on"
+                 :orientation "h"
+                 :space-evenly false
+                 :spacing 8
+                 :halign "end"
+              (label :text "")
+              (box :vexpand false :valign "center" :class "circle-indicator-on"))
+            (box :class "toggle-content off"
+                 :orientation "h"
+                 :space-evenly false
+                 :spacing 8
+                 :halign "start"
+              (box :vexpand false :valign "center" :class "circle-indicator-off")
+              (label :text ""))
+          )
+        )
+      )
+    )
+
+    (separator)
+
+    ;; Networks list
+    (scroll :class "wifi-networks-scroll"
+            :height 220
+            :vscroll true
+            :hscroll false
+      (box :orientation "v"
+           :spacing 3
+           :space-evenly false
+        (for network in wifi_networks
+          (wifi_network_item :ssid {network.ssid}
+                             :signal {network.signal}
+                             :secured {network.secured}
+                             :connected {network.connected}
+                             :sig_icon {network.sig_icon}
+                             :sec_icon {network.sec_icon}))
+        (label :class "wifi-no-networks"
+               :text "No networks found"
+               :visible {wifi_networks == "[]" || wifi_status != "enabled"})
+      )
+    )
+  )
+)
+
+;;-----------------------------------------------------
+;; WINDOW
+;;-----------------------------------------------------
+
+(defwindow wifi_window
+  :monitor 0
+  :geometry (geometry :x "-10px" :y "47px" :anchor "top right")
+  :stacking "overlay"
+  :exclusive false
+  :focusable false
+  :windowtype "dialog"
+  :wm-ignore false
+  (wifi_panel))

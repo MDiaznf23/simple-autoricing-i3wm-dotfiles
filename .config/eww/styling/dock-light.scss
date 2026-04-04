@@ -1,0 +1,53 @@
+/* EWW Dock - Light Mode */
+
+.dock {
+  background-color: transparent;
+  /* Mengganti $on-primary-fixed dan $on-secondary-fixed (tone ~10) 
+     menjadi $primary-fixed dan $secondary-fixed (tone ~90) */
+  background-image: linear-gradient(90deg,
+      $primary-fixed,
+      $surface,
+      $surface-container-low,
+      $secondary-fixed,
+    );
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+
+.dock-item {
+  transition: all 150ms ease;
+  border-radius: 10px;
+}
+
+.dock-item:hover {
+  /* Mengganti $on-secondary-fixed menjadi $secondary-fixed agar 
+     transisi hover tetap halus dengan $surface-container-high (tone ~92) */
+  background-image: linear-gradient(to bottom right,
+      $surface-container-high,
+      $secondary-fixed);
+}
+
+.dock-btn {
+  background: transparent;
+  border: none;
+  padding: 4px;
+  border-radius: 10px;
+}
+
+.dock-pin-btn {
+  min-width: 28px;
+  padding: 0 4px;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 13px;
+  /* $on-surface-variant di light mode ada di tone ~30 (gelap), 
+     jadi di-transparentize 0.3 tetap akan terbaca jelas di atas $surface */
+  color: transparentize($on-surface-variant, 0.3);
+  transition: all 0.1s ease;
+}
+
+.dock-pin-btn:hover {
+  /* $primary-container (tone ~90) memberikan highlight yang pas saat di-hover */
+  background: transparentize($primary-container, 0.2);
+  color: $on-surface;
+}

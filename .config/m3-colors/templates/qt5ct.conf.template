@@ -1,8 +1,8 @@
 [ColorScheme]
 # Format urutan 21 warna:
-# 0=WindowText, 1=Button, 2=Light, 3=Midlight, 4=Dark, 5=Mid, 
+# 0=WindowText, 1=Button, 2=Light, 3=Midlight, 4=Dark, 5=Mid,
 # 6=Text, 7=BrightText, 8=ButtonText, 9=Base, 10=Window, 11=Shadow,
-# 12=Highlight, 13=HighlightedText, 14=Link, 15=LinkVisited, 
+# 12=Highlight, 13=HighlightedText, 14=Link, 15=LinkVisited,
 # 16=AlternateBase, 17=ToolTipBase, 18=ToolTipText, 19=PlaceholderText, 20=Accent
 
 # ACTIVE (aplikasi dalam fokus)

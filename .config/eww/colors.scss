@@ -2,43 +2,43 @@
 // Material Design 3 Color System
 
 // Wallpaper & Source
-$wallpaper: "/home/diaz/Pictures/Wallpapers/purpled-night.jpg";
-$source-color: #6019ad;
+$wallpaper: "/home/diaz/Pictures/Wallpapers/anew.jpg";
+$source-color: #3b491e;
 
 // Special (Compatibility)
-$background: #16121a;
-$foreground: #e8dfec;
-$cursor: #d8b9ff;
+$background: #131410;
+$foreground: #e4e2dc;
+$cursor: #bccd95;
 
 // === MATERIAL 3 PRIMARY ===
-$primary: #d8b9ff;
-$on-primary: #450086;
-$primary-container: #6019ad;
-$on-primary-container: #cba3ff;
-$primary-fixed: #eedcff;
-$primary-fixed-dim: #d8b9ff;
-$on-primary-fixed: #290054;
-$on-primary-fixed-variant: #6019ad;
+$primary: #bccd95;
+$on-primary: #28350c;
+$primary-container: #3b491e;
+$on-primary-container: #a7b882;
+$primary-fixed: #d8eaaf;
+$primary-fixed-dim: #bccd95;
+$on-primary-fixed: #141f00;
+$on-primary-fixed-variant: #3e4c20;
 
 // === MATERIAL 3 SECONDARY ===
-$secondary: #d8bafc;
-$on-secondary: #3c245b;
-$secondary-container: #563d76;
-$on-secondary-container: #c9aced;
-$secondary-fixed: #eedcff;
-$secondary-fixed-dim: #d8bafc;
-$on-secondary-fixed: #260d45;
-$on-secondary-fixed-variant: #533b73;
+$secondary: #c3c9af;
+$on-secondary: #2d3320;
+$secondary-container: #454c37;
+$on-secondary-container: #b5bba1;
+$secondary-fixed: #dfe6ca;
+$secondary-fixed-dim: #c3c9af;
+$on-secondary-fixed: #181e0c;
+$on-secondary-fixed-variant: #434935;
 
 // === MATERIAL 3 TERTIARY ===
-$tertiary: #ffb4a4;
-$on-tertiary: #630e00;
-$tertiary-container: #8b1901;
-$on-tertiary-container: #ff9a83;
-$tertiary-fixed: #ffdad3;
-$tertiary-fixed-dim: #ffb4a4;
-$on-tertiary-fixed: #3d0600;
-$on-tertiary-fixed-variant: #8b1901;
+$tertiary: #9ecde3;
+$on-tertiary: #003545;
+$tertiary-container: #164a5c;
+$on-tertiary-container: #8ab9ce;
+$tertiary-fixed: #bbe9ff;
+$tertiary-fixed-dim: #9ecde3;
+$on-tertiary-fixed: #001f29;
+$on-tertiary-fixed-variant: #194c5e;
 
 // === MATERIAL 3 ERROR ===
 $error: #ffb4ab;
@@ -47,26 +47,26 @@ $error-container: #93000a;
 $on-error-container: #ffdad6;
 
 // === MATERIAL 3 SURFACE ===
-$surface: #16121a;
-$on-surface: #e8dfec;
-$surface-variant: #4b4453;
-$on-surface-variant: #cdc3d5;
-$surface-dim: #16121a;
-$surface-bright: #3c3741;
-$surface-container-lowest: #100d15;
-$surface-container-low: #1e1a22;
-$surface-container: #221e27;
-$surface-container-high: #2d2831;
-$surface-container-highest: #38333c;
+$surface: #131410;
+$on-surface: #e4e2dc;
+$surface-variant: #45483d;
+$on-surface-variant: #c6c8ba;
+$surface-dim: #131410;
+$surface-bright: #393935;
+$surface-container-lowest: #0e0f0b;
+$surface-container-low: #1b1c18;
+$surface-container: #1f201c;
+$surface-container-high: #2a2a26;
+$surface-container-highest: #353531;
 
 // === MATERIAL 3 OUTLINE ===
-$outline: #978d9f;
-$outline-variant: #4b4453;
+$outline: #909285;
+$outline-variant: #45483d;
 
 // === MATERIAL 3 INVERSE ===
-$inverse-surface: #e8dfec;
-$inverse-on-surface: #332f38;
-$inverse-primary: #793ac7;
+$inverse-surface: #e4e2dc;
+$inverse-on-surface: #30312c;
+$inverse-primary: #556436;
 
 // === MATERIAL 3 SHADOW & SCRIM ===
 $shadow: #000000;
@@ -74,24 +74,24 @@ $scrim: #000000;
 
 // === TERMINAL COLORS ===
 // Normal Colors
-$color0: #16121a;   // Black
+$color0: #131410;   // Black
 $color1: #690005;   // Red
-$color2: #4b4453;   // Green
-$color3: #6019ad;   // Yellow
-$color4: #450086;   // Blue
-$color5: #38333c;   // Magenta
-$color6: #563d76;   // Cyan
-$color7: #793ac7;   // White
+$color2: #45483d;   // Green
+$color3: #3e4c20;   // Yellow
+$color4: #28350c;   // Blue
+$color5: #353531;   // Magenta
+$color6: #454c37;   // Cyan
+$color7: #556436;   // White
 
 // Bright Colors
-$color8: #e8dfec;   // Bright Black
+$color8: #e4e2dc;   // Bright Black
 $color9: #ffb4ab;   // Bright Red
-$color10: #ffdad3; // Bright Green
-$color11: #eedcff; // Bright Yellow
-$color12: #d8b9ff; // Bright Blue
-$color13: #ffb4a4; // Bright Magenta
-$color14: #ffb4a4; // Bright Cyan
-$color15: #e8dfec; // Bright White
+$color10: #bbe9ff; // Bright Green
+$color11: #d8eaaf; // Bright Yellow
+$color12: #bccd95; // Bright Blue
+$color13: #9ecde3; // Bright Magenta
+$color14: #9ecde3; // Bright Cyan
+$color15: #e4e2dc; // Bright White
 
 // === SCSS MAP (Optional - untuk loop & mixins) ===
 $m3-colors: (

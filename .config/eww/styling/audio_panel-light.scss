@@ -1,0 +1,49 @@
+/* EWW Audio Panel - Light Mode */
+
+.audio-menu-container {
+  background-color: transparent;
+  background-image: linear-gradient(to bottom right,
+      $secondary-fixed,
+      $surface,
+      $primary-fixed,
+    );
+  border-radius: 10px;
+  padding: 10px;
+  min-width: 240px;
+  border: 1.5px solid $outline-variant;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: $on-surface;
+}
+
+.audio-item-container {
+  border-radius: 10px;
+  padding: 5px;
+  background: $surface-container;
+}
+
+.audio-item-container.active {
+  border-color: $primary;
+}
+
+.audio-item-container:hover {
+  background: $surface-container-high;
+}
+
+.audio-text {
+  font-size: 12px;
+  color: $on-surface;
+}
+
+.indicator-audio {
+  border-radius: 100%;
+  background: $on-surface-variant;
+  padding: 2px 8px;
+}
+
+.indicator-audio.active {
+  background: $primary;
+}

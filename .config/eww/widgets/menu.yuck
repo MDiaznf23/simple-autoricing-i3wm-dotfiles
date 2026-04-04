@@ -1,0 +1,96 @@
+(defvar start_menu_visible false)
+(defvar menu_active_cat "Internet")
+(defvar active_apps "[]")
+
+(defpoll menu_data
+  :interval "999999s"
+  :initial '{"categories": []}'
+  "cat ~/.cache/eww-menu.json")
+
+(defpoll initial_apps
+  :interval "999999s"
+  :initial "[]"
+  "~/.config/eww/scripts/filter-apps.sh 'Internet'")
+
+(defpoll profile-pic :interval "999h"
+  `echo "$HOME/.config/eww/assets/profile.jpg"`)
+
+(defwidget cat_tab [cat icon]
+  (button
+    :class "cat-tab ${menu_active_cat == cat ? 'active' : ''}"
+    :onclick "~/.config/eww/scripts/switch-category.sh '${cat}'"
+    (box :orientation "v" :space-evenly false :spacing 0 :halign "center"
+      (label :class "cat-label" :valign "center" :text cat :limit-width 15))))
+
+(defwidget category_tabs []
+  (box :class "sidebar-container"
+    (scroll :vscroll true :hscroll false :class "cat-scroll" :width 100
+      (box :orientation "v" :space-evenly false :spacing 6 :class "cat-bar"
+        (for entry in {menu_data.categories}
+          (cat_tab :cat {entry.category} :icon {entry.icon}))))))
+
+(defwidget app_item [app]
+  (box :orientation "h" :space-evenly false :spacing 0 :valign "center"
+    ; Tombol utama launch app (klik kiri seperti biasa)
+    (button
+      :class "app-item"
+      :hexpand true
+      :onclick "bash -c '${app.exec}' & eww update start_menu_visible=false & eww close start_menu"
+      (box :orientation "h" :space-evenly false :spacing 12 :valign "center"
+        (image :class "app-icon" :path {app.icon} :image-width 24 :image-height 24)
+        (box :orientation "v" :space-evenly false :spacing 2
+          (label :class "app-name" :text {app.name} :xalign 0 :limit-width 30)
+          (label :class "app-desc" :text {app.desc} :xalign 0 :limit-width 45))))
+    ; Tombol kecil add/remove dock di kanan
+    (button
+      :class "dock-pin-btn"
+      :tooltip "Add to Dock"
+      :onclick "~/.config/eww/scripts/add-to-dock.sh ${app.id} &"
+      (label :text ">"))))
+
+(defwidget app_list []
+  (box :class "app-list-container" :hexpand true :vexpand true
+    (scroll :vscroll true :hscroll false :class "app-scroll" :height 380
+      (box :orientation "v" :space-evenly false :spacing 2 :class "app-list-box"
+        (for app in {active_apps != "[]" ? active_apps : initial_apps}
+          (app_item :app app))))))
+
+(defwidget start_menu_header []
+  (box :class "menu-header" :orientation "h" :space-evenly false :spacing 10 :valign "center"
+    (box :class "profile-pic"
+         :style "background-image: url('${profile-pic}');
+                 background-size: cover;
+                 background-position: center;
+                 border-radius: 50%;
+                 min-width: 40px;
+                 min-height: 40px;")
+    (button :class "search-bar"
+            :hexpand true
+            :halign "fill"
+            :onclick "~/.config/rofi/launchers/type-6/launcher.sh & eww update start_menu_visible=false & eww close start_menu"
+      (label :text "Search applications..." :xalign 0))
+    (button :class "power-btn" :halign "end" 
+            :onclick "eww open dotfiles-window & eww open --toggle start_menu"
+      (label :text "󰍜"))
+    (button :class "power-btn" :halign "end" 
+            :onclick "~/.config/rofi/powermenu/type-5/powermenu.sh & eww update start_menu_visible=false & eww close start_menu"
+      (label :text "󰐥"))))
+
+(defwidget start_menu []
+  (box :class "start-menu-root" :orientation "h" :space-evenly false
+    (category_tabs)
+    (box :class "vertical-divider")
+    (box :orientation "v" :space-evenly false :hexpand true
+      (app_list)
+      (box :class "header-divider")
+      (start_menu_header))))
+
+(defwindow start_menu
+  :monitor 0
+  :geometry (geometry :x "10px" :y "47px" :width "480px" :height "480px" :anchor "top left")
+  :stacking "overlay"
+  :focusable false
+  :exclusive false
+  :windowtype "dialog"
+  :wm-ignore false
+  (start_menu))

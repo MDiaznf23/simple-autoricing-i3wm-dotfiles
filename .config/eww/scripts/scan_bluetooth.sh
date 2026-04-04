@@ -50,7 +50,7 @@ while read -r line; do
     info=$(bluetoothctl info "$mac" 2>/dev/null)
     
     # Parse semua data dari info yang sudah di-cache
-    connected=$(check_connected "$mac")  
+    connected=$(check_connected "$mac")  # Gunakan busctl untuk akurasi lebih baik
     paired=$(echo "$info" | grep -q "Paired: yes" && echo "true" || echo "false")
     dev_type=$(echo "$info" | grep "Icon:" | awk '{print $2}')
     

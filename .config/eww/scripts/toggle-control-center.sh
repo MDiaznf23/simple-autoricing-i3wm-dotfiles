@@ -1,10 +1,5 @@
 #!/bin/bash
-WINDOW="control_center_window"
-
-if eww active-windows | grep -q "$WINDOW"; then
-    eww update control_center_visible=false
-    eww close "$WINDOW"
-else
-    eww update control_center_visible=true
-    eww open "$WINDOW"
-fi
+eww close wifi_window 2>/dev/null
+eww close bluetooth_window 2>/dev/null
+eww close audio_window 2>/dev/null
+eww open --toggle control_center_window

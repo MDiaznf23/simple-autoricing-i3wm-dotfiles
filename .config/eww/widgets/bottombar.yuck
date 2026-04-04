@@ -1,0 +1,32 @@
+(deflisten dock-apps
+  :initial "[{\"name\":\"loading\",\"exec\":\"true\",\"icon\":\"/usr/share/pixmaps/archlinux-logo.png\"}]"
+  `~/.config/eww/scripts/dock-watch.sh`)
+
+(defwidget dock-item [id name exec icon]
+  (eventbox :class "dock-item"
+            :tooltip name
+            :onclick {"bash -c '" + exec + " &' &"}
+            :onrightclick {"~/.config/eww/scripts/dock-confirm-remove.sh " + id + " '" + name + "' &"}
+    (box :class "dock-btn"
+      (image :path icon
+             :image-width 40
+             :image-height 40))))
+
+(defwidget dock []
+  (box :class "dock"
+       :orientation "h"
+       :space-evenly false
+       :spacing 12
+    (for app in {dock-apps}
+      (dock-item :id {app.id}
+                 :name {app.name}
+                 :exec {app.exec}
+                 :icon {app.icon}))))
+
+(defwindow dock-window
+  :monitor 0
+  :geometry (geometry :x "0%"
+                      :y "-10px"
+                      :anchor "bottom center")
+  :exclusive true
+  (dock))

@@ -1,0 +1,153 @@
+(defpoll dotfiles-icon-theme :interval "1s"
+  "grep -m1 '^ICON_THEME=' ~/.config/i3/config-dotfiles | cut -d'=' -f2")
+
+(defpoll dotfiles-max-workspaces :interval "1s"
+  "grep -m1 '^MAX_WORKSPACES=' ~/.config/i3/config-dotfiles | cut -d'=' -f2")
+
+(defpoll dotfiles-dock-enabled :interval "1s"
+  "grep -m1 '^DOCK_ENABLED=' ~/.config/i3/config-dotfiles | cut -d'=' -f2")
+
+(defpoll dotfiles-max-dock-apps-saved :interval "1s"
+  "grep -m1 '^MAX_DOCK_APPS=' ~/.config/i3/config-dotfiles | cut -d'=' -f2")
+
+(defvar dotfiles-max-dock-apps-input "")
+
+(defpoll icon-themes-list
+  :interval "60s"
+  :initial "[]"
+  "~/.config/eww/scripts/list-icon-themes.sh")
+
+(defwidget ws-dropdown []
+  (box :class "dotfiles-row"
+       :orientation "h"
+       :space-evenly false
+       :spacing 12
+    (label :class "dotfiles-label"
+           :text "Max Workspaces"
+           :halign "start"
+           :hexpand true)
+    (box :orientation "v"
+         :space-evenly false
+         :spacing 4
+      (box :class "dotfiles-btn-group"
+           :orientation "h"
+           :space-evenly false
+           :spacing 4
+        (for n in '[1,2,3,4,5]'
+          (button
+            :class "dotfiles-btn-group-btn ${dotfiles-max-workspaces == n ? "active" : ""}"
+            :onclick "sed -i 's/^MAX_WORKSPACES=.*/MAX_WORKSPACES=${n}/' ~/.config/i3/config-dotfiles"
+            "${n}")))
+      (box :class "dotfiles-btn-group"
+           :orientation "h"
+           :space-evenly false
+           :spacing 4
+        (for n in '[6,7,8,9]'
+          (button :class "dotfiles-btn-group-btn ${dotfiles-max-workspaces == n ? "active" : ""}"
+            :onclick "sed -i 's/^MAX_WORKSPACES=.*/MAX_WORKSPACES=${n}/' ~/.config/i3/config-dotfiles"
+            "${n}"))))))
+
+(defwidget dock-toggle []
+  (box :class "dotfiles-row"
+       :orientation "h"
+       :space-evenly false
+       :spacing 12
+    (label :class "dotfiles-label"
+           :text "Dock Enabled"
+           :halign "start"
+           :hexpand true)
+    (box :class "dotfiles-btn-group"
+         :orientation "h"
+         :space-evenly false
+         :spacing 4
+      (button
+        :class "dotfiles-btn-group-btn ${dotfiles-dock-enabled == "true" ? "active" : ""}"
+        :onclick "sed -i 's/^DOCK_ENABLED=.*/DOCK_ENABLED=true/' ~/.config/i3/config-dotfiles && eww update dotfiles-dock-enabled=true"
+        "ON")
+      (button
+        :class "dotfiles-btn-group-btn ${dotfiles-dock-enabled == "false" ? "active" : ""}"
+        :onclick "sed -i 's/^DOCK_ENABLED=.*/DOCK_ENABLED=false/' ~/.config/i3/config-dotfiles && eww update dotfiles-dock-enabled=false"
+        "OFF"))))
+
+(defwidget icon-dropdown []
+  (box :class "dotfiles-row"
+       :orientation "v"
+       :space-evenly false
+       :spacing 8
+    (label :class "dotfiles-label"
+           :text "Icon Theme"
+           :halign "start")
+    (scroll :hscroll false
+            :vscroll true
+            :height 120
+      (box :class "dotfiles-icon-list"
+           :orientation "v"
+           :space-evenly false
+           :spacing 2
+        (for theme in icon-themes-list
+          (button
+            :class "dotfiles-icon-item ${dotfiles-icon-theme == theme ? "active" : ""}"
+            :onclick "sed -i 's/^ICON_THEME=.*/ICON_THEME=${theme}/' ~/.config/i3/config-dotfiles && eww update dotfiles-icon-theme=${theme}"
+            theme))))))
+
+(defwidget dotfiles-max-dock-row []
+  (box :class "dotfiles-row"
+       :orientation "h"
+       :space-evenly false
+       :spacing 12
+    (label :class "dotfiles-label"
+           :text "Max Dock Apps"
+           :halign "start"
+           :hexpand true)
+    (box :orientation "h"
+         :space-evenly false
+         :spacing 8
+      (input :class "dotfiles-input"
+             :value {dotfiles-max-dock-apps-input == "" ? dotfiles-max-dock-apps-saved : dotfiles-max-dock-apps-input}
+             :onchange "eww update dotfiles-max-dock-apps-input={}")
+      (button
+  :class "dotfiles-btn-group-btn"
+  :onclick "sed -i 's/^MAX_DOCK_APPS=.*/MAX_DOCK_APPS=${dotfiles-max-dock-apps-input}/' ~/.config/i3/config-dotfiles && eww update dotfiles-max-dock-apps-saved=${dotfiles-max-dock-apps-input} && eww update dotfiles-max-dock-apps-input='' && notify-send -t 2000 'Dotfiles' 'Max Dock Apps saved'"
+  "OK"))))
+
+(defwidget dotfiles-gui []
+  (box :class "dotfiles-window"
+       :orientation "v"
+       :space-evenly false
+       :spacing 0
+    (box :class "dotfiles-header"
+         :orientation "h"
+         :space-evenly false
+         :spacing 8
+      (label :class "dotfiles-header-icon" :text "")
+      (label :class "dotfiles-header-title"
+             :text "Config Dotfiles"
+             :hexpand true)
+      (button
+        :class "dotfiles-close-btn"
+        :vexpand false
+        :onclick "eww close dotfiles-window"
+        "x"))
+    (box :class "dotfiles-body"
+         :orientation "v"
+         :space-evenly false
+         :spacing 20
+
+      (ws-dropdown)
+      (dock-toggle)
+      (icon-dropdown)
+
+      (dotfiles-max-dock-row))))
+
+(defwindow dotfiles-window
+  :monitor 0
+  :geometry (geometry :x "0"
+                      :y "0"
+                      :width "340px"
+                      :anchor "center")
+  :stacking "fg"
+  :exclusive false
+  :focusable true
+  :windowtype "normal"
+  :wm-ignore false
+  (dotfiles-gui))

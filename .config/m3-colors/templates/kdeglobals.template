@@ -18,4 +18,7 @@ BackgroundNormal={{m3primary_rgb}}
 ForegroundNormal={{m3onPrimary_rgb}}
 
 [General]
-ColorScheme=Material3-{{mode}}
+ColorScheme=Material3Custom
+
+[Icons]
+Theme=Tela-dark

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# SETTINGS vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+# SETTINGS 
 
 source "$HOME/.cache/m3-colors/colors.sh"
 
@@ -11,8 +11,8 @@ CITY_NAME='Jakarta'
 COUNTRY_CODE='ID'
 
 # FILL WITH LATITUDE AND LONGITUDE
-LATITUDE="-6.17511"  # Semarang latitude
-LONGITUDE="106.86504"  # Semarang longitude
+LATITUDE="-6.17511"  # City latitude
+LONGITUDE="106.86504"  # City longitude
 
 # Desired output language 
 LANG="en"
@@ -98,17 +98,16 @@ if [ "$COLOR_TEXT" != "" ]; then
     COLOR_TEXT_END="%{F-}"
 fi
 
-# Jika latitude/longitude tidak diisi, coba gunakan geocoding
+# fallback
 if [ -z "$LATITUDE" ] || [ -z "$LONGITUDE" ]; then
     if [ -z "$CITY_NAME" ]; then
-        # Jika city juga kosong, gunakan IP location
         IP=`curl -s ifconfig.me`
         IPCURL=$(curl -s https://ipinfo.io/$IP)
         CITY_NAME=$(echo $IPCURL | jq -r ".city")
         COUNTRY_CODE=$(echo $IPCURL | jq -r ".country")
     fi
     
-    # Gunakan Open-Meteo Geocoding API untuk mendapatkan koordinat
+    # Open-Meteo Geocoding API for coordinat
     GEOCODE_URL="https://geocoding-api.open-meteo.com/v1/search?name=$CITY_NAME&count=1&language=en&format=json"
     GEOCODE_RESPONSE=`curl -s "$GEOCODE_URL"`
     
@@ -130,14 +129,14 @@ RESPONSE_FORECAST=""
 ERROR=0
 ERR_MSG=""
 
-# Temperature unit untuk Open-Meteo
+# Temperature unit for Open-Meteo
 if [ "$UNITS" = "imperial" ]; then
     TEMP_UNIT_PARAM="temperature_unit=fahrenheit"
 else
     TEMP_UNIT_PARAM="temperature_unit=celsius"
 fi
 
-# Wind speed unit untuk Open-Meteo
+# Wind speed unit for Open-Meteo
 if [ $KNOTS == "yes" ]; then
     WIND_UNIT_PARAM="windspeed_unit=kn"
 elif [ "$UNITS" = "imperial" ]; then
@@ -146,7 +145,7 @@ else
     WIND_UNIT_PARAM="windspeed_unit=kmh"
 fi
 
-# Open-Meteo API URL untuk current weather
+# Open-Meteo API URL for current weather
 URL="https://api.open-meteo.com/v1/forecast?latitude=$LATITUDE&longitude=$LONGITUDE&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=sunrise,sunset&${TEMP_UNIT_PARAM}&${WIND_UNIT_PARAM}&timezone=auto"
 
 # Open-Meteo API URL untuk forecast 5 hari
@@ -179,7 +178,7 @@ function getData {
     fi
 }
 
-# FUNGSI BARU: Ambil data forecast 5 hari
+# data forecast 5 days
 function getForecastData {
     ERROR=0
     RESPONSE_FORECAST=`curl -s "$URL_FORECAST"`
@@ -225,75 +224,47 @@ function setIcons {
     if [ $WID -ge 95 ]; then
         # Thunderstorm
         ICON_COLOR=$COLOR_THUNDER
-        if [ $DATE -ge $SUNRISE -a $DATE -le $SUNSET ]; then
-            ICON=" "
-        else
-            ICON=" "
-        fi
+        ICON="󰖓 " # md-weather-lightning-rain
     elif [ $WID -ge 85 ]; then
         # Snow showers
         ICON_COLOR=$COLOR_SNOW
-        ICON=" "
+        ICON="󰖘 " # md-weather-snowy-heavy
     elif [ $WID -ge 80 ]; then
         # Rain showers
         ICON_COLOR=$COLOR_HEAVY_RAIN
-        if [ $DATE -ge $SUNRISE -a $DATE -le $SUNSET ]; then
-            ICON="殺"
-        else
-            ICON="殺"
-        fi
+        ICON="󰖗 " # md-weather-pouring
     elif [ $WID -ge 71 ]; then
         # Snow
         ICON_COLOR=$COLOR_SNOW
-        ICON=" "
+        ICON="󰖘 " # md-weather-snowy
     elif [ $WID -ge 61 ]; then
         # Rain
         ICON_COLOR=$COLOR_HEAVY_RAIN
-        if [ $DATE -ge $SUNRISE -a $DATE -le $SUNSET ]; then
-            ICON=" "
-        else
-            ICON=" "
-        fi
+        ICON="󰖗 " # md-weather-rainy
     elif [ $WID -ge 51 ]; then
         # Drizzle
         ICON_COLOR=$COLOR_LIGHT_RAIN
-        if [ $DATE -ge $SUNRISE -a $DATE -le $SUNSET ]; then
-            ICON=" "
-        else
-            ICON=" "
-        fi
+        ICON="󰖗 " # md-weather-partly-rainy
     elif [ $WID -ge 45 ]; then
         # Fog
         ICON_COLOR=$COLOR_FOG
-        ICON=" "
+        ICON="󰖑 " # md-weather-fog (Sudah benar)
     elif [ $WID -eq 0 ]; then
         # Clear sky
         if [ $DATE -ge $SUNRISE -a $DATE -le $SUNSET ]; then
             ICON_COLOR=$COLOR_SUN
-            ICON=" "
+            ICON="󰖙 " # md-weather-sunny (Lebih konsisten dibanding )
         else
             ICON_COLOR=$COLOR_MOON
-            ICON=" "
+            ICON="󰖔 " # md-weather-night
         fi
     elif [ $WID -ge 1 ] && [ $WID -le 3 ]; then
         # Partly cloudy to overcast
-        if [ $WID -eq 1 ]; then
-            # Few clouds
-            if [ $DATE -ge $SUNRISE -a $DATE -le $SUNSET ]; then
-                ICON_COLOR=$COLOR_SUN
-                ICON="󰅟 " 
-            else
-                ICON_COLOR=$COLOR_MOON
-                ICON="󰅟 "
-            fi
-        else
-            # Overcast
-            ICON_COLOR=$COLOR_CLOUD
-            ICON="󰅟 " 
-        fi
+        ICON_COLOR=$COLOR_CLOUD
+        ICON="󰖐 " # md-weather-cloudy
     else
         ICON_COLOR=$COLOR_ERR
-        ICON=" "
+        ICON="󰅚 " # md-alert-circle (Pengganti  agar ukurannya sama)
     fi
     
     WIND=""
@@ -310,32 +281,19 @@ function setIcons {
             WINDFORCE2=$WINDFORCE_ACTUAL
         fi
         
+        # Menggunakan ikon MD yang sizenya setara dengan ikon cuaca
         if (( $(echo "$WINDFORCE2 <= 1" | bc -l) )); then
-            WINDICON=" "
-        elif (( $(echo "$WINDFORCE2 > 1 && $WINDFORCE2 <= 5" | bc -l) )); then
-            WINDICON=" "
-        elif (( $(echo "$WINDFORCE2 > 5 && $WINDFORCE2 <= 11" | bc -l) )); then
-            WINDICON=" "
-        elif (( $(echo "$WINDFORCE2 > 11 && $WINDFORCE2 <= 19" | bc -l) )); then
-            WINDICON=" "
-        elif (( $(echo "$WINDFORCE2 > 19 && $WINDFORCE2 <= 28" | bc -l) )); then
-            WINDICON=" "
-        elif (( $(echo "$WINDFORCE2 > 28 && $WINDFORCE2 <= 38" | bc -l) )); then
-            WINDICON=" "
-        elif (( $(echo "$WINDFORCE2 > 38 && $WINDFORCE2 <= 49" | bc -l) )); then
-            WINDICON=" "
-        elif (( $(echo "$WINDFORCE2 > 49 && $WINDFORCE2 <= 61" | bc -l) )); then
-            WINDICON=" "
-        elif (( $(echo "$WINDFORCE2 > 61 && $WINDFORCE2 <= 74" | bc -l) )); then
-            WINDICON=" "
-        elif (( $(echo "$WINDFORCE2 > 74 && $WINDFORCE2 <= 88" | bc -l) )); then
-            WINDICON=" "
-        elif (( $(echo "$WINDFORCE2 > 88 && $WINDFORCE2 <= 102" | bc -l) )); then
-            WINDICON=" "
-        elif (( $(echo "$WINDFORCE2 > 102 && $WINDFORCE2 <= 117" | bc -l) )); then
-            WINDICON=" "
+            WINDICON="󰖝 " # Calm
+        elif (( $(echo "$WINDFORCE2 <= 11" | bc -l) )); then
+            WINDICON="󰖝 " # Light breeze
+        elif (( $(echo "$WINDFORCE2 <= 28" | bc -l) )); then
+            WINDICON="󰖝 " # Moderate breeze
+        elif (( $(echo "$WINDFORCE2 <= 49" | bc -l) )); then
+            WINDICON="󰖜 " # Strong breeze / Wind
+        elif (( $(echo "$WINDFORCE2 <= 88" | bc -l) )); then
+            WINDICON="󰖜 " # Gale / Strong wind
         else
-            WINDICON=" "
+            WINDICON="󰖚 " # Storm / Hurricane
         fi
     fi
     
@@ -375,46 +333,19 @@ function setIcons {
     fi
 }
 
-# FUNGSI BARU: Set icon untuk forecast (tanpa logika day/night)
+# Set icon for forecast 
 function setIconSimple {
     WID=$1
-    
-    if [ $WID -ge 95 ]; then
-        ICON_COLOR=$COLOR_THUNDER
-        ICON=" "
-    elif [ $WID -ge 85 ]; then
-        ICON_COLOR=$COLOR_SNOW
-        ICON=" "
-    elif [ $WID -ge 80 ]; then
-        ICON_COLOR=$COLOR_HEAVY_RAIN
-        ICON="殺"
-    elif [ $WID -ge 71 ]; then
-        ICON_COLOR=$COLOR_SNOW
-        ICON=" "
-    elif [ $WID -ge 61 ]; then
-        ICON_COLOR=$COLOR_HEAVY_RAIN
-        ICON=" "
-    elif [ $WID -ge 51 ]; then
-        ICON_COLOR=$COLOR_LIGHT_RAIN
-        ICON=" "
-    elif [ $WID -ge 45 ]; then
-        ICON_COLOR=$COLOR_FOG
-        ICON=" "
-    elif [ $WID -eq 0 ]; then
-        ICON_COLOR=$COLOR_SUN
-        ICON=" "
-    elif [ $WID -ge 1 ] && [ $WID -le 3 ]; then
-        if [ $WID -eq 1 ]; then
-            ICON_COLOR=$COLOR_SUN
-            ICON="󰅟 "
-        else
-            ICON_COLOR=$COLOR_CLOUD
-            ICON="󰅟 "
-        fi
-    else
-        ICON_COLOR=$COLOR_ERR
-        ICON=" "
-    fi
+    case $WID in
+        95|96|99) ICON="󰖓 "; ICON_COLOR=$COLOR_THUNDER ;;
+        85|86|71|73|75|77) ICON="󰖘 "; ICON_COLOR=$COLOR_SNOW ;;
+        80|81|82|61|63|65) ICON="󰖗 "; ICON_COLOR=$COLOR_HEAVY_RAIN ;;
+        51|53|55|56|57) ICON="󰖗 "; ICON_COLOR=$COLOR_LIGHT_RAIN ;;
+        45|48) ICON="󰖑 "; ICON_COLOR=$COLOR_FOG ;;
+        0) ICON="󰖙 "; ICON_COLOR=$COLOR_SUN ;;
+        1|2|3) ICON="󰖐 "; ICON_COLOR=$COLOR_CLOUD ;;
+        *) ICON="󰅚 "; ICON_COLOR=$COLOR_ERR ;;
+    esac
 }
 
 function outputCompact {
@@ -422,7 +353,7 @@ function outputCompact {
     echo "$OUTPUT"
 }
 
-# Output forecast 5 hari
+# Output forecast 5 days
 function outputForecast {
     if [ "$DISPLAY_FORECAST" != "yes" ]; then
         return
@@ -435,7 +366,7 @@ function outputForecast {
     fi
     
     for i in {0..4}; do
-        # Parse data untuk setiap hari
+        # Parse data 
         DATE_ISO=$(echo $RESPONSE_FORECAST | jq -r ".daily.time[$i]")
         WEATHER_CODE=$(echo $RESPONSE_FORECAST | jq -r ".daily.weather_code[$i]")
         TEMP_MAX=$(echo $RESPONSE_FORECAST | jq -r ".daily.temperature_2m_max[$i]" | cut -d "." -f 1)
@@ -453,13 +384,12 @@ function outputForecast {
         # Get description
         DESCRIPTION=$(getWeatherDescription $WEATHER_CODE)
         
-        # Print dalam format yang mudah di-parse
         # Format: DAY|ICON|DESC|MAX|MIN|RAIN|WIND
         echo "FORECAST_DAY_${i}|${DAY_NAME}|${ICON}|${DESCRIPTION}|${TEMP_MAX}${TEMP_UNIT}|${TEMP_MIN}${TEMP_UNIT}|${PRECIPITATION}mm|${WIND_MAX}"
     done
 }
 
-# FUNGSI TAMBAHAN: Output forecast dalam format JSON-friendly untuk eww
+# Output forecastformat JSON-friendly 
 function outputForecastJSON {
     if [ "$UNITS" == "imperial" ]; then
         TEMP_UNIT="°F"
@@ -468,7 +398,7 @@ function outputForecastJSON {
     fi
     
     for i in {0..4}; do
-        # Parse data untuk setiap hari
+        # Parse data 
         DATE_ISO=$(echo $RESPONSE_FORECAST | jq -r ".daily.time[$i]")
         WEATHER_CODE=$(echo $RESPONSE_FORECAST | jq -r ".daily.weather_code[$i]")
         TEMP_MAX=$(echo $RESPONSE_FORECAST | jq -r ".daily.temperature_2m_max[$i]" | cut -d "." -f 1)
@@ -476,7 +406,7 @@ function outputForecastJSON {
         PRECIPITATION=$(echo $RESPONSE_FORECAST | jq -r ".daily.precipitation_sum[$i]")
         WIND_MAX=$(echo $RESPONSE_FORECAST | jq -r ".daily.wind_speed_10m_max[$i]" | cut -d "." -f 1)
         
-        # Format tanggal
+        # Format date
         DAY_NAME=$(date -d "$DATE_ISO" +"%a" 2>/dev/null || date -j -f "%Y-%m-%d" "$DATE_ISO" +"%a" 2>/dev/null)
         
         # Set icon
@@ -523,7 +453,7 @@ function getWeatherDescription {
     esac
 }
 
-# Check mode dari parameter
+# Check mode from parameter
 MODE="current"  # default mode
 DEBUG_MODE=""
 
@@ -536,6 +466,9 @@ for arg in "$@"; do
         current)
             MODE="current"
             ;;
+        json)
+            MODE="json"
+            ;;
         forecast)
             MODE="forecast"
             ;;
@@ -545,7 +478,7 @@ for arg in "$@"; do
     esac
 done
 
-# Ambil data cuaca saat ini (FUNGSI ASLI)
+# get weather current 
 getData $DEBUG_MODE
 
 if [ $ERROR -eq 0 ]; then
@@ -572,17 +505,20 @@ if [ $ERROR -eq 0 ]; then
     WIND=""
     setIcons $WID
     
-    # Output berdasarkan mode
-    if [ "$MODE" = "current" ]; then
+    # Output based on mode
+    if [ "$MODE" = "json" ]; then
+        DESC_CLEAN=$(echo "$DESCRIPTION" | xargs)
+        if [ -z "$ICON_COLOR" ]; then ICON_COLOR="#ffffff"; fi
+        
+        echo "{\"icon\": \"$ICON\", \"color\": \"$ICON_COLOR\", \"text\": \"$DESC_CLEAN\"}"
+    elif [ "$MODE" = "current" ]; then
         outputCompact
     elif [ "$MODE" = "forecast" ]; then
-        # Hanya tampilkan forecast
         getForecastData $DEBUG_MODE
         if [ $ERROR -eq 0 ]; then
             outputForecast
         fi
     elif [ "$MODE" = "both" ]; then
-        # Tampilkan keduanya
         outputCompact
         getForecastData $DEBUG_MODE
         if [ $ERROR -eq 0 ]; then
@@ -590,5 +526,10 @@ if [ $ERROR -eq 0 ]; then
         fi
     fi
 else
+  # Error handling JSON
+  if [ "$MODE" = "json" ]; then
+    echo "{\"icon\": \"\", \"color\": \"#ff0000\", \"text\": \"Offline\"}"
+  else
     echo " "
+  fi
 fi

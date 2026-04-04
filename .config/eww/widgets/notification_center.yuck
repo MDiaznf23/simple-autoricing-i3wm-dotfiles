@@ -1,0 +1,124 @@
+;;-----------------------------------------------------
+;; POLLING VARIABEL
+;;-----------------------------------------------------
+
+(defpoll notification_recent :interval "2s" :initial "[]"
+  `~/.config/eww/scripts/get_notifications.sh recent`)
+
+(defpoll notification_earlier :interval "2s" :initial "[]"
+  `~/.config/eww/scripts/get_notifications.sh earlier`)
+
+(defvar active_tab_notification "recent")
+
+;;-----------------------------------------------------
+;; WIDGETS
+;;-----------------------------------------------------
+
+(defwidget notification_item [time appname summary id]
+  (eventbox :class "notification-item"
+            :cursor "pointer" 
+    (box :class "notification-item-container"
+         :orientation "h"
+         :spacing 10
+         :space-evenly false
+      
+      (box :orientation "v"
+           :halign "start"
+           :valign "center"
+           :hexpand true
+           :space-evenly false
+        (label :class "notification-time"
+               :text time
+               :xalign 0
+               :limit-width 35)
+        (label :class "notification-appname"
+               :text appname
+               :xalign 0
+               :limit-width 35)
+        (label :class "notification-summary"
+               :text summary
+               :xalign 0
+               :wrap true
+               :limit-width 35))
+      
+      (button :class "notification-close-btn"
+        :valign "start"
+        :vexpand false
+        :onclick "dunstctl history-rm ${id} && eww update notification_history=$(~/.config/eww/scripts/get_notifications.sh)"
+        
+        (label :yalign 0.5 :class "notification-close-icon" :text "✕"))
+    )
+  )
+)
+
+(defwidget notification_center []
+  (box :class "notification-center-container"
+       :orientation "v"
+       :space-evenly false
+       :spacing 0
+
+    (box :class "notification-header"
+         :orientation "h"
+         :space-evenly false
+         :hexpand true
+      (label :class "notification-header-title"
+             :text "Notifications"
+             :halign "start"
+             :hexpand true)
+      (button :class "clear-all-btn"
+              :onclick "dunstctl history-clear && eww update notification_recent='[]' && eww update notification_earlier='[]'"
+        (label :xalign 1 :text "󰃢")))
+    
+    (box :class "separator" :hexpand true)
+
+    (box :class "notification-tabs"
+         :orientation "h"
+         :space-evenly true
+         :spacing 5
+      (button :class {active_tab_notification == "recent" ? "tab-btn active" : "tab-btn"}
+        :onclick "eww update active_tab_notification='recent'"
+  (label :text "Recent"))
+(button :class {active_tab_notification == "earlier" ? "tab-btn active" : "tab-btn"}
+        :onclick "eww update active_tab_notification='earlier'"
+  (label :text "Earlier")))
+
+    (scroll :class "notification-list-scroll"
+            :height 250
+            :vscroll true
+            :hscroll false
+      (box :class "notification-list"
+           :orientation "v"
+           :spacing 8
+           :valign {(active_tab_notification == "recent" ? arraylength(notification_recent) : arraylength(notification_earlier)) == 0 ? "center" : "start"}
+           :vexpand true
+        (for notification in {active_tab_notification == "recent" ? notification_recent : notification_earlier}
+          (notification_item
+              :time {notification.time}
+              :appname {notification.appname}
+              :summary {notification.summary}
+              :id {notification.id}))
+
+        (box :class "notification-footer"
+             :halign "center"
+             :valign "center"
+             :vexpand true
+             :visible {(active_tab_notification == "recent" ? arraylength(notification_recent) : arraylength(notification_earlier)) == 0}
+          (label :text "No new notifications"))
+      )
+    )
+  )
+)
+
+;;-----------------------------------------------------
+;; WINDOW
+;;-----------------------------------------------------
+
+(defwindow notification_center
+  :monitor 0
+  :geometry (geometry :x "-50px" :y "47px" :anchor "top right")
+  :stacking "overlay"
+  :exclusive false
+  :focusable false
+  :windowtype "dialog"
+  :wm-ignore false
+  (notification_center))

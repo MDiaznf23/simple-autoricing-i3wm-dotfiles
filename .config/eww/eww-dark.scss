@@ -2,12 +2,18 @@
 // EWW SCSS
 // ======================================== */
 
-/* Import pywal colors */
+/* Import colors */
 @import "colors.scss";
-@import "system-monitor-dark.scss";
-@import "calendar.scss";
-@import "control_center-dark.scss";
-@import "topbar-dark.scss";
-@import "brightness_popup.scss";
-@import "volume_popup.scss"
-
+@import "./styling/system-monitor-dark.scss";
+@import "./styling/control_center-dark.scss";
+@import "./styling/topbar-dark.scss";
+@import "./styling/brightness_popup.scss";
+@import "./styling/volume_popup.scss";
+@import "./styling/wifi_panel-dark.scss";
+@import "./styling/bluetooth_panel-dark.scss";
+@import "./styling/audio_panel-dark.scss";
+@import "./styling/notification-dark.scss";
+@import "./styling/menu-dark.scss";
+@import "./styling/media_panel-dark.scss";
+@import "./styling/dock-dark.scss";
+@import "./styling/gui_config-dark.scss"

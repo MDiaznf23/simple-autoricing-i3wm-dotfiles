@@ -1,0 +1,122 @@
+.dotfiles-window {
+  background-color: transparent;
+  background-image: linear-gradient(90deg,
+      $surface,
+      $on-secondary-fixed,
+    );
+  border-radius: 16px;
+  border: 1px solid $outline-variant;
+  padding: 0;
+  min-width: 320px;
+}
+
+.dotfiles-header {
+  background-color: $primary-container;
+  border-radius: 16px 16px 0 0;
+  padding: 14px 20px;
+
+  .dotfiles-header-icon {
+    color: $primary;
+    font-size: 16px;
+  }
+
+  .dotfiles-header-title {
+    color: $primary-fixed;
+    font-size: 14px;
+    font-weight: bold;
+  }
+}
+
+.dotfiles-body {
+  padding: 20px;
+}
+
+.dotfiles-row {
+  .dotfiles-label {
+    color: $on-surface;
+    font-size: 13px;
+  }
+
+  .dotfiles-input {
+    background-color: $surface-container-high;
+    color: $on-surface;
+    border: 1px solid $outline-variant;
+    border-radius: 8px;
+    padding: 4px 10px;
+    min-width: 100px;
+    font-size: 13px;
+
+    &:focus {
+      border-color: $primary;
+    }
+  }
+}
+
+.dotfiles-toggle {
+  background-color: $surface-variant;
+  color: $on-surface-variant;
+  border-radius: 20px;
+  padding: 4px 16px;
+  font-size: 12px;
+  font-weight: bold;
+  min-width: 60px;
+
+  &.active {
+    background-color: $primary;
+    color: $on-primary;
+  }
+}
+
+.dotfiles-btn-group-btn {
+  background-color: $surface-container-high;
+  color: $on-surface-variant;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: bold;
+  min-width: 28px;
+}
+
+.dotfiles-btn-group-btn:hover {
+  background-color: $surface-bright;
+}
+
+.dotfiles-btn-group-btn.active {
+  background-color: $primary;
+  color: $on-primary;
+}
+
+.dotfiles-icon-list {
+  padding: 4px;
+}
+
+.dotfiles-icon-item {
+  background-color: transparent;
+  color: $on-surface-variant;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.dotfiles-icon-item:hover {
+  background-color: $surface-container-high;
+  color: $on-surface;
+}
+
+.dotfiles-icon-item.active {
+  background-color: $primary-container;
+  color: $on-primary-container;
+}
+
+.dotfiles-close-btn {
+  background-color: transparent;
+  color: $primary-fixed;
+  border-radius: 5px;
+  padding: 2px 6px;
+  font-size: 13px;
+}
+
+.dotfiles-close-btn:hover {
+  background-color: $error-container;
+  color: $on-error-container;
+}

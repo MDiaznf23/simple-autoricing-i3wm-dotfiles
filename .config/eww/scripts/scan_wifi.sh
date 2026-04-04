@@ -11,7 +11,8 @@ fi
 # Get current connected network
 CURRENT_SSID=$(nmcli -t -f active,ssid dev wifi | grep '^yes' | cut -d':' -f2)
 
-# Scan without --rescan 
+# Scan TANPA --rescan (gunakan cache NetworkManager)
+# Ini JAUH lebih cepat (~100ms vs 2-5 detik)
 nmcli -t -f SSID,SIGNAL,SECURITY dev wifi list 2>/dev/null | \
     grep -v '^$' | \
     awk -F: -v current="$CURRENT_SSID" '

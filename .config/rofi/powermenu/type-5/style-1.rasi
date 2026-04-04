@@ -58,7 +58,7 @@ mainbox {
 inputbar {
     enabled:                     true;
     spacing:                     0px;
-    padding:                     70px 80px;
+    padding:                     60px 70px;
     background-color:            transparent;
     background-image:            url("~/.config/m3-colors/current-rofi.jpg", width);
     children:                    [ "textbox-prompt-colon", "dummy","prompt"];
@@ -136,7 +136,7 @@ element selected.normal {
 /*****----- Message -----*****/
 message {
     enabled:                     true;
-    margin:                      0px 15px 15px 15px;
+    margin:                      0px 0px 0px 0px;
     padding:                     15px;
     border:                      0px solid;
     border-radius:               12px;

@@ -1,0 +1,124 @@
+/* EWW Bluetooth Panel - Light Mode */
+
+.bt-expanded-panel {
+  background-color: transparent;
+  background-image: linear-gradient(to bottom right,
+      $secondary-fixed,
+      $surface,
+      $primary-fixed,
+    );
+  border-radius: 10px;
+  padding: 10px;
+  min-width: 240px;
+  border: 1.5px solid $outline-variant;
+}
+
+.bt-panel-container {
+  padding: 0px;
+  margin-bottom: 5px;
+}
+
+.bt-scan-btn {
+  border-radius: 8px;
+  min-height: 20px;
+  min-width: 30px;
+  border-radius: 8px;
+}
+
+.bt-scan-btn:hover {
+  background-color: $surface-container-high;
+  color: $on-surface;
+}
+
+.bt-devices-scroll {
+  margin-bottom: 8px;
+  margin-top: 5px;
+}
+
+.bt-device-item {
+  border-radius: 8px;
+  margin: 2px 0;
+}
+
+.bt-device-item:hover .bt-device-inner {
+  background-color: $inverse-primary;
+}
+
+.bt-device-inner {
+  background-color: $surface-container-highest;
+  min-width: 200px;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.bt-device-inner.bt-connected {
+  background-color: transparentize($surface-container-high, 0.1);
+  border-left: 3px solid $primary;
+}
+
+.bt-device-item.bt-connected:hover {
+  background-color: $inverse-primary;
+}
+
+.bt-type-icon {
+  font-size: 16px;
+  min-width: 24px;
+  color: $on-surface;
+}
+
+.bt-name-label {
+  font-size: 13px;
+  color: $on-surface;
+}
+
+.bt-action-btn {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.bt-action-btn:hover {
+  background-color: $surface-container-high;
+}
+
+.bt-action-btn.bt-unpair:hover {
+  background-color: $error-container;
+  color: $on-error-container;
+}
+
+.bt-no-devices {
+  padding: 20px;
+  color: $on-surface-variant;
+  font-size: 13px;
+}
+
+.bt-power-toggle {
+  background-color: $inverse-primary;
+  border-radius: 40px;
+  padding: 1px 3px;
+  min-width: 35px;
+  min-height: 20px;
+  font-size: 12px;
+  color: $on-surface-variant;
+  transition: background-color 0.2s ease;
+}
+
+.bt-power-toggle:hover {
+  background-color: $secondary-container;
+  color: $on-tertiary-container;
+}
+
+.circle-indicator-on {
+  background-color: $on-surface-variant;
+  border-radius: 100%;
+  min-height: 16px;
+  min-width: 16px;
+}
+
+.circle-indicator-off {
+  background-color: $on-surface-variant;
+  border-radius: 100%;
+  min-height: 16px;
+  min-width: 16px;
+}

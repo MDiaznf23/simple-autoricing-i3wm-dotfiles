@@ -13,6 +13,14 @@
       "destination": "~/.config/qt6ct/style-colors.conf"
     },
     {
+      "source": "kde.colors",
+      "destination": "~/.config/qt6ct/colors/material3.colors"
+    },
+    {
+      "source": "kde.colors",
+      "destination": "~/.local/share/color-schemes/Material3.colors"
+    },
+    {
       "source": "kdeglobals",
       "destination": "~/.config/kdeglobals"
     },

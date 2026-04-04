@@ -1,6 +1,3 @@
-#!/bin/sh
-# Load pywal colors BEFORE i3 starts
-xrdb -merge ~/.cache/m3-colors/colors.Xresources
-
-# Apply pywal sequences
-[ -f ~/.cache/m3-colors/sequences ] 
+# ~/.xprofile
+export XDG_MENU_PREFIX=arch-
+export QT_QPA_PLATFORMTHEME=qt5ct

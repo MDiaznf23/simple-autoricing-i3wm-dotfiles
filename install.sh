@@ -40,7 +40,7 @@ mkdir -p $BACKUP_DIR
 echo "Installing system packages..."
 sudo pacman -S --needed --noconfirm \
     i3-wm i3status alacritty pcmanfm rofi picom feh scrot xclip xdotool dex \
-    brightnessctl firefox playerctl lm_sensors imagemagick xsettingsd \
+    brightnessctl firefox dolphin playerctl lm_sensors imagemagick xsettingsd \
     python python-pip python-pipx fish redshift inotify-tools\
     jq bc dunst rsync fastfetch pamixer python-i3ipc qt5ct cava tex-gyre-fonts 
 
@@ -78,6 +78,13 @@ if [ -d "fonts" ]; then
     fc-cache -fv
     success "Custom fonts installed"
 fi
+
+# Install Tela icon theme
+echo "Installing Tela icon theme..."
+git clone https://github.com/vinceliuice/Tela-icon-theme.git /tmp/Tela-icon-theme
+cd /tmp/Tela-icon-theme && ./install.sh
+cd -
+success "Tela icon theme installed"
 
 # Set fish as default shell
 echo "Setting fish as default shell..."
@@ -183,7 +190,7 @@ echo "Backup saved at: $BACKUP_DIR"
 echo ""
 echo "Installed components:"
 echo "  • i3-wm, rofi, dunst, picom"
-echo "  • alacritty, pcmanfm, feh"
+echo "  • alacritty, dolphin, feh"
 echo "  • firefox, eww, m3wal"
 echo "  • Nerd Fonts & icon fonts"
 echo ""

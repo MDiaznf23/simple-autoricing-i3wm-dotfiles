@@ -1,0 +1,88 @@
+;;-----------------------------------------------------
+;; POLLING VARIABEL
+;;-----------------------------------------------------
+
+(deflisten list_outputs :initial "[]"
+  "python3 ~/.config/eww/scripts/get_audio_devices.py sink")
+
+(deflisten list_inputs :initial "[]"
+  "python3 ~/.config/eww/scripts/get_audio_devices.py source")
+
+;;-----------------------------------------------------
+;; WIDGETS
+;;-----------------------------------------------------
+
+(defwidget audio_panel []
+  (box :orientation "v"
+       :space-evenly false
+       :class "audio-menu-container"
+       :spacing 5
+
+    (box :orientation "h"
+         :space-evenly false
+         :spacing 10
+      (label :class "panel-title" :text "Audio Panel" :hexpand true :halign "start"))
+
+    (separator)
+
+    ;; OUTPUT SECTION
+    (box :orientation "v"
+         :space-evenly false
+         :spacing 5
+      (label :text "Output Devices"
+             :class "section-title"
+             :halign "start")
+      (box :orientation "v"
+           :spacing 3
+        (for device in list_outputs
+          (eventbox :onclick "pactl set-default-sink ${device.id}"
+            (box :orientation "h"
+                 :spacing 0
+                 :space-evenly false
+                 :class "audio-item-container ${device.is_active ? 'active' : ''}"
+              (label :class "audio-text" :halign "start" :hexpand true :text "${device.name}" :limit-width 28)
+              (box :class "indicator-audio ${device.is_active ? 'active' : ''}" :halign "end")
+            )
+          )
+        )
+      )
+    )
+
+    ;; INPUT SECTION
+    (box :orientation "v"
+         :space-evenly false
+         :spacing 5
+      (label :text "Input Devices"
+             :class "section-title"
+             :halign "start")
+      (box :orientation "v"
+           :spacing 3
+        (for device in list_inputs
+          (eventbox :onclick "pactl set-default-source ${device.id}"
+            (box :orientation "h"
+                 :spacing 0
+                 :space-evenly false
+                 :class "audio-item-container ${device.is_active ? 'active' : ''}"
+              (label :class "audio-text" :halign "start" :hexpand true :text "${device.name}" :limit-width 28)
+              (box :class "indicator-audio ${device.is_active ? 'active' : ''}" :halign "end")
+            )
+          )
+        )
+      )
+    )
+  )
+)
+
+;;-----------------------------------------------------
+;; WINDOW
+;;-----------------------------------------------------
+
+(defwindow audio_window
+  :monitor 0
+  :geometry (geometry :x "-10px" :y "47px" :anchor "top right")
+  :stacking "overlay"
+  :exclusive false
+  :focusable false
+  :windowtype "dialog"
+  :wm-ignore false
+  (audio_panel))

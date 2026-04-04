@@ -2,16 +2,18 @@
 # Autostart script for i3
 
 # 1. System Settings 
-# Mengatur layout keyboard setiap restart memastikan setting tetap aktif
 setxkbmap -layout "us,ru" -option "grp:win_space_toggle" &
 
-# 2. Wallpaper
+# 2. Notification Daemon (harus duluan sebelum yang lain)
+pgrep -x dunst > /dev/null || dunst &
+sleep 0.3
+
+# 3. Wallpaper
 ~/.fehbg &
 
-# 3. Compositor 
-# Kill all existing compositors first
+# 4. Compositor 
 killall -q picom compton xcompmgr
-while pgrep -x picom >/dev/null || pgrep -x compton >/dev/null; do
+while pgrep -x picom >/dev/null || pgrep -x compton >/dev/null || pgrep -x xcompmgr >/dev/null; do
     sleep 0.1
 done
 
@@ -21,22 +23,32 @@ elif command -v compton &> /dev/null; then
     compton &
 fi
 
-# 4. Settings Daemon
+# 5. Menu Generator
+pkill -f "menu-gen.py"
+sleep 0.5
+python3 ~/.config/eww/scripts/menu-gen.py &
+
+pkill -f "dock-gen.py"
+sleep 0.5
+python3 ~/.config/eww/scripts/dock-gen.py &
+
+# 6. Settings Daemon
 pgrep -x xsettingsd > /dev/null || xsettingsd &
 
-# 5. Widgets (Eww)
-killall -q eww
+# 7. Widgets (Eww)
+killall eww 2>/dev/null
+sleep 0.5
 eww daemon &
 
 while ! eww ping &>/dev/null; do
-    sleep 0.1
+    sleep 0.3
 done
 
 eww open bar &
 
-pgrep -x dunst > /dev/null || dunst &
-
-# 6. Monitor Scripts
+# 8. Monitor Scripts
 pkill -f fullscreen-monitor
 ~/.config/eww/scripts/fullscreen-monitor.sh &
 
+pkill -f dock-autohide
+~/.config/eww/scripts/dock-autohide.sh &

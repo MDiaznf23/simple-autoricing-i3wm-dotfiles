@@ -15,29 +15,25 @@ for_window [class="conky"] border none
 for_window [class="Emacs"] border pixel $thick
 for_window [class="URxvt"] border pixel $thick
 for_window [class="st"] border pixel $thick
-#for_window [class="XTerm"] border pixel $thick
 
 workspace_auto_back_and_forth no
-focus_follows_mouse no
+focus_follows_mouse yes
 smart_borders on
 smart_borders no_gaps
 
 # FLOATING APPLICATIONS
 for_window [class="Blueman-manager"] floating enable
 for_window [class="gwenview"] floating enable, sticky enable, resize set 960 540, move position center
+for_window [class="haruna"] floating enable, resize set 1090 615, move position center
 for_window [class="mpv"] floating enable, resize set 1090 615, move position center
-for_window [class="Engrampa"] floating enable, resize set 890 500, move position center
+for_window [class="ark"] floating enable, resize set 890 500, move position center
 for_window [class="Xdg-desktop-portal-gtk"] floating enable, resize set 890 500, move position center
 for_window [class="com-abdownloadmanager-desktop-AppKt"] floating enable, move position center
 for_window [class="copyq"] floating enable, resize set 550 410, move position center
 for_window [class="Audacious"] floating enable, resize set 550 410, move position center
+for_window [class="Virt-manager" title="on QEMU/KVM"] resize set 1000
 set $mod Mod4
 
-# Set colors from Xresources
-# Change 'color7' and 'color2' to whatever colors you want i3 to use 
-# from the generated scheme.
-# NOTE: The '#f0f0f0' in the lines below is the color i3 will use if
-# it fails to get colors from Xresources.
 set_from_resource $fg i3wm.m3onSurfaceVariant #f0f0f0
 set_from_resource $bg i3wm.m3outlineVariant #f0f0f0
 
@@ -51,9 +47,9 @@ client.placeholder      $bg     $bg     $fg  $bg       $bg
 client.background       $bg
 
 gaps inner 10
-gaps outer 5 
-gaps top 42   
-gaps bottom 5
+gaps outer 0 
+gaps top 37   
+gaps bottom 0
 
 # PROTIP: You can also dynamically set dmenu's colors this way:
 bindsym $mod+d exec ~/.config/rofi/launchers/type-6/launcher.sh
@@ -69,9 +65,14 @@ bindsym Ctrl+Mod4+Left exec --no-startup-id ~/.config/Scripts/ws_cycle.py prev
 bindsym $mod+l exec --no-startup-id lock
 
 # Pulse Audio controls
-bindsym $mod+Ctrl+Up exec --no-startup-id pamixer -i 1 --set-limit 100 && ~/.config/eww/scripts/volume-popup.sh
-bindsym $mod+Ctrl+Down exec --no-startup-id pamixer -d 1 && ~/.config/eww/scripts/volume-popup.sh
+bindsym XF86AudioRaiseVolume exec --no-startup-id pamixer -i 1 --set-limit 100 && ~/.config/eww/scripts/volume-popup.sh
+bindsym XF86AudioLowerVolume exec --no-startup-id pamixer -d 1 && ~/.config/eww/scripts/volume-popup.sh
 bindsym XF86AudioMute exec --no-startup-id pamixer -t && ~/.config/eww/scripts/volume-popup.sh
+bindsym XF86AudioPause exec --no-startup-id playerctl play-pause
+bindsym XF86AudioPlay exec --no-startup-id playerctl play-pause
+bindsym XF86AudioNext exec --no-startup-id playerctl next
+bindsym XF86AudioPrev exec --no-startup-id playerctl previous
+bindsym XF86AudioStop exec --no-startup-id playerctl stop
 
 bindsym XF86MonBrightnessUp exec --no-startup-id ~/.config/i3/brightness.sh up && ~/.config/eww/scripts/brightness-popup.sh
 bindsym XF86MonBrightnessDown exec --no-startup-id ~/.config/i3/brightness.sh down && ~/.config/eww/scripts/brightness-popup.sh
@@ -100,7 +101,7 @@ floating_modifier $mod
 bindsym $mod+Return exec alacritty
 
 # start file manager
-bindsym $mod+Shift+f exec pcmanfm
+bindsym $mod+Shift+f exec dolphin
 
 # Browser binding
 bindsym $mod+b exec firefox
@@ -111,11 +112,14 @@ bindsym $mod+Shift+e exec ~/.config/rofi/powermenu/type-5/powermenu.sh
 # start wpg
 bindsym $mod+Shift+b exec ~/.config/rofi/wpg-select.sh
 
-# Multi-screen screenshots 
-bindsym --release Print exec spectacle -fbo ~/Pictures/Screenshots/screenshot_$(date +%Y%m%d_%H%M%S).png
+# Full screenshot
+bindsym --release Print exec scrot ~/Pictures/Screenshots/screenshot_%Y%m%d_%H%M%S.png
 
-# OSX-like area selection screenshots
-bindsym --release $mod+Shift+s exec spectacle -rbo ~/Pictures/Screenshots/screenshot_$(date +%Y%m%d_%H%M%S).png
+# Area selection
+bindsym --release $mod+Shift+s exec scrot -s ~/Pictures/Screenshots/screenshot_%Y%m%d_%H%M%S.png
+
+# Area selection → clipboard
+bindsym --release $mod+Shift+c exec scrot -s /tmp/screenshot.png && xclip -selection clipboard -t image/png -i /tmp/screenshot.png
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -155,31 +159,44 @@ bindsym $mod+e layout toggle split
 # focus the parent container
 bindsym $mod+a focus parent
 
-# Define names for default workspaces for which we configure key bindings later on.
-# We use variables to avoid repeating the names in multiple places.
+# Define names for default workspaces
 set $ws1 "1"
 set $ws2 "2"
 set $ws3 "3"
 set $ws4 "4"
 set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7"
+set $ws8 "8"
+set $ws9 "9"
+set $ws10 "10"
 
 # toggle tiling / floating
-# Keybind untuk toggle floating dengan resize otomatis
 bindsym $mod+Shift+v floating toggle, resize set 500 300, move position center
 
-# switch to workspace
+# Switch to workspace
 bindsym $mod+1 workspace $ws1
 bindsym $mod+2 workspace $ws2
 bindsym $mod+3 workspace $ws3
 bindsym $mod+4 workspace $ws4
 bindsym $mod+5 workspace $ws5
+bindsym $mod+6 workspace $ws6
+bindsym $mod+7 workspace $ws7
+bindsym $mod+8 workspace $ws8
+bindsym $mod+9 workspace $ws9
+bindsym $mod+0 workspace $ws10
 
-# move focused container to workspace
+# Move focused container to workspace
 bindsym $mod+Shift+1 move container to workspace $ws1
 bindsym $mod+Shift+2 move container to workspace $ws2
 bindsym $mod+Shift+3 move container to workspace $ws3
 bindsym $mod+Shift+4 move container to workspace $ws4
 bindsym $mod+Shift+5 move container to workspace $ws5
+bindsym $mod+Shift+6 move container to workspace $ws6
+bindsym $mod+Shift+7 move container to workspace $ws7
+bindsym $mod+Shift+8 move container to workspace $ws8
+bindsym $mod+Shift+9 move container to workspace $ws9
+bindsym $mod+Shift+0 move container to workspace $ws10
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
@@ -214,23 +231,33 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
+# Voice Control Mode
+mode "voice" {
+    bindsym Return mode "default"; exec --no-startup-id pkill -f bridge.sh; exec --no-startup-id pkill voicewm; exec --no-startup-id dunstctl close 999
+    bindsym Escape mode "default"; exec --no-startup-id pkill -f bridge.sh; exec --no-startup-id pkill voicewm; exec --no-startup-id dunstctl close 999
+}
+
+# Trigger untuk masuk mode (Mod+M)
+bindsym $mod+m mode "voice"; exec --no-startup-id ~/.config/eww/scripts/bridge.sh
+
 # Set screen timeout
 exec --no-startup-id xset s 600 600
 
 # Auto lock dengan xss-lock
 exec --no-startup-id xss-lock -- lock
 
-# Start KWallet daemon
-exec --no-startup-id /usr/lib/pam_kwallet_init
-exec --no-startup-id kwalletd6
+exec --no-startup-id ~/m3-colors-switch.sh
 
-# Set volume default saat startup 
-exec --no-startup-id sleep 2 && pactl set-sink-volume @DEFAULT_SINK@ 70%
+exec --no-startup-id lxpolkit
+
+exec --no-startup-id kbuildsycoca6 --noincremental
+exec --no-startup-id /usr/bin/kded6
 
 # Jalankan semua aplikasi autostart
-exec --no-startup-id dex --autostart --environment i3 
+exec --no-startup-id dex --autostart --environment i3
 
-exec --no-startup-id ~/.config/i3/audio-notify.sh 
+exec --no-startup-id m3wal ~/.config/m3-colors/current_wallpaper
 
+exec_always --no-startup-id ~/.config/eww/scripts/dock-autohide.sh 
 # Autostart
 exec_always --no-startup-id ~/.config/i3/autostart.sh

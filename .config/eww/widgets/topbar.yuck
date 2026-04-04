@@ -1,5 +1,9 @@
 ;; Eww Bar Configuration
 
+(defpoll ws_list :interval "1s"
+  :initial "[1,2,3]"
+  "bash ~/.config/eww/scripts/get-dotfiles-config.sh")
+
 (deflisten workspaces :initial "[]" 
   "bash ~/.config/eww/scripts/get-workspaces.sh")
 
@@ -10,10 +14,10 @@
 (deflisten active_window
   "~/.config/eww/scripts/xwindow-clickable.sh")
 
-;; Definisi variable untuk WiFi
+;; Definisi variable untuk system variable
 (defpoll system_status :interval "2s"
-  :initial '{"wifi":"","brightness":"","volume":"", "battery":""}'
-  "~/.config/eww/scripts/wifi-status.sh")
+  :initial '{"wifi_icon":"","wifi_desc":"","wifi_connected":false,"bat_icon":"","bat_desc":"","bat_capacity":0,"bat_charging":false,"bright_icon":"","bright_desc":"","bright_pct":0,"vol_icon":"","vol_desc":"","vol_pct":0,"vol_muted":false}'
+  "~/.config/eww/scripts/system-status.sh")
 
 ;; Variable untuk waktu
 (defpoll time :interval "1s"
@@ -28,15 +32,15 @@
            :text "${current-mode}")))
 
 (defwidget workspaces_widget []
-  (eventbox :onscroll "i3-msg workspace {}"
-    (box :class "i3-section"
-         :spacing 2
-         :valign "center"
-         :vexpand false
-      (for ws in workspaces
-        (button :class "ws-btn ${ws.focused ? 'focused' : ''} ${ws.urgent ? 'urgent' : ''} ${ws.visible ? 'visible' : ''}"
-                :onclick "i3-msg 'workspace number ${ws.num}'"
-          "${ws.name}")))))
+  (box :class "i3-section"
+       :spacing 2
+       :valign "center"
+       :vexpand false
+    (for num in ws_list
+      (button
+        :class "ws-btn ${jq(workspaces, ".[] | select(.num == ${num}) | .focused", "r") == "true" ? "focused" : ""} ${jq(workspaces, ".[] | select(.num == ${num}) | .urgent", "r") == "true" ? "urgent" : ""} ${jq(workspaces, ".[] | select(.num == ${num}) | .visible", "r") == "true" ? "visible" : ""}"
+        :onclick "i3-msg 'workspace number ${num}'"
+        "${num}"))))
 
 ;; Main Bar Widget
 (defwidget bar-widget []
@@ -56,7 +60,8 @@
          :valign "center"
          :vexpand false
 
-      (button :onclick "~/.config/rofi/powermenu/type-5/powermenu.sh &"
+      (eventbox :onclick "eww open --toggle start_menu"
+                :cursor "pointer"
         (label :class "left-text"
                :text " "))
         
@@ -87,8 +92,9 @@
          :valign "center"
          :vexpand false
       
-      (button :onclick "~/.config/eww/scripts/toggle_dashboard.sh"
-              :timeout "2s"
+      (eventbox :onclick "eww open --toggle performance_monitor"
+                :timeout "2s"
+                :cursor "pointer"
         (box :class "windows-center-bar"
              :orientation "h"
              :halign "center"
@@ -121,9 +127,7 @@
                  :spacing 8)
       )
 
-      (eventbox :onclick "~/.config/eww/scripts/toggle-control-center.sh"
-              :timeout "2s"        
-        (box :class "status-section-right"
+      (box :class "status-section-right"
              :orientation "h"
              :space-evenly false
              :halign "end"
@@ -134,26 +138,79 @@
           ;; --- 1. WiFi ---
           (eventbox :onhover "eww update show_wifi_tooltip=true && eww open wifi-tooltip-window"
                     :onhoverlost "eww update show_wifi_tooltip=false && eww close wifi-tooltip-window"
-            (label :class "right-text"
-                   :text {system_status.wifi})
+            (box :orientation "h"
+                 :space-evenly false
+                 :spacing 0
+              (label :class "right-icon"
+                     :text {system_status.wifi_icon})
+              (label :class "right-text"
+                     :text {system_status.wifi_desc})
+            )
           )
+      )
+
+      (box :class "status-section-right"
+             :orientation "h"
+             :space-evenly false
+             :halign "end"
+             :spacing 10
+             :valign "center"
+             :vexpand false
 
           ;; --- 2. Battery ---
           (eventbox :onhover "eww update show_battery_tooltip=true && eww open battery-tooltip-window"
                     :onhoverlost "eww update show_battery_tooltip=false && eww close battery-tooltip-window"
-            (label :class "right-text"
-                   :text {system_status.battery})
+            (box :orientation "h"
+                 :spacing 5
+                 :space-evenly false
+              (label :class "right-icon"
+                     :text {system_status.bat_icon})
+              (label :class "right-text"
+                     :text {system_status.bat_desc})
+            )
           )
+      )
+
+      (eventbox :onclick "eww open --toggle notification_center"
+                :cursor "pointer"
+        (box :class "notification-section-right"
+             :orientation "h"
+             :space-evenly true
+             :halign "end"
+             :spacing 10
+             :valign "center"
+             :vexpand false
+        (label :class "notification-icon"
+               :text {(arraylength(notification_recent) + arraylength(notification_earlier)) > 0 ? "󰂚" : "󰂜"})))
+
+      (eventbox :onclick "eww open --toggle media_window"
+                :cursor "pointer"
+        (box :class "media-section"
+             :orientation "h"
+             :space-evenly true
+             :halign "end"
+             :spacing 10
+             :valign "center"
+             :vexpand false
+          (label :class "media-icon"
+                 :text {media_info.status == "Playing" ? "󰎈" : "󰎇"})))
+
+      (box :class "status-section-right"
+             :orientation "h"
+             :space-evenly false
+             :halign "end"
+             :spacing 10
+             :valign "center"
+             :vexpand false
 
           ;; --- 3. Brightness ---
           (box :orientation "h"
-                 :spacing 5
-            (label :class "right-text"
-                     :text {system_status.brightness})
-            (label :class "right-text"
-                     :text {system_status.volume}))
-        )
-      )
+                 :spacing 15
+            (label :class "right-icon"
+                     :text {system_status.bright_icon})
+            (label :class "right-icon"
+                     :text {system_status.vol_icon}))
+      ) 
 
       (box :class "time-bar"
            :orientation "h"
@@ -168,6 +225,22 @@
                :vexpand false 
                :text time)
       )
+
+      (eventbox :onclick "~/.config/eww/scripts/toggle-control-center.sh"
+                :timeout "2s"     
+                :cursor "pointer"
+        (box :class "panel-bar"
+           :orientation "h"
+           :space-evenly false
+           :spacing 0
+           :valign "center"
+           :vexpand false
+          (label :class "time-text"
+               :valign "center"
+               :vexpand false 
+               :text " " )
+        )
+      )
     )
   )
 )
@@ -175,9 +248,9 @@
 ;; Window Definition
 (defwindow bar
   :monitor 0
-  :geometry (geometry :x "14px"
+  :geometry (geometry :x "10px"
                       :y "10px"
-                      :width "98%"
+                      :width "1346px"
                       :height "27px"
                       :anchor "top left")
   :stacking "fg"

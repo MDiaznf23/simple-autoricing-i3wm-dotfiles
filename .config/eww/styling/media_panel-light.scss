@@ -1,0 +1,138 @@
+/* EWW Media Player - Light Mode */
+
+.media-widget-container {
+  background-color: transparent;
+  background-image: linear-gradient(90deg,
+      $surface,
+      $surface-container-low,
+      $secondary-fixed,
+    );
+  padding: 10px;
+  border: 1px solid $outline-variant;
+  border-radius: 10px;
+  min-width: 160px;
+}
+
+.media-cover-widget {
+  min-width: 80px;
+  min-height: 80px;
+  background-color: transparent;
+  border-radius: 10px;
+}
+
+.media-widget-info {
+  margin-bottom: 0px;
+}
+
+.media-widget-name-btn {
+  background: transparent;
+  border: none;
+  padding: 2px 6px;
+  border-radius: 6px;
+
+  &:hover {
+    background-color: $surface-container-low;
+  }
+}
+
+.media-widget-name {
+  font-size: 11px;
+  color: $on-surface-variant;
+}
+
+.media-widget-title {
+  font-size: 12px;
+  font-weight: bold;
+  color: $on-surface;
+}
+
+.media-widget-artist {
+  font-size: 11px;
+  color: $on-surface-variant;
+}
+
+.player-dropdown {
+  background-color: $surface-container-low;
+  border: 1px solid $outline-variant;
+  border-radius: 8px;
+  padding: 4px;
+  margin: 4px 0;
+}
+
+.player-item {
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 8px;
+  color: $on-surface;
+
+  &:hover {
+    background-color: $surface-container-high;
+  }
+}
+
+.player-item-active {
+  background-color: $primary-container;
+  color: $on-primary-container;
+
+  &:hover {
+    background-color: $primary-container;
+  }
+}
+
+.media-progress-bar {
+  margin-top: 10px;
+  margin-right: 4px;
+  margin-left: 4px;
+
+  trough {
+    background-color: $outline-variant;
+    border-radius: 999px;
+    min-height: 4px;
+    min-width: 0px;
+  }
+
+  highlight {
+    background-color: $primary;
+    border-radius: 999px 0px 0px 999px;
+    min-height: 4px;
+    min-width: 0px;
+  }
+
+  slider {
+    min-width: 4px;
+    min-height: 4px;
+    background-color: $primary-container;
+    border-radius: 0px;
+    border: none;
+    box-shadow: none;
+  }
+
+  slider:hover {
+    background-color: $primary;
+  }
+}
+
+.media-widget-controls {
+  padding: 0;
+}
+
+.media-widget-btn {
+  margin: 0;
+  color: $on-surface;
+  font-size: 28px;
+}
+
+.media-widget-btn:hover {
+  color: $primary;
+}
+
+.media-widget-btn-play {
+  margin: 0;
+  color: $on-surface;
+  font-size: 32px;
+}
+
+.media-widget-btn-play:hover {
+  color: $primary;
+}

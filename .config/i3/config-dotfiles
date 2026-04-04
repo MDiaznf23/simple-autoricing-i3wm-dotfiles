@@ -1,0 +1,5 @@
+# ~/.config/i3/config-dotfiles
+MAX_WORKSPACES=5
+ICON_THEME=Tela
+DOCK_ENABLED=true
+MAX_DOCK_APPS=12
