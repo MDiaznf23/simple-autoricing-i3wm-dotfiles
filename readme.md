@@ -22,27 +22,27 @@ https://github.com/user-attachments/assets/682f1f48-9b7e-4324-b358-15c5abfb815f
 
 **Clean Desktop**
 
-![Clean Desktop](./Screenshot/clean.png)
+![Clean Desktop](./Screenshot/clean-1.png)
 
 **Busy Desktop**
 
-![Busy Desktop](./Screenshot/busy.png)
+![Busy Desktop](./Screenshot/busy-1.png)
 
 **Minimalist Desktop**
 
-![Rofi Launcher](./Screenshot/minimal.png)
+![Rofi Launcher](./Screenshot/minimal-1.png)
 
 **Daily Desktop**
 
-![Daily Desktop](./Screenshot/aurora.png)
+![Daily Desktop](./Screenshot/aurora-1.png)
 
 **Colorful Desktop**
 
-![Colorful Desktop](./Screenshot/city.png)
+![Colorful Desktop](./Screenshot/city-1.png)
 
 **Wonderful Desktop**
 
-![Wonderful Desktop](./Screenshot/bali.png)
+![Wonderful Desktop](./Screenshot/bali-1.png)
 
 ---
 
