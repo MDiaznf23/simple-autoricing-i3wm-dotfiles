@@ -14,7 +14,7 @@
 
 ## DEMO VIDEO
 
-https://github.com/user-attachments/assets/682f1f48-9b7e-4324-b358-15c5abfb815f
+https://github.com/user-attachments/assets/2bca38c9-3f94-400a-a44f-d888ace6b83b
 
 ---
 
@@ -38,7 +38,7 @@ https://github.com/user-attachments/assets/682f1f48-9b7e-4324-b358-15c5abfb815f
 
 **Colorful Desktop**
 
-![Colorful Desktop](./Screenshot/city-1.png)
+![Colorful Desktop](./Screenshot/demon.png)
 
 **Wonderful Desktop**
 
