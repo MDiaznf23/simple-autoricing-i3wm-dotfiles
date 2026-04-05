@@ -258,6 +258,5 @@ exec --no-startup-id dex --autostart --environment i3
 
 exec --no-startup-id m3wal ~/.config/m3-colors/current_wallpaper
 
-exec_always --no-startup-id ~/.config/eww/scripts/dock-autohide.sh 
 # Autostart
 exec_always --no-startup-id ~/.config/i3/autostart.sh
