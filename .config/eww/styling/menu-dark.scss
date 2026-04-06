@@ -57,6 +57,15 @@ button.cat-tab {
   padding: 8px;
 }
 
+.app-icon {
+  background-color: $surface-container-high;
+  border-radius: 10px;
+  border: 1px solid $outline-variant;
+  padding: 8px;
+  min-width: 24px;
+  min-height: 24px;
+}
+
 button.app-item {
   all: unset;
   padding: 8px 12px;
@@ -74,7 +83,7 @@ button.app-item {
   }
 
   &:hover {
-    background: $surface-container-high;
+    background: $inverse-primary;
   }
 }
 

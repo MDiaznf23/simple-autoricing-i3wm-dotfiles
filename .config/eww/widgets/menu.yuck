@@ -36,7 +36,10 @@
       :hexpand true
       :onclick "bash -c '${app.exec}' & eww update start_menu_visible=false & eww close start_menu"
       (box :orientation "h" :space-evenly false :spacing 12 :valign "center"
-        (image :class "app-icon" :path {app.icon} :image-width 24 :image-height 24)
+        (image  :class "app-icon" 
+                :path {app.icon} 
+                :image-width 24 
+                :image-height 24)
         (box :orientation "v" :space-evenly false :spacing 2
           (label :class "app-name" :text {app.name} :xalign 0 :limit-width 30)
           (label :class "app-desc" :text {app.desc} :xalign 0 :limit-width 45))))
