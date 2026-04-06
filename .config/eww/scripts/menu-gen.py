@@ -164,23 +164,137 @@ def load_dotfiles_config() -> dict:
     return result
 
 
-def build_icon_search_dirs(theme: str) -> list[Path]:
+def _icon_base_dirs() -> list[Path]:
+    """Kembalikan semua base direktori icons sesuai XDG spec."""
     home = Path.home()
-    local_icons = home / ".local/share/icons"
-    dirs = []
-    for variant in [theme, f"{theme}-light", f"{theme}-dark"]:
-        for subdir in ["scalable/apps", "48x48/apps"]:
-            dirs.append(local_icons / variant / subdir)
-            dirs.append(Path(f"/usr/share/icons/{variant}/{subdir}"))
-    dirs += [
-        Path("/usr/share/icons/hicolor/scalable/apps"),
-        Path("/usr/share/icons/hicolor/48x48/apps"),
-        Path("/usr/share/pixmaps"),
-    ]
+    dirs = [home / ".local/share/icons", home / ".icons"]
+    # Baca semua XDG_DATA_DIRS
+    xdg_data_dirs = os.environ.get(
+        "XDG_DATA_DIRS", "/usr/local/share:/usr/share"
+    ).split(":")
+    for d in xdg_data_dirs:
+        dirs.append(Path(d) / "icons")
+    dirs.append(Path("/usr/share/pixmaps"))
     return dirs
 
 
-FALLBACK_ICON = "/usr/share/pixmaps/archlinux-logo.png"
+def _parse_theme_dirs(theme_root: Path) -> list[Path]:
+    index = theme_root / "index.theme"
+    if not index.exists():
+        return []
+    cfg = ConfigParser(interpolation=None, strict=False)
+    try:
+        cfg.read_string(index.read_text(encoding="utf-8", errors="replace"))
+    except Exception:
+        return []
+    if not cfg.has_section("Icon Theme"):
+        return []
+
+    raw_dirs = cfg["Icon Theme"].get("Directories", "")
+    scaled_dirs = cfg["Icon Theme"].get("ScaledDirectories", "")
+    subdirs = [
+        s.strip() for s in (raw_dirs + "," + scaled_dirs).split(",") if s.strip()
+    ]
+
+    result: list[tuple[int, Path]] = []
+    for sub in subdirs:
+        # Ambil semua folder yang mengandung "apps" di path-nya, tanpa peduli context
+        if not re.search(r"(?:^|/)apps(?:/|$)", sub, re.IGNORECASE):
+            continue
+        full = theme_root / sub
+        if not full.is_dir():
+            continue
+        if "scalable" in sub.lower():
+            key = 9999
+        else:
+            nums = re.findall(r"\d+", sub)
+            key = int(nums[-1]) if nums else 0
+        result.append((key, full))
+
+    result.sort(key=lambda x: x[0], reverse=True)
+    return [p for _, p in result]
+
+
+def _collect_theme_search_dirs(
+    theme: str, visited: set[str] | None = None
+) -> list[Path]:
+    """
+    Kumpulkan semua direktori icon untuk `theme` secara rekursif
+    mengikuti chain Inherits= di index.theme (XDG Icon Theme Spec).
+    """
+    if visited is None:
+        visited = set()
+    if theme in visited:
+        return []
+    visited.add(theme)
+
+    base_dirs = _icon_base_dirs()
+    result: list[Path] = []
+
+    theme_root: Path | None = None
+    for base in base_dirs:
+        candidate = base / theme
+        if (candidate / "index.theme").exists():
+            theme_root = candidate
+            break
+
+    if theme_root is None:
+        return []
+
+    # Tambahkan direktori dari theme ini
+    result.extend(_parse_theme_dirs(theme_root))
+
+    # Ikuti Inherits= chain
+    index = theme_root / "index.theme"
+    cfg = ConfigParser(interpolation=None, strict=False)
+    try:
+        cfg.read_string(index.read_text(encoding="utf-8", errors="replace"))
+        inherits_raw = cfg["Icon Theme"].get("Inherits", "")
+        for parent in [s.strip() for s in inherits_raw.split(",") if s.strip()]:
+            result.extend(_collect_theme_search_dirs(parent, visited))
+    except Exception:
+        pass
+
+    return result
+
+
+def build_icon_search_dirs(theme: str) -> list[Path]:
+    """
+    Bangun daftar direktori pencarian icon sesuai XDG Icon Theme Specification:
+    1. Semua dir dari theme aktif (rekursif via Inherits=)
+    2. Fallback ke hicolor
+    3. Fallback ke /usr/share/pixmaps
+    """
+    dirs: list[Path] = []
+    seen: set[Path] = set()
+
+    for d in _collect_theme_search_dirs(theme, set()):
+        if d not in seen:
+            seen.add(d)
+            dirs.append(d)
+
+    # Pastikan hicolor selalu ada sebagai fallback
+    for d in _collect_theme_search_dirs("hicolor", set()):
+        if d not in seen:
+            seen.add(d)
+            dirs.append(d)
+
+    # Pixmaps terakhir
+    pixmaps = Path("/usr/share/pixmaps")
+    if pixmaps not in seen:
+        dirs.append(pixmaps)
+
+    print(
+        f"[menu-gen] Icon search dirs untuk '{theme}': {len(dirs)} direktori",
+        file=sys.stderr,
+        flush=True,
+    )
+    return dirs
+
+
+FALLBACK_ICON = (
+    "/usr/share/icons/Adwaita/scalable/mimetypes/application-x-executable.svg"
+)
 ICON_SEARCH_DIRS = build_icon_search_dirs(
     load_dotfiles_config().get("ICON_THEME", "hicolor")
 )
@@ -190,15 +304,88 @@ _current_theme: str = ""
 
 
 def resolve_icon(icon_name: str) -> str:
+    """
+    Cari icon dengan name fallback chain sesuai XDG spec:
+    - "org.gnome.Foo" → coba "org.gnome.Foo", "gnome.Foo", "Foo"
+    - "foo-bar-baz"   → coba "foo-bar-baz", "foo-bar", "foo"
+    - Path absolut    → langsung pakai
+    """
     if icon_name in _icon_cache:
         return _icon_cache[icon_name]
-    for d in ICON_SEARCH_DIRS:
-        for ext in [".svg", ".png"]:
-            p = d / f"{icon_name}{ext}"
-            if p.exists():
-                _icon_cache[icon_name] = str(p)
-                return str(p)
+
+    # Path absolut langsung pakai
+    if icon_name.startswith("/") and Path(icon_name).exists():
+        _icon_cache[icon_name] = icon_name
+        return icon_name
+
+    def _find_exact(name: str) -> str | None:
+        for d in ICON_SEARCH_DIRS:
+            if name.endswith((".svg", ".png", ".xpm")):
+                p = d / name
+                if p.exists():
+                    return str(p)
+            else:
+                for ext in (".svg", ".png", ".xpm"):
+                    p = d / f"{name}{ext}"
+                    if p.exists():
+                        return str(p)
+        return None
+
+    # Bangun fallback chain dari nama icon
+    # "org.kde.foo-bar" → ["org.kde.foo-bar", "kde.foo-bar", "foo-bar", "foo"]
+    def _fallback_chain(name: str) -> list[str]:
+        names = [name]
+        # Strip reverse-DNS prefix (titik)
+        parts = name.split(".")
+        for i in range(1, len(parts)):
+            names.append(".".join(parts[i:]))
+        # Strip dash suffix dari nama terakhir
+        last = names[-1]
+        dash_parts = last.split("-")
+        for i in range(len(dash_parts) - 1, 0, -1):
+            names.append("-".join(dash_parts[:i]))
+        # Hapus duplikat sambil jaga urutan
+        seen = set()
+        result = []
+        for n in names:
+            if n not in seen and n:
+                seen.add(n)
+                result.append(n)
+        return result
+
+    for candidate in _fallback_chain(icon_name):
+        hit = _find_exact(candidate)
+        if hit:
+            _icon_cache[icon_name] = hit
+            return hit
+
     _icon_cache[icon_name] = FALLBACK_ICON
+    return FALLBACK_ICON
+
+
+CATEGORY_GENERIC_ICONS = {
+    "Internet": "applications-internet",
+    "Multimedia": "applications-multimedia",
+    "Office": "applications-office",
+    "Graphics": "applications-graphics",
+    "Development": "applications-development",
+    "Games": "applications-games",
+    "System": "applications-system",
+    "Settings": "preferences-system",
+    "Education": "applications-science",
+    "Utilities": "applications-utilities",
+    "Other": "application-x-executable",
+}
+
+
+def resolve_icon_with_category_fallback(icon_name: str, category: str) -> str:
+    result = resolve_icon(icon_name)
+    if result != FALLBACK_ICON:
+        return result
+    generic = CATEGORY_GENERIC_ICONS.get(category, "application-x-executable")
+    result = resolve_icon(generic)
+    if result != FALLBACK_ICON:
+        return result
     return FALLBACK_ICON
 
 
@@ -266,7 +453,7 @@ def parse_desktop_file(path: Path) -> dict | None:
         "id": desktop_id,
         "name": name,
         "exec": exec_cmd,
-        "icon": resolve_icon(icon),
+        "icon": resolve_icon_with_category_fallback(icon, category),
         "category": category,
         "desc": desc,
     }

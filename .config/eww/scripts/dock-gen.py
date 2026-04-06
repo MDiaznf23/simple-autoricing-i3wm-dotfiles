@@ -26,7 +26,9 @@ OUTPUT_FILE = CACHE_DIR / "eww-dock.json"
 APPS_JSON = CONFIG_DIR / "eww/apps.json"  # <── sesuaikan path-mu
 DOTFILES_CONFIG = CONFIG_DIR / "i3/config-dotfiles"
 
-FALLBACK_ICON = "/usr/share/pixmaps/archlinux-logo.png"
+FALLBACK_ICON = (
+    "/usr/share/icons/Adwaita/scalable/mimetypes/application-x-executable.svg"
+)
 DEBOUNCE_SECS = 1.0
 
 APP_DIRS = [
@@ -57,31 +59,214 @@ def load_dotfiles_config() -> dict:
     return result
 
 
-def build_icon_search_dirs(theme: str) -> list[Path]:
+def _icon_base_dirs() -> list[Path]:
     home = Path.home()
-    local_icons = home / ".local/share/icons"
-    dirs = []
-    for variant in [theme, f"{theme}-light", f"{theme}-dark"]:
-        for subdir in ["scalable/apps", "48x48/apps"]:
-            dirs.append(local_icons / variant / subdir)
-            dirs.append(Path(f"/usr/share/icons/{variant}/{subdir}"))
-    dirs += [
-        Path("/usr/share/icons/hicolor/scalable/apps"),
-        Path("/usr/share/icons/hicolor/48x48/apps"),
-        Path("/usr/share/pixmaps"),
+    dirs = [home / ".local/share/icons", home / ".icons"]
+    xdg_data_dirs = os.environ.get(
+        "XDG_DATA_DIRS", "/usr/local/share:/usr/share"
+    ).split(":")
+    for d in xdg_data_dirs:
+        dirs.append(Path(d) / "icons")
+    dirs.append(Path("/usr/share/pixmaps"))
+    return dirs
+
+
+def _parse_theme_dirs(theme_root: Path) -> list[Path]:
+    index = theme_root / "index.theme"
+    if not index.exists():
+        return []
+    cfg = ConfigParser(interpolation=None, strict=False)
+    try:
+        cfg.read_string(index.read_text(encoding="utf-8", errors="replace"))
+    except Exception:
+        return []
+    if not cfg.has_section("Icon Theme"):
+        return []
+
+    raw_dirs = cfg["Icon Theme"].get("Directories", "")
+    scaled_dirs = cfg["Icon Theme"].get("ScaledDirectories", "")
+    subdirs = [
+        s.strip() for s in (raw_dirs + "," + scaled_dirs).split(",") if s.strip()
     ]
+
+    result: list[tuple[int, Path]] = []
+    for sub in subdirs:
+        # Ambil semua folder yang mengandung "apps" di path-nya, tanpa peduli context
+        if not re.search(r"(?:^|/)apps(?:/|$)", sub, re.IGNORECASE):
+            continue
+        full = theme_root / sub
+        if not full.is_dir():
+            continue
+        if "scalable" in sub.lower():
+            key = 9999
+        else:
+            nums = re.findall(r"\d+", sub)
+            key = int(nums[-1]) if nums else 0
+        result.append((key, full))
+
+    result.sort(key=lambda x: x[0], reverse=True)
+    return [p for _, p in result]
+
+
+def _collect_theme_search_dirs(
+    theme: str, visited: set[str] | None = None
+) -> list[Path]:
+    if visited is None:
+        visited = set()
+    if theme in visited:
+        return []
+    visited.add(theme)
+
+    result: list[Path] = []
+    theme_root = None
+    for base in _icon_base_dirs():
+        candidate = base / theme
+        if (candidate / "index.theme").exists():
+            theme_root = candidate
+            break
+    if theme_root is None:
+        return []
+
+    result.extend(_parse_theme_dirs(theme_root))
+
+    cfg = ConfigParser(interpolation=None, strict=False)
+    try:
+        cfg.read_string(
+            (theme_root / "index.theme").read_text(encoding="utf-8", errors="replace")
+        )
+        for parent in [
+            s.strip()
+            for s in cfg["Icon Theme"].get("Inherits", "").split(",")
+            if s.strip()
+        ]:
+            result.extend(_collect_theme_search_dirs(parent, visited))
+    except Exception:
+        pass
+    return result
+
+
+def build_icon_search_dirs(theme: str) -> list[Path]:
+    dirs: list[Path] = []
+    seen: set[Path] = set()
+    for d in _collect_theme_search_dirs(theme, set()):
+        if d not in seen:
+            seen.add(d)
+            dirs.append(d)
+    for d in _collect_theme_search_dirs("hicolor", set()):
+        if d not in seen:
+            seen.add(d)
+            dirs.append(d)
+    pixmaps = Path("/usr/share/pixmaps")
+    if pixmaps not in seen:
+        dirs.append(pixmaps)
     return dirs
 
 
 def resolve_icon(icon_name: str, search_dirs: list[Path]) -> str:
     if icon_name.startswith("/") and Path(icon_name).exists():
         return icon_name
-    for d in search_dirs:
-        for ext in [".svg", ".png"]:
-            p = d / f"{icon_name}{ext}"
-            if p.exists():
-                return str(p)
+
+    def _find_exact(name: str) -> str | None:
+        for d in search_dirs:
+            if name.endswith((".svg", ".png", ".xpm")):
+                p = d / name
+                if p.exists():
+                    return str(p)
+            else:
+                for ext in (".svg", ".png", ".xpm"):
+                    p = d / f"{name}{ext}"
+                    if p.exists():
+                        return str(p)
+        return None
+
+    def _fallback_chain(name: str) -> list[str]:
+        names = [name]
+        # Strip reverse-DNS (titik): "org.kde.foo" → "kde.foo" → "foo"
+        parts = name.split(".")
+        for i in range(1, len(parts)):
+            names.append(".".join(parts[i:]))
+        # Strip dash suffix dari elemen terakhir: "foo-bar-baz" → "foo-bar" → "foo"
+        last = names[-1]
+        dash_parts = last.split("-")
+        for i in range(len(dash_parts) - 1, 0, -1):
+            names.append("-".join(dash_parts[:i]))
+        # Deduplicate, jaga urutan
+        seen: set[str] = set()
+        result = []
+        for n in names:
+            if n and n not in seen:
+                seen.add(n)
+                result.append(n)
+        return result
+
+    for candidate in _fallback_chain(icon_name):
+        hit = _find_exact(candidate)
+        if hit:
+            return hit
+
     return FALLBACK_ICON
+
+
+CATEGORY_RULES = [
+    ("Internet", ["Network", "WebBrowser", "Email", "InstantMessaging", "Chat"]),
+    ("Multimedia", ["AudioVideo", "Audio", "Video", "Music", "Player", "Recorder"]),
+    (
+        "Office",
+        [
+            "Office",
+            "WordProcessor",
+            "Spreadsheet",
+            "Presentation",
+            "Calendar",
+            "ContactManagement",
+        ],
+    ),
+    ("Graphics", ["Graphics", "Photography", "Viewer", "2DGraphics", "3DGraphics"]),
+    (
+        "Development",
+        ["Development", "IDE", "Debugger", "RevisionControl", "WebDevelopment"],
+    ),
+    ("Games", ["Game", "Emulator", "ArcadeGame", "BoardGame", "CardGame"]),
+    (
+        "System",
+        ["System", "TerminalEmulator", "FileManager", "Monitor", "PackageManager"],
+    ),
+    ("Settings", ["Settings", "Preferences", "DesktopSettings", "HardwareSettings"]),
+    ("Education", ["Science", "Education", "Math", "Astronomy", "Chemistry"]),
+    ("Utilities", ["Utility", "Archiving", "Accessibility", "Clock", "Calculator"]),
+]
+
+CATEGORY_GENERIC_ICONS = {
+    "Internet": "applications-internet",
+    "Multimedia": "applications-multimedia",
+    "Office": "applications-office",
+    "Graphics": "applications-graphics",
+    "Development": "applications-development",
+    "Games": "applications-games",
+    "System": "applications-system",
+    "Settings": "preferences-system",
+    "Education": "applications-science",
+    "Utilities": "applications-utilities",
+    "Other": "application-x-executable",
+}
+
+
+def _classify_category(cats_str: str) -> str:
+    cats = set(cats_str.replace(";", " ").split())
+    for menu_cat, keywords in CATEGORY_RULES:
+        if cats & set(keywords):
+            return menu_cat
+    return "Other"
+
+
+def resolve_icon_with_category_fallback(
+    icon_name: str, category: str, search_dirs: list
+) -> str:
+    result = resolve_icon(icon_name, search_dirs)
+    if result != FALLBACK_ICON:
+        return result
+    generic = CATEGORY_GENERIC_ICONS.get(category, "application-x-executable")
+    return resolve_icon(generic, search_dirs)
 
 
 # ─── Desktop entry lookup ─────────────────────────────────────────────────────
@@ -111,6 +296,7 @@ def _parse_desktop(path: Path) -> dict | None:
         "name": entry.get("Name", path.stem).strip(),
         "exec": exec_cmd,
         "icon": entry.get("Icon", "application-x-executable").strip(),
+        "categories": entry.get("Categories", "").strip(),
     }
 
 
@@ -170,7 +356,10 @@ def build_dock() -> list:
         if entry:
             name = entry["name"]
             exec_cmd = entry["exec"]
-            icon = resolve_icon(entry["icon"], search_dirs)
+            category = _classify_category(entry.get("categories", ""))
+            icon = resolve_icon_with_category_fallback(
+                entry["icon"], category, search_dirs
+            )
         else:
             print(
                 f"[dock-gen] .desktop tidak ditemukan untuk: {app_id}",
@@ -179,11 +368,11 @@ def build_dock() -> list:
             )
             name = app_id
             exec_cmd = app_id
-            icon = resolve_icon(app_id, search_dirs)
+            icon = resolve_icon_with_category_fallback(app_id, "Other", search_dirs)
 
         result.append(
             {
-                "id": app_id,  # Desktop File ID dari apps.json
+                "id": app_id,
                 "name": name,
                 "exec": exec_cmd,
                 "icon": icon,
