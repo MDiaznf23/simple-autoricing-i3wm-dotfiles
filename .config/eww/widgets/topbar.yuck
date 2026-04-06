@@ -15,9 +15,9 @@
   "~/.config/eww/scripts/xwindow-clickable.sh")
 
 ;; Definisi variable untuk system variable
-(defpoll system_status :interval "2s"
+(deflisten system_status
   :initial '{"wifi_icon":"","wifi_desc":"","wifi_connected":false,"bat_icon":"","bat_desc":"","bat_capacity":0,"bat_charging":false,"bright_icon":"","bright_desc":"","bright_pct":0,"vol_icon":"","vol_desc":"","vol_pct":0,"vol_muted":false}'
-  "~/.config/eww/scripts/system-status.sh")
+  "python3 ~/.config/eww/scripts/system-monitor.py")
 
 ;; Variable untuk waktu
 (defpoll time :interval "1s"
