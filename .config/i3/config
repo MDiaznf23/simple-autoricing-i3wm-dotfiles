@@ -246,17 +246,11 @@ exec --no-startup-id xset s 600 600
 # Auto lock dengan xss-lock
 exec --no-startup-id xss-lock -- lock
 
-exec --no-startup-id ~/m3-colors-switch.sh
-
-exec --no-startup-id lxpolkit
-
 exec --no-startup-id kbuildsycoca6 --noincremental
 exec --no-startup-id /usr/bin/kded6
 
 # Jalankan semua aplikasi autostart
 exec --no-startup-id dex --autostart --environment i3
-
-exec --no-startup-id m3wal ~/.config/m3-colors/current_wallpaper
 
 # Autostart
 exec_always --no-startup-id ~/.config/i3/autostart.sh
