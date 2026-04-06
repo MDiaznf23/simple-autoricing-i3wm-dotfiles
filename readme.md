@@ -38,7 +38,7 @@ https://github.com/user-attachments/assets/846b5959-dfbc-41c9-9cce-3b9f0825d184
 
 **Colorful Desktop**
 
-![Colorful Desktop](./Screenshot/demon.png)
+![Colorful Desktop](./Screenshot/field.png)
 
 **Wonderful Desktop**
 
