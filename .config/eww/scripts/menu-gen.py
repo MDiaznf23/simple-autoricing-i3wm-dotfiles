@@ -20,6 +20,7 @@ import sys
 import time
 from configparser import ConfigParser, MissingSectionHeaderError
 from io import StringIO
+import re
 from pathlib import Path
 
 # ─── Konfigurasi ──────────────────────────────────────────────────────────────
@@ -184,13 +185,20 @@ ICON_SEARCH_DIRS = build_icon_search_dirs(
     load_dotfiles_config().get("ICON_THEME", "hicolor")
 )
 
+_icon_cache: dict[str, str] = {}
+_current_theme: str = ""
+
 
 def resolve_icon(icon_name: str) -> str:
+    if icon_name in _icon_cache:
+        return _icon_cache[icon_name]
     for d in ICON_SEARCH_DIRS:
         for ext in [".svg", ".png"]:
             p = d / f"{icon_name}{ext}"
             if p.exists():
+                _icon_cache[icon_name] = str(p)
                 return str(p)
+    _icon_cache[icon_name] = FALLBACK_ICON
     return FALLBACK_ICON
 
 
@@ -236,8 +244,6 @@ def parse_desktop_file(path: Path) -> dict | None:
     if not name or not exec_cmd:
         return None
 
-    import re
-
     exec_cmd = re.sub(r" %[a-zA-Z]", "", exec_cmd).strip()
 
     icon = entry.get("Icon", "application-x-executable").strip()
@@ -270,11 +276,16 @@ def parse_desktop_file(path: Path) -> dict | None:
 
 
 def build_menu() -> dict:
+    global ICON_SEARCH_DIRS, _icon_cache, _current_theme
+
     dotfiles = load_dotfiles_config()
     theme = dotfiles.get("ICON_THEME", "hicolor")
-    global ICON_SEARCH_DIRS
-    ICON_SEARCH_DIRS = build_icon_search_dirs(theme)
-    print(f"[menu-gen] Icon theme: {theme}", flush=True)
+
+    if theme != _current_theme:
+        ICON_SEARCH_DIRS = build_icon_search_dirs(theme)
+        _icon_cache = {}
+        _current_theme = theme
+        print(f"[menu-gen] Icon theme berubah: {theme}", file=sys.stderr, flush=True)
 
     seen: set[tuple] = set()
     categories: dict[str, list] = {cat: [] for cat in CATEGORY_ORDER}
@@ -319,7 +330,7 @@ def build_menu() -> dict:
 
 
 def write_output(menu: dict):
-    """Tulis JSON ke file cache secara atomic (write ke tmp dulu, lalu rename)."""
+    """Tulis JSON ke file cache secara atomic dan notify eww via stdout."""
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     tmp = OUTPUT_FILE.with_suffix(".tmp")
     tmp.write_text(json.dumps(menu, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -329,8 +340,11 @@ def write_output(menu: dict):
     print(
         f"[menu-gen] Regenerated → {OUTPUT_FILE} "
         f"| {len(menu['categories'])} categories, {total_apps} apps",
+        file=sys.stderr,
         flush=True,
     )
+    # Satu-satunya output ke stdout — ditangkap deflisten eww
+    print(json.dumps(menu, ensure_ascii=False), flush=True)
 
 
 # ─── Main: generate sekali ───────────────────────────────────────────────────
@@ -351,7 +365,7 @@ def run_daemon():
         if app_dir.is_dir():
             wd = _inotify_add_watch(ifd, str(app_dir), WATCH_MASK)
             wd_to_dir[wd] = app_dir
-            print(f"[menu-gen] Watching: {app_dir}", flush=True)
+            print(f"[menu-gen] Watching: {app_dir}", file=sys.stderr, flush=True)
 
     dotfiles_dir = DOTFILES_CONFIG.parent
     if dotfiles_dir.is_dir():
@@ -359,11 +373,15 @@ def run_daemon():
         print(f"[menu-gen] Watching: {dotfiles_dir}", flush=True)
 
     if not wd_to_dir:
-        print("[menu-gen] Tidak ada direktori app yang ditemukan, keluar.", flush=True)
+        print(
+            "[menu-gen] Tidak ada direktori app yang ditemukan, keluar.",
+            file=sys.stderr,
+            flush=True,
+        )
         return
 
     generate_once()
-    print("[menu-gen] Daemon aktif. Menunggu event...", flush=True)
+    print("[menu-gen] Daemon aktif. Menunggu event...", file=sys.stderr, flush=True)
 
     pending_regen = False
     deadline: float = 0.0
@@ -389,6 +407,7 @@ def run_daemon():
                 print(
                     f"[menu-gen] Event terdeteksi: {relevant} "
                     f"— debounce {DEBOUNCE_SECS}s...",
+                    file=sys.stderr,
                     flush=True,
                 )
         else:
@@ -406,4 +425,4 @@ if __name__ == "__main__":
         try:
             run_daemon()
         except KeyboardInterrupt:
-            print("\n[menu-gen] Dihentikan.", flush=True)
+            print("\n[menu-gen] Dihentikan.", file=sys.stderr, flush=True)

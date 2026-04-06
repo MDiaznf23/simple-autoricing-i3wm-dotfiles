@@ -1,6 +1,6 @@
 (deflisten dock-apps
   :initial "[{\"name\":\"loading\",\"exec\":\"true\",\"icon\":\"/usr/share/pixmaps/archlinux-logo.png\"}]"
-  `~/.config/eww/scripts/dock-watch.sh`)
+  "python3 ~/.config/eww/scripts/dock-gen.py")
 
 (defwidget dock-item [id name exec icon]
   (eventbox :class "dock-item"

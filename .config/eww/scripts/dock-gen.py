@@ -42,7 +42,11 @@ APP_DIRS = [
 def load_dotfiles_config() -> dict:
     result = {}
     if not DOTFILES_CONFIG.exists():
-        print(f"[dock-gen] config-dotfiles tidak ditemukan, pakai hicolor.", flush=True)
+        print(
+            f"[dock-gen] config-dotfiles tidak ditemukan, pakai hicolor.",
+            file=sys.stderr,
+            flush=True,
+        )
         return result
     for line in DOTFILES_CONFIG.read_text(encoding="utf-8").splitlines():
         line = line.strip()
@@ -143,13 +147,17 @@ def build_dock() -> list:
     print(f"[dock-gen] Icon theme: {theme}", flush=True)
 
     if not APPS_JSON.exists():
-        print(f"[dock-gen] apps.json tidak ditemukan: {APPS_JSON}", flush=True)
+        print(
+            f"[dock-gen] apps.json tidak ditemukan: {APPS_JSON}",
+            file=sys.stderr,
+            flush=True,
+        )
         return []
 
     try:
         raw = json.loads(APPS_JSON.read_text(encoding="utf-8"))
     except json.JSONDecodeError as e:
-        print(f"[dock-gen] apps.json invalid JSON: {e}", flush=True)
+        print(f"[dock-gen] apps.json invalid JSON: {e}", file=sys.stderr, flush=True)
         return []
 
     result = []
@@ -164,7 +172,11 @@ def build_dock() -> list:
             exec_cmd = entry["exec"]
             icon = resolve_icon(entry["icon"], search_dirs)
         else:
-            print(f"[dock-gen] .desktop tidak ditemukan untuk: {app_id}", flush=True)
+            print(
+                f"[dock-gen] .desktop tidak ditemukan untuk: {app_id}",
+                file=sys.stderr,
+                flush=True,
+            )
             name = app_id
             exec_cmd = app_id
             icon = resolve_icon(app_id, search_dirs)
@@ -186,7 +198,13 @@ def write_output(dock: list):
     tmp = OUTPUT_FILE.with_suffix(".tmp")
     tmp.write_text(json.dumps(dock, ensure_ascii=False, indent=2), encoding="utf-8")
     tmp.rename(OUTPUT_FILE)
-    print(f"[dock-gen] Regenerated → {OUTPUT_FILE} | {len(dock)} apps", flush=True)
+    print(
+        f"[dock-gen] Regenerated → {OUTPUT_FILE} | {len(dock)} apps",
+        file=sys.stderr,
+        flush=True,
+    )
+    # Output JSON ke stdout — ditangkap deflisten eww
+    print(json.dumps(dock, ensure_ascii=False), flush=True)
 
 
 # ─── inotify via ctypes ───────────────────────────────────────────────────────
@@ -248,10 +266,10 @@ def run_daemon():
         if d.is_dir() and d not in watch_dirs:
             _inotify_add_watch(ifd, str(d), WATCH_MASK)
             watch_dirs[d] = True
-            print(f"[dock-gen] Watching: {d}", flush=True)
+            print(f"[dock-gen] Watching: {d}", file=sys.stderr, flush=True)
 
     generate_once()
-    print("[dock-gen] Daemon aktif. Menunggu event...", flush=True)
+    print("[dock-gen] Daemon aktif. Menunggu event...", file=sys.stderr, flush=True)
 
     TRIGGER_FILES = {APPS_JSON.name, DOTFILES_CONFIG.name}
     pending = False
@@ -268,6 +286,7 @@ def run_daemon():
                 deadline = time.monotonic() + DEBOUNCE_SECS
                 print(
                     f"[dock-gen] Event: {names} — debounce {DEBOUNCE_SECS}s...",
+                    file=sys.stderr,
                     flush=True,
                 )
         elif pending:
@@ -282,4 +301,4 @@ if __name__ == "__main__":
         try:
             run_daemon()
         except KeyboardInterrupt:
-            print("\n[dock-gen] Dihentikan.", flush=True)
+            print("\n[dock-gen] Dihentikan.", file=sys.stderr, flush=True)

@@ -23,15 +23,6 @@ elif command -v compton &> /dev/null; then
     compton &
 fi
 
-# 5. Menu Generator
-pkill -f "menu-gen.py"
-sleep 0.5
-python3 ~/.config/eww/scripts/menu-gen.py &
-
-pkill -f "dock-gen.py"
-sleep 0.5
-python3 ~/.config/eww/scripts/dock-gen.py &
-
 # 6. Settings Daemon
 pgrep -x xsettingsd > /dev/null || xsettingsd &
 
@@ -48,7 +39,7 @@ eww open bar &
 
 # 8. Monitor Scripts
 pkill -f fullscreen-monitor
-~/.config/eww/scripts/fullscreen-monitor.sh &
+python3 ~/.config/eww/scripts/fullscreen-monitor.py &
 
 pkill -f dock-autohide
-~/.config/eww/scripts/dock-autohide.sh &
+python3 ~/.config/eww/scripts/dock-autohide.py &

@@ -2,10 +2,9 @@
 (defvar menu_active_cat "Internet")
 (defvar active_apps "[]")
 
-(defpoll menu_data
-  :interval "999999s"
+(deflisten menu_data
   :initial '{"categories": []}'
-  "cat ~/.cache/eww-menu.json")
+  "python3 ~/.config/eww/scripts/menu-gen.py")
 
 (defpoll initial_apps
   :interval "999999s"
