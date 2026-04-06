@@ -1,26 +1,17 @@
 ;;-----------------------------------------------------
 ;; POLLING VARIABEL
 ;;-----------------------------------------------------
-(defpoll media_players
-  :interval "3s"
-  :initial "[]"
-  "~/.config/eww/scripts/media_listener.sh --list")
-
-(defvar player_dropdown false)
+(deflisten media_info
+  :initial '{"player": "", "status": "Stopped", "title": "No Media", "artist": "", "cover": "", "position": 0, "length": 0, "players": []}'
+  "python3 ~/.config/eww/scripts/media-monitor.py")
 
 (defpoll media_position
   :interval "1s"
+  :run-while {media_info.status == "Playing"}
   :initial 0
-  "playerctl -p $(cat /tmp/eww_selected_player 2>/dev/null) position 2>/dev/null | awk '{printf \"%d\", $1 * 1000000}' || echo 0")
+  "echo $(( $(cat /tmp/eww_position_base 2>/dev/null || echo 0) + $(date +%s%6N) - $(cat /tmp/eww_position_ts 2>/dev/null || echo $(date +%s%6N)) ))")
 
-(defpoll media_length
-  :interval "5s"
-  :initial 1
-  "playerctl -p $(cat /tmp/eww_selected_player 2>/dev/null) metadata mpris:length 2>/dev/null || echo 1")
-
-(deflisten media_info
-  :initial '{"player": "", "status": "Stopped", "title": "No Media", "artist": "", "cover": "", "position": 0, "length": 0}'
-  "~/.config/eww/scripts/media_watch.sh")
+(defvar player_dropdown false)
 
 ;;-----------------------------------------------------
 ;; WIDGETS
@@ -30,9 +21,10 @@
        :orientation "v"
        :space-evenly false
        :spacing 4
-    (for player in media_players
-      (button :class {player.player == media_info.player ? "player-item player-item-active" : "player-item"}
-              :onclick "echo '${player.player}' > /tmp/eww_selected_player && eww update player_dropdown=false"
+    (for player in {media_info.players}
+      (button
+        :class {player.player == media_info.player ? "player-item player-item-active" : "player-item"}
+        :onclick "~/.config/eww/scripts/media-switch.sh '${player.player}' ; eww update player_dropdown=false"
         (box :spacing 6 :halign "start" :space-evenly false
           (label :text {player.status == "Playing" ? "󰐊" : "󰏤"}
                  :class "media-widget-name")
@@ -89,8 +81,8 @@
                  :xalign 0.5))
         (scale :class "media-progress-bar"
                :min 0
-               :max {media_length > 0 ? media_length : 1}
-               :value media_position
+               :max {media_info.length > 0 ? media_info.length : 1}
+               :value {media_info.status == "Playing" ? media_position : media_info.position}
                :draw-value false
                :orientation "h"
                :hexpand true

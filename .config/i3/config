@@ -246,8 +246,6 @@ exec --no-startup-id xset s 600 600
 # Auto lock dengan xss-lock
 exec --no-startup-id xss-lock -- lock
 
-exec --no-startup-id ~/m3-colors-switch.sh
-
 exec --no-startup-id kbuildsycoca6 --noincremental
 exec --no-startup-id /usr/bin/kded6
 
