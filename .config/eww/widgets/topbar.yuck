@@ -1,5 +1,7 @@
 ;; Eww Bar Configuration
 
+(defvar icon-theme "light")  ; default
+
 (defpoll ws_list :interval "1s"
   :initial "[1,2,3]"
   "bash ~/.config/eww/scripts/get-dotfiles-config.sh")
@@ -62,8 +64,9 @@
 
       (eventbox :onclick "eww open --toggle start_menu"
                 :cursor "pointer"
-        (label :class "left-text"
-               :text " "))
+        (image :path "${EWW_CONFIG_DIR}/assets/CachyOS-${icon-theme}.svg"
+               :image-width 20
+               :image-height 20))
         
       (workspaces_widget)
 
@@ -236,9 +239,9 @@
            :valign "center"
            :vexpand false
           (label :class "time-text"
-               :valign "center"
-               :vexpand false 
-               :text " " )
+                 :valign "center"
+                 :vexpand false 
+                 :text " " )
         )
       )
     )
