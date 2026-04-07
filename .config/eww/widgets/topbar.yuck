@@ -1,6 +1,8 @@
 ;; Eww Bar Configuration
 
-(defvar icon-theme "light")  ; default
+(deflisten icon-theme
+  :initial "light"
+  `bash -c "cat ~/.config/eww/.icon-theme; inotifywait -e close_write ~/.config/eww/.icon-theme -m --format '' | while read; do cat ~/.config/eww/.icon-theme; done"`)
 
 (defpoll ws_list :interval "1s"
   :initial "[1,2,3]"
