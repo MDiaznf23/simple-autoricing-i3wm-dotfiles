@@ -2,11 +2,10 @@
 ;; POLLING VARIABEL
 ;;-----------------------------------------------------
 
-(defpoll notification_recent :interval "2s" :initial "[]"
-  `~/.config/eww/scripts/get_notifications.sh recent`)
-
-(defpoll notification_earlier :interval "2s" :initial "[]"
-  `~/.config/eww/scripts/get_notifications.sh earlier`)
+(deflisten notification_recent :initial "[]"
+  "bash ~/.config/eww/scripts/get_notifications.sh recent")
+(deflisten notification_earlier :initial "[]"
+  "bash ~/.config/eww/scripts/get_notifications.sh earlier")
 
 (defvar active_tab_notification "recent")
 
@@ -44,7 +43,7 @@
       (button :class "notification-close-btn"
         :valign "start"
         :vexpand false
-        :onclick "dunstctl history-rm ${id} && eww update notification_history=$(~/.config/eww/scripts/get_notifications.sh)"
+        :onclick "dunstctl history-rm ${id}"
         
         (label :yalign 0.5 :class "notification-close-icon" :text "✕"))
     )
@@ -66,7 +65,7 @@
              :halign "start"
              :hexpand true)
       (button :class "clear-all-btn"
-              :onclick "dunstctl history-clear && eww update notification_recent='[]' && eww update notification_earlier='[]'"
+              :onclick "dunstctl history-clear"
         (label :xalign 1 :text "󰃢")))
     
     (box :class "separator" :hexpand true)

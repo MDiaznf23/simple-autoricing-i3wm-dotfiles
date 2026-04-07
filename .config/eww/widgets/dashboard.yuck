@@ -8,15 +8,14 @@
 
 ;; ===== POLLING VARIABLES =====
 
-(defpoll cal_month :interval "60s"
-  `date '+%B'`)
-
-(defpoll cal_year :interval "60s"
-  `date '+%Y'`)
+(deflisten datetime
+  :initial `date '+{"time":"%H:%M","hour":"%H","minute":"%M","month":"%B","month_short":"%b","year":"%Y","day":"%d","day_name":"%A","day_short":"%a"}'`
+  "bash ~/.config/eww/scripts/datetime-listen.sh")
 
 ;; Profile polls
 (defpoll profile 
-  :interval "60s" 
+  :interval "60s"
+  :run-while performance_monitor_visible
   :initial '{"username": "loading...", "wm": "loading...", "uptime": "...", "image": ""}'
   "~/.config/eww/scripts/profile.sh json")
 
@@ -36,11 +35,6 @@
 (defpoll weather_forecast_data :interval "1h"
   "~/.config/eww/scripts/weather_wrapper_forecast.sh json")
 
-;; ===== CLOCK POLLING =====
-(defpoll times 
-  :interval "1s" 
-  "date '+{\"h\":\"%H\",\"m\":\"%M\",\"d\":\"%a, %d %b\"}'")
-
 (defpoll my_notes 
   :interval "30s"
   :run-while performance_monitor_visible
@@ -50,6 +44,8 @@
 (defpoll laptop_info :interval "86400s" 
   :initial '{"brand":"Loading...","model":"Loading...","cpu":"...","gpu":"...","ram":"...","disk":"...","logo_path":"..."}'
   "~/.config/eww/scripts/get-laptop-info.sh")
+
+;;---------------- WIDGET ---------------------
 
 ;; Tab Navigation Widget
 (defwidget tab_navigation []
@@ -228,8 +224,8 @@
          :space-evenly false
          :spacing 10 
 
-      (label :class "cal-month" :text cal_month)
-      (label :class "cal-year"  :text cal_year))
+      (label :class "cal-month" :text {datetime.month})
+      (label :class "cal-year"  :text {datetime.year}))
 
     (calendar :class "cal-widget"
               :show-heading false
@@ -249,15 +245,15 @@
     
     ;; Time Display
     (label :class "clock-time" 
-           :text {times.h})
+           :text {datetime.hour})
     (label :class "clock-separator" 
            :text "---")
     (label :class "clock-time" 
-           :text {times.m})
+           :text {datetime.minute})
     
     ;; Date Display
     (label :class "clock-date"
-           :text {times.d})
+           :text "${datetime.day_short}, ${datetime.day} ${datetime.month_short}")
 
     (box :vexpand true)
   )

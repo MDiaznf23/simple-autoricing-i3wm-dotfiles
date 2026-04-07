@@ -4,7 +4,7 @@
   :initial "light"
   `bash -c "cat ~/.config/eww/.icon-theme; inotifywait -e close_write ~/.config/eww/.icon-theme -m --format '' | while read; do cat ~/.config/eww/.icon-theme; done"`)
 
-(defpoll ws_list :interval "1s"
+(deflisten ws_list
   :initial "[1,2,3]"
   "bash ~/.config/eww/scripts/get-dotfiles-config.sh")
 
@@ -23,9 +23,7 @@
   :initial '{"wifi_icon":"","wifi_desc":"","wifi_connected":false,"bat_icon":"","bat_desc":"","bat_capacity":0,"bat_charging":false,"bright_icon":"","bright_desc":"","bright_pct":0,"vol_icon":"","vol_desc":"","vol_pct":0,"vol_muted":false}'
   "python3 ~/.config/eww/scripts/system-monitor.py")
 
-;; Variable untuk waktu
-(defpoll time :interval "1s"
-  "date '+%H:%M'")
+;; --------- WIDGET --------------------------------------------------
 
 (defwidget mode-indicator []
   (box :class "mode-indicator"
@@ -228,7 +226,7 @@
         (label :class "time-text"
                :valign "center"
                :vexpand false 
-               :text time)
+               :text {datetime.time})
       )
 
       (eventbox :onclick "~/.config/eww/scripts/toggle-control-center.sh & disown"

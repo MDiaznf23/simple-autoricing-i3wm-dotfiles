@@ -72,7 +72,7 @@
             :onclick "~/.config/rofi/launchers/type-6/launcher.sh & eww update start_menu_visible=false & eww close start_menu"
       (label :text "Search applications..." :xalign 0))
     (button :class "power-btn" :halign "end" 
-            :onclick "eww open dotfiles-window & eww open --toggle start_menu"
+            :onclick "eww open dotfiles-window & eww update dotfiles-window-open=true & eww open --toggle start_menu"
       (label :text "󰍜"))
     (button :class "power-btn" :halign "end" 
             :onclick "~/.config/rofi/powermenu/type-5/powermenu.sh & eww update start_menu_visible=false & eww close start_menu"

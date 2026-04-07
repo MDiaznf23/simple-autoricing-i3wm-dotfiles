@@ -4,14 +4,6 @@
 
 (defvar control_center_window false)
 
-(defpoll wifi_status :interval "3s"
-  :initial "disabled"
-  `nmcli radio wifi || echo "disabled"`)
-
-(defpoll bluetooth_status :interval "2s"
-  :initial "no"
-  `bluetoothctl show | grep "Powered:" | awk '{print $2}' || echo "no"`)
-
 (defpoll night_mode_status :interval "2s"
   :initial "off"
   `[ -f /tmp/night_mode_status ] && cat /tmp/night_mode_status || echo "off"`)
@@ -96,15 +88,15 @@
          :valign "center"
          :space-evenly true
 
-      (toggle_widget :icon {wifi_status == "enabled" ? " " : ""}
+      (toggle_widget :icon { system_status.wifi_powered ? " " : ""}
                      :label "Wifi"
                      :onclick "~/.config/eww/scripts/toggle-panel.sh wifi_window & disown"
-                     :active_class {wifi_status == "enabled" ? "wifi-active" : ""})
+                     :active_class {system_status.wifi_powered ? "wifi-active" : ""})
 
-      (toggle_widget :icon {bluetooth_status == "yes" ? "󰂯" : "󰂲"}
+      (toggle_widget :icon { system_status.bt_powered ? "󰂯" : "󰂲"}
                      :label "Bluetooth"
                      :onclick "~/.config/eww/scripts/toggle-panel.sh bluetooth_window & disown"
-                     :active_class {bluetooth_status == "yes" ? "bt-active" : ""})
+                     :active_class {system_status.bt_powered ? "bt-active" : ""})
 
       (toggle_widget :icon "󰓃"
                      :label "Audio"

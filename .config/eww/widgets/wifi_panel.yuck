@@ -47,7 +47,7 @@
 
         (button :class "wifi-power-toggle"
                 :onclick "~/.config/eww/scripts/toggle_wifi.sh"
-          (stack :selected {wifi_status == "enabled" ? 0 : 1}
+          (stack :selected {system_status.wifi_powered ? 0 : 1}
                  :transition "slideleft"
                  :same-size true
             (box :class "toggle-content on"
@@ -88,7 +88,7 @@
                              :sec_icon {network.sec_icon}))
         (label :class "wifi-no-networks"
                :text "No networks found"
-               :visible {wifi_networks == "[]" || wifi_status != "enabled"})
+               :visible {wifi_networks == "[]" || system_status.wifi_powered != "true"})
       )
     )
   )

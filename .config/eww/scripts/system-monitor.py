@@ -4,6 +4,7 @@ system-monitor.py — System status monitor via D-Bus events
 - Battery + WiFi: UPower + NetworkManager D-Bus signals
 - Volume: PulseAudio/PipeWire D-Bus signals
 - Brightness: inotify /sys/class/backlight
+- Bluetooth: via bluez
 - Network speed: sampling via threading (bukan blocking sleep)
 Zero polling untuk semua kecuali network speed sampling
 """
@@ -47,6 +48,10 @@ def bat_icon_charging(pct: int) -> str:
 def bat_icon_discharging(pct: int) -> str:
     icons = ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂"]
     return icons[min(pct // 10, 9)]
+
+
+def bt_icon(connected: bool) -> str:
+    return "󰂱" if connected else "󰂯"
 
 
 def bright_icon(pct: int) -> str:
@@ -115,11 +120,16 @@ class SystemState:
         self.tx_rate = 0.0
         self.wifi_ssid = ""
         self.wifi_security = ""
+        self.wifi_powered = False
 
         # Battery model
         self.bat_model = "Unknown"
         self.bat_capacity = 0
         self.bat_charging = False
+
+        # Bluetooth
+        self.bt_devices = []
+        self.bt_powered = False
 
         # Brightness
         self.bright_pct = 0
@@ -192,6 +202,7 @@ class SystemState:
                 "wifi_ssid": self.wifi_ssid,
                 "wifi_signal": self.wifi_signal,
                 "wifi_security": self.wifi_security,
+                "wifi_powered": self.wifi_powered,
                 "bat_model": self.bat_model,
                 "bat_icon": bi,
                 "bat_desc": f"{self.bat_capacity}%",
@@ -204,6 +215,9 @@ class SystemState:
                 "vol_desc": f"{self.vol_pct}%",
                 "vol_pct": self.vol_pct,
                 "vol_muted": self.vol_muted,
+                "bt_devices": self.bt_devices,
+                "bt_connected": len(self.bt_devices) > 0,
+                "bt_powered": self.bt_powered,
             },
             ensure_ascii=False,
         )
@@ -220,6 +234,8 @@ class SystemMonitor:
         self._lock = threading.Lock()
 
         self._setup_upower()
+        self._setup_bluetooth()
+        self._init_bluetooth()
         self._setup_networkmanager()
         self._setup_pulseaudio()
         self._setup_brightness_inotify()
@@ -286,6 +302,57 @@ class SystemMonitor:
             with self._lock:
                 self._emit()
 
+    # ── BlueZ (bluetooth) ─────────────────────────────────────────────────
+
+    def _setup_bluetooth(self):
+        try:
+            self.system_bus.add_signal_receiver(
+                self._on_bt_changed,
+                signal_name="PropertiesChanged",
+                dbus_interface="org.freedesktop.DBus.Properties",
+                bus_name="org.bluez",
+                path_keyword="path",
+            )
+            print("[system-monitor] BlueZ subscribed", file=sys.stderr, flush=True)
+        except Exception as e:
+            print(f"[system-monitor] BlueZ error: {e}", file=sys.stderr)
+
+    def _init_bluetooth(self):
+        try:
+            om = dbus.Interface(
+                self.system_bus.get_object("org.bluez", "/"),
+                "org.freedesktop.DBus.ObjectManager",
+            )
+            objects = om.GetManagedObjects()
+
+            # Cek adapter powered
+            self.state.bt_powered = False
+            for path, ifaces in objects.items():
+                adapter = ifaces.get("org.bluez.Adapter1", {})
+                if adapter:
+                    self.state.bt_powered = bool(adapter.get("Powered", False))
+                    break  # ambil hci0 saja
+
+            connected = []
+            for path, ifaces in objects.items():
+                dev = ifaces.get("org.bluez.Device1", {})
+                if dev.get("Connected", False):
+                    connected.append(
+                        {
+                            "address": str(dev.get("Address", "")),
+                            "name": str(dev.get("Alias") or dev.get("Name", "Unknown")),
+                        }
+                    )
+            self.state.bt_devices = connected
+        except Exception as e:
+            print(f"[system-monitor] BlueZ init error: {e}", file=sys.stderr)
+
+    def _on_bt_changed(self, iface, changed, invalidated, path=None):
+        if "Connected" in changed or "Powered" in changed:
+            self._init_bluetooth()
+            with self._lock:
+                self._emit()
+
     # ── NetworkManager (wifi) ─────────────────────────────────────────────────
 
     def _setup_networkmanager(self):
@@ -307,18 +374,88 @@ class SystemMonitor:
     def _init_wifi(self):
         try:
             nm = self.system_bus.get_object(
-                "org.freedesktop.NetworkManager", "/org/freedesktop/NetworkManager"
+                "org.freedesktop.NetworkManager",
+                "/org/freedesktop/NetworkManager",
             )
-            props = dbus.Interface(nm, "org.freedesktop.DBus.Properties")
-            p = props.GetAll("org.freedesktop.NetworkManager")
-            # State 70 = NM_STATE_CONNECTED_GLOBAL
-            state = int(p.get("State", 0))
-            self.state.wifi_connected = state == 70
+            nm_props = dbus.Interface(nm, "org.freedesktop.DBus.Properties")
 
-            if self.state.wifi_connected:
-                self._read_wifi_signal()
+            # Powered
+            self.state.wifi_powered = bool(
+                nm_props.Get("org.freedesktop.NetworkManager", "WirelessEnabled")
+            )
+
+            state = int(nm_props.Get("org.freedesktop.NetworkManager", "State"))
+            self.state.wifi_connected = state == 70  # NM_STATE_CONNECTED_GLOBAL
+
+            if not self.state.wifi_connected:
+                self.state.wifi_signal = 0
+                self.state.wifi_ssid = ""
+                self.state.wifi_security = ""
+                return
+
+            devices = nm.GetDevices(dbus_interface="org.freedesktop.NetworkManager")
+            for dev_path in devices:
+                dev = self.system_bus.get_object(
+                    "org.freedesktop.NetworkManager", dev_path
+                )
+                dev_props = dbus.Interface(dev, "org.freedesktop.DBus.Properties")
+                dev_type = int(
+                    dev_props.Get("org.freedesktop.NetworkManager.Device", "DeviceType")
+                )
+                if dev_type != 2:
+                    continue
+                dev_state = int(
+                    dev_props.Get("org.freedesktop.NetworkManager.Device", "State")
+                )
+                if dev_state != 100:
+                    continue
+                ap_path = str(
+                    dev_props.Get(
+                        "org.freedesktop.NetworkManager.Device.Wireless",
+                        "ActiveAccessPoint",
+                    )
+                )
+                if ap_path == "/":
+                    continue
+                ap = self.system_bus.get_object(
+                    "org.freedesktop.NetworkManager", ap_path
+                )
+                ap_props = dbus.Interface(ap, "org.freedesktop.DBus.Properties")
+                ssid_bytes = ap_props.Get(
+                    "org.freedesktop.NetworkManager.AccessPoint", "Ssid"
+                )
+                self.state.wifi_ssid = bytes(ssid_bytes).decode(
+                    "utf-8", errors="replace"
+                )
+                self.state.wifi_signal = int(
+                    ap_props.Get(
+                        "org.freedesktop.NetworkManager.AccessPoint", "Strength"
+                    )
+                )
+                flags = int(
+                    ap_props.Get("org.freedesktop.NetworkManager.AccessPoint", "Flags")
+                )
+                wpa = int(
+                    ap_props.Get(
+                        "org.freedesktop.NetworkManager.AccessPoint", "WpaFlags"
+                    )
+                )
+                rsn = int(
+                    ap_props.Get(
+                        "org.freedesktop.NetworkManager.AccessPoint", "RsnFlags"
+                    )
+                )
+                if rsn > 0:
+                    self.state.wifi_security = "WPA2"
+                elif wpa > 0:
+                    self.state.wifi_security = "WPA"
+                elif flags & 0x1:
+                    self.state.wifi_security = "WEP"
+                else:
+                    self.state.wifi_security = "Open"
+                break
         except Exception as e:
-            print(f"[system-monitor] Init wifi error: {e}", file=sys.stderr)
+            print(f"[system-monitor] WiFi signal error: {e}", file=sys.stderr)
 
     def _read_wifi_signal(self):
         try:

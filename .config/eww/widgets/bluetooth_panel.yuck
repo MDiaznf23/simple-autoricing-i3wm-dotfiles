@@ -66,7 +66,7 @@
              :halign "end" 
         
           (button :onclick "~/.config/eww/scripts/toggle_bluetooth.sh"
-            (stack :selected {bluetooth_status == "yes" ? 0 : 1}
+            (stack :selected {system_status.bt_powered ? 0 : 1}
                    :transition "slideleft"
                    :same-size true
               (box :class "toggle-content on"
@@ -107,7 +107,7 @@
                                  :type {device.type}))
         (label :class "bt-no-devices"
                :text "No devices found"
-               :visible {bluetooth_devices_listen == "[]" || bluetooth_status != "yes"})
+               :visible {bluetooth_devices_listen == "[]" || system_status.bt_powered != "true"})
       )
     )
   )

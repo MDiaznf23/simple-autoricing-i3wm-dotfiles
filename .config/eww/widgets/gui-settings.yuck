@@ -1,21 +1,30 @@
+(defvar dotfiles-window-open false)
+
 (defpoll dotfiles-icon-theme :interval "1s"
+  :run-while dotfiles-window-open
   "grep -m1 '^ICON_THEME=' ~/.config/i3/config-dotfiles | cut -d'=' -f2")
 
 (defpoll dotfiles-max-workspaces :interval "1s"
+  :run-while dotfiles-window-open
   "grep -m1 '^MAX_WORKSPACES=' ~/.config/i3/config-dotfiles | cut -d'=' -f2")
 
 (defpoll dotfiles-dock-enabled :interval "1s"
+  :run-while dotfiles-window-open
   "grep -m1 '^DOCK_ENABLED=' ~/.config/i3/config-dotfiles | cut -d'=' -f2")
 
 (defpoll dotfiles-max-dock-apps-saved :interval "1s"
+  :run-while dotfiles-window-open
   "grep -m1 '^MAX_DOCK_APPS=' ~/.config/i3/config-dotfiles | cut -d'=' -f2")
 
 (defvar dotfiles-max-dock-apps-input "")
 
 (defpoll icon-themes-list
   :interval "60s"
+  :run-while dotfiles-window-open
   :initial "[]"
   "~/.config/eww/scripts/list-icon-themes.sh")
+
+;; ------------------ WIDGET ------------------
 
 (defwidget ws-dropdown []
   (box :class "dotfiles-row"
@@ -126,7 +135,7 @@
       (button
         :class "dotfiles-close-btn"
         :vexpand false
-        :onclick "eww close dotfiles-window"
+        :onclick "eww close dotfiles-window && eww update dotfiles-window-open=false"
         "x"))
     (box :class "dotfiles-body"
          :orientation "v"
