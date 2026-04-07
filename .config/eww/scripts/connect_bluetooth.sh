@@ -36,4 +36,4 @@ esac
 
 # Refresh list setelah action
 sleep 1
-~/.config/eww/scripts/scan_bluetooth.sh
+eww update bluetooth_devices_listen="$(~/.config/eww/scripts/scan_bluetooth.sh)"

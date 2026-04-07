@@ -104,17 +104,17 @@
 
       (toggle_widget :icon {wifi_status == "enabled" ? " " : ""}
                      :label "Wifi"
-                     :onclick "~/.config/eww/scripts/toggle-panel.sh wifi_window"
+                     :onclick "~/.config/eww/scripts/toggle-panel.sh wifi_window &"
                      :active_class {wifi_status == "enabled" ? "wifi-active" : ""})
 
       (toggle_widget :icon {bluetooth_status == "yes" ? "󰂯" : "󰂲"}
                      :label "Bluetooth"
-                     :onclick "~/.config/eww/scripts/toggle-panel.sh bluetooth_window"
+                     :onclick "~/.config/eww/scripts/toggle-panel.sh bluetooth_window &"
                      :active_class {bluetooth_status == "yes" ? "bt-active" : ""})
 
       (toggle_widget :icon "󰓃"
                      :label "Audio"
-                     :onclick "~/.config/eww/scripts/toggle-panel.sh audio_window"
+                     :onclick "~/.config/eww/scripts/toggle-panel.sh audio_window &"
                      :active_class "")
     )
 

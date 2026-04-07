@@ -2,9 +2,7 @@
 ;; POLLING VARIABEL
 ;;-----------------------------------------------------
 
-(defpoll bluetooth_devices_listen :interval "2s"
-  :initial "[]"
-  `~/.config/eww/scripts/scan_bluetooth.sh`)
+(defvar bluetooth_devices_listen "[]")
 
 ;;-----------------------------------------------------
 ;; WIDGETS
@@ -37,11 +35,11 @@
            :space-evenly false
            :halign "end"
         (button :class "bt-action-btn"
-                :onclick "~/.config/eww/scripts/connect_bluetooth.sh '${mac}' toggle && sleep 1"
+                :onclick "~/.config/eww/scripts/connect_bluetooth.sh '${mac}' toggle && sleep 1 && eww update bluetooth_devices_listen=\"$(~/.config/eww/scripts/scan_bluetooth.sh)\""
           (label :class "bt-name-label" :text {connected ? "󱘖 " : "󱘖 "}))
         (button :class "bt-action-btn bt-unpair"
                 :visible {paired}
-                :onclick "~/.config/eww/scripts/connect_bluetooth.sh '${mac}' unpair && sleep 1"
+                :onclick "~/.config/eww/scripts/connect_bluetooth.sh '${mac}' unpair && sleep 1 && eww update bluetooth_devices_listen=\"$(~/.config/eww/scripts/scan_bluetooth.sh)\""
           (label :class "bt-name-label" :text "x"))))))
 
 (defwidget bluetooth_panel []

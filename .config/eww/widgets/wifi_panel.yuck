@@ -2,9 +2,7 @@
 ;; POLLING VARIABEL
 ;;-----------------------------------------------------
 
-(defpoll wifi_networks :interval "5s"
-  :initial "[]"
-  `~/.config/eww/scripts/scan_wifi.sh`)
+(defvar wifi_networks "[]")
 
 ;;-----------------------------------------------------
 ;; WIDGETS
