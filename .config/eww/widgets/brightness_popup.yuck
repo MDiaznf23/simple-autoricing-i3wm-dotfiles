@@ -1,6 +1,3 @@
-(deflisten brightness :initial "50"
-  "~/.config/eww/scripts/get_brightness_listen.sh")
-
 (defwidget brightness-popup []
   (box :class "brightness-popup" 
        :orientation "v"          
@@ -14,12 +11,12 @@
       (scale :class "brightness-slider-popup"
              :orientation "v"    
              :flipped true       
-             :value brightness
+             :value {system_status.bright_pct}
              :min 0
              :max 100
              :onchange "brightnessctl set {}% && ~/.config/eww/scripts/brightness-popup.sh")
       (label :class "brightness-percent-popup" 
-             :text "${brightness}%"))))
+             :text "${system_status.bright_pct}%"))))
 
 (defwindow brightness-popup
   :monitor 0

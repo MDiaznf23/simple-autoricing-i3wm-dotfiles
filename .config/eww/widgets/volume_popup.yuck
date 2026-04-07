@@ -1,12 +1,9 @@
-(defpoll volume-muted :interval "100ms"
-  "pamixer --get-mute")
-
 (defwidget volume-popup []
   (box :class "volume-popup" 
        :orientation "v"          
        :space-evenly false
     (box :class "volume-header-popup"
-      (label :class "icon-volume-popup" :text {volume-muted == "true" ? "󰝟" : "󰕾"})) 
+      (label :class "icon-volume-popup" :text {system_status.vol_icon})) 
     (box :class "volume-slider-box-popup"
          :orientation "v"        
          :vexpand true           
@@ -14,12 +11,12 @@
       (scale :class "volume-slider-popup"
              :orientation "v"    
              :flipped true       
-             :value volume_level
+             :value {system_status.vol_pct}
              :min 0
              :max 100
              :onchange "pamixer --set-volume {} && ~/.config/eww/scripts/volume-popup.sh")
       (label :class "volume-percent-popup" 
-             :text "${volume_level}%"))))
+             :text "${system_status.vol_pct}%"))))
 
 (defwindow volume-popup
   :monitor 0

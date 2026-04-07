@@ -12,8 +12,7 @@ PANEL=$1
 if [ "$PANEL" = "wifi_window" ]; then
     pkill -f wifi_daemon.sh 2>/dev/null
     if ! eww active-windows | grep -q wifi_window; then
-        eww update wifi_networks="$(~/.config/eww/scripts/scan_wifi.sh)"
-        ~/.config/eww/scripts/wifi_daemon.sh &
+        (eww update wifi_networks="$(~/.config/eww/scripts/scan_wifi.sh)" && ~/.config/eww/scripts/wifi_daemon.sh) &
     fi
 fi
 

@@ -4,12 +4,6 @@
 
 (defvar control_center_window false)
 
-(deflisten volume_level :initial "50"
-  `~/.config/eww/scripts/get_volume_listen.sh`)
-
-(deflisten brightness_level :initial "50"
-  `~/.config/eww/scripts/get_brightness_listen.sh`)
-
 (defpoll wifi_status :interval "3s"
   :initial "disabled"
   `nmcli radio wifi || echo "disabled"`)
@@ -104,17 +98,17 @@
 
       (toggle_widget :icon {wifi_status == "enabled" ? " " : ""}
                      :label "Wifi"
-                     :onclick "~/.config/eww/scripts/toggle-panel.sh wifi_window &"
+                     :onclick "~/.config/eww/scripts/toggle-panel.sh wifi_window & disown"
                      :active_class {wifi_status == "enabled" ? "wifi-active" : ""})
 
       (toggle_widget :icon {bluetooth_status == "yes" ? "󰂯" : "󰂲"}
                      :label "Bluetooth"
-                     :onclick "~/.config/eww/scripts/toggle-panel.sh bluetooth_window &"
+                     :onclick "~/.config/eww/scripts/toggle-panel.sh bluetooth_window & disown"
                      :active_class {bluetooth_status == "yes" ? "bt-active" : ""})
 
       (toggle_widget :icon "󰓃"
                      :label "Audio"
-                     :onclick "~/.config/eww/scripts/toggle-panel.sh audio_window &"
+                     :onclick "~/.config/eww/scripts/toggle-panel.sh audio_window & disown"
                      :active_class "")
     )
 
@@ -177,7 +171,7 @@
              :xalign 0)
 
       (slider_row :icon_left "󰃞 "
-                  :value brightness_level
+                  :value {system_status.bright_pct}
                   :onchange "~/.config/i3/brightness.sh set {}")
     )
 
@@ -191,7 +185,7 @@
              :xalign 0)
 
       (slider_row :icon_left "󰕾 "
-                  :value volume_level
+                  :value {system_status.vol_pct}
                   :onchange "pactl set-sink-volume @DEFAULT_SINK@ {}%")
     )
   )

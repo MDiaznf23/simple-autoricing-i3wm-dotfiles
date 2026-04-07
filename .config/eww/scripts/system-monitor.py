@@ -414,35 +414,77 @@ class SystemMonitor:
             self._emit()
 
     def _setup_volume_polling_fallback(self):
-        """Fallback: pactl polling tiap 2s kalau PulseAudio D-Bus tidak tersedia."""
+        """
+        Pakai pactl subscribe — event-driven via PipeWire pulse compatibility.
+        Jauh lebih responsif dari polling karena hanya trigger saat ada perubahan.
+        """
+        import subprocess
 
-        def _poll():
+        def _read_volume():
+            try:
+                result = subprocess.run(
+                    ["pactl", "get-sink-volume", "@DEFAULT_SINK@"],
+                    capture_output=True,
+                    text=True,
+                )
+                import re
+
+                m = re.search(r"(\d+)%", result.stdout)
+                return int(m.group(1)) if m else 0
+            except Exception:
+                return 0
+
+        def _read_mute():
+            try:
+                result = subprocess.run(
+                    ["pactl", "get-sink-mute", "@DEFAULT_SINK@"],
+                    capture_output=True,
+                    text=True,
+                )
+                return "yes" in result.stdout
+            except Exception:
+                return False
+
+        def _watch():
             import subprocess
 
-            while True:
-                try:
-                    muted = subprocess.run(
-                        ["pactl", "get-sink-mute", "@DEFAULT_SINK@"],
-                        capture_output=True,
-                        text=True,
-                    ).stdout.strip()
-                    vol = subprocess.run(
-                        ["pactl", "get-sink-volume", "@DEFAULT_SINK@"],
-                        capture_output=True,
-                        text=True,
-                    ).stdout
-                    import re
+            self.state.vol_pct = _read_volume()
+            self.state.vol_muted = _read_mute()
+            with self._lock:
+                self._emit()
 
-                    m = re.search(r"(\d+)%", vol)
-                    self.state.vol_pct = int(m.group(1)) if m else 0
-                    self.state.vol_muted = "yes" in muted
-                    with self._lock:
-                        self._emit()
-                except Exception:
-                    pass
-                time.sleep(2)
+            proc = subprocess.Popen(
+                ["pactl", "subscribe"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL,
+                text=True,
+            )
 
-        t = threading.Thread(target=_poll, daemon=True)
+            if proc.stdout is None:
+                print(
+                    "[system-monitor] pactl subscribe gagal",
+                    file=sys.stderr,
+                    flush=True,
+                )
+                return
+
+            print(
+                "[system-monitor] pactl subscribe aktif (PipeWire mode)",
+                file=sys.stderr,
+                flush=True,
+            )
+
+            for line in proc.stdout:
+                if "sink" not in line and "server" not in line:
+                    continue
+                if "change" not in line and "new" not in line:
+                    continue
+                self.state.vol_pct = _read_volume()
+                self.state.vol_muted = _read_mute()
+                with self._lock:
+                    self._emit()
+
+        t = threading.Thread(target=_watch, daemon=True)
         t.start()
 
     def _init_volume(self):
