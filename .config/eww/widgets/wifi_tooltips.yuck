@@ -1,8 +1,5 @@
 ;;; WIFI TOOLTIPS WIDGET
 
-(defpoll wifi_connected :interval "2s"
-  "~/.config/eww/scripts/connected_wifi.sh | jq -c '.[] | select(.connected == true)'")
-
 (defvar show_wifi_tooltip false)
 
 (defwidget wifi_tooltips []
@@ -10,9 +7,9 @@
        :space-evenly true 
        :spacing 5
        :class "wifi-tooltip-container"
-    (label :text {wifi_connected != "" ? "Connected to: ${wifi_connected.ssid}" : "Disconnected"})
-    (label :text "Signal Strength: ${wifi_connected.signal}%")
-    (label :text "Security: ${wifi_connected.security}"))
+    (label :text {system_status.wifi_connected ? "Connected to: ${system_status.wifi_ssid}" : "Disconnected"})
+    (label :text "Signal Strength: ${system_status.wifi_signal}%")
+    (label :text "Security: ${system_status.wifi_security}"))
 )
 
 (defwindow wifi-tooltip-window

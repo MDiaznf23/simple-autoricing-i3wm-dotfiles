@@ -1,7 +1,4 @@
-;;; WIFI TOOLTIPS WIDGET
-
-(defpoll battery_info :interval "10s"
-  "~/.config/eww/scripts/get_battery_info.sh")
+;;; BATTERY TOOLTIPS WIDGET
 
 (defvar show_battery_tooltip false)
 
@@ -10,9 +7,8 @@
        :space-evenly true 
        :spacing 5
        :class "battery-tooltip-container"
-    (label :text "Model: ${battery_info.battery_name}")
-    (label :text "Mode: ${battery_info.profile}"))
-)
+    (label :text "Model: ${system_status.bat_model}")
+))
 
 (defwindow battery-tooltip-window
   :stacking "overlay"

@@ -20,11 +20,11 @@
   :initial '{"username": "loading...", "wm": "loading...", "uptime": "...", "image": ""}'
   "~/.config/eww/scripts/profile.sh json")
 
-(defpoll system 
-  :interval "2s" 
+(defpoll system
+  :interval "2s"
   :initial '{"cpu_usage": 0, "cpu_temp": 0, "mem_perc": 0, "mem_used": "0G", "mem_total": "0G", "disk_perc": 0, "disk_used": "0G", "disk_total": "0G"}'
   :run-while performance_monitor_visible
-  "~/.config/eww/scripts/sys_info.sh")
+  "python3 ~/.config/eww/scripts/sys_info.py")
 
 ;; Weather polls
 (defpoll WEATHER_ICON :interval "1800s" "~/.config/eww/scripts/weather-wrapper.sh icon")  

@@ -113,8 +113,11 @@ class SystemState:
         self.tx_bytes = 0
         self.rx_rate = 0.0
         self.tx_rate = 0.0
+        self.wifi_ssid = ""
+        self.wifi_security = ""
 
-        # Battery
+        # Battery model
+        self.bat_model = "Unknown"
         self.bat_capacity = 0
         self.bat_charging = False
 
@@ -186,6 +189,10 @@ class SystemState:
                 "wifi_icon": wi,
                 "wifi_desc": wi_desc,
                 "wifi_connected": self.wifi_connected,
+                "wifi_ssid": self.wifi_ssid,
+                "wifi_signal": self.wifi_signal,
+                "wifi_security": self.wifi_security,
+                "bat_model": self.bat_model,
                 "bat_icon": bi,
                 "bat_desc": f"{self.bat_capacity}%",
                 "bat_capacity": self.bat_capacity,
@@ -254,12 +261,21 @@ class SystemMonitor:
                 dev = self.system_bus.get_object("org.freedesktop.UPower", dev_path)
                 props = dbus.Interface(dev, "org.freedesktop.DBus.Properties")
                 p = props.GetAll("org.freedesktop.UPower.Device")
-                # Type 2 = battery
                 if int(p.get("Type", 0)) == 2:
                     self.state.bat_capacity = int(p.get("Percentage", 0))
-                    # State: 1=charging, 2=discharging, 4=fully-charged
                     state = int(p.get("State", 0))
                     self.state.bat_charging = state in (1, 4)
+                    # Model battery — kombinasi vendor + model
+                    vendor = str(p.get("Vendor", "")).strip()
+                    model = str(p.get("Model", "")).strip()
+                    if vendor and model:
+                        self.state.bat_model = f"{vendor} {model}"
+                    elif model:
+                        self.state.bat_model = model
+                    elif vendor:
+                        self.state.bat_model = vendor
+                    else:
+                        self.state.bat_model = "Unknown"
                     break
         except Exception as e:
             print(f"[system-monitor] Init battery error: {e}", file=sys.stderr)
@@ -314,9 +330,18 @@ class SystemMonitor:
                 props.Get("org.freedesktop.NetworkManager", "PrimaryConnection")
             )
             if ac_path == "/":
+                self.state.wifi_signal = 0
+                self.state.wifi_ssid = ""
+                self.state.wifi_security = ""
                 return
             ac = self.system_bus.get_object("org.freedesktop.NetworkManager", ac_path)
             ac_props = dbus.Interface(ac, "org.freedesktop.DBus.Properties")
+
+            # Ambil SSID dari connection ID
+            self.state.wifi_ssid = str(
+                ac_props.Get("org.freedesktop.NetworkManager.Connection.Active", "Id")
+            )
+
             dev_paths = ac_props.Get(
                 "org.freedesktop.NetworkManager.Connection.Active", "Devices"
             )
@@ -337,11 +362,35 @@ class SystemMonitor:
                     "org.freedesktop.NetworkManager", ap_path
                 )
                 ap_props = dbus.Interface(ap, "org.freedesktop.DBus.Properties")
+
                 self.state.wifi_signal = int(
                     ap_props.Get(
                         "org.freedesktop.NetworkManager.AccessPoint", "Strength"
                     )
                 )
+
+                # Flags: 0x1=WEP, WpaFlags/RsnFlags > 0 = WPA/WPA2
+                flags = int(
+                    ap_props.Get("org.freedesktop.NetworkManager.AccessPoint", "Flags")
+                )
+                wpa = int(
+                    ap_props.Get(
+                        "org.freedesktop.NetworkManager.AccessPoint", "WpaFlags"
+                    )
+                )
+                rsn = int(
+                    ap_props.Get(
+                        "org.freedesktop.NetworkManager.AccessPoint", "RsnFlags"
+                    )
+                )
+                if rsn > 0:
+                    self.state.wifi_security = "WPA2"
+                elif wpa > 0:
+                    self.state.wifi_security = "WPA"
+                elif flags & 0x1:
+                    self.state.wifi_security = "WEP"
+                else:
+                    self.state.wifi_security = "Open"
                 break
         except Exception as e:
             print(f"[system-monitor] WiFi signal error: {e}", file=sys.stderr)
