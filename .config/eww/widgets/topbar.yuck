@@ -226,7 +226,7 @@
                :text time)
       )
 
-      (eventbox :onclick "~/.config/eww/scripts/toggle-control-center.sh"
+      (eventbox :onclick "~/.config/eww/scripts/toggle-control-center.sh &"
                 :timeout "2s"     
                 :cursor "pointer"
         (box :class "panel-bar"
