@@ -184,11 +184,17 @@ def load_dock_enabled() -> bool:
 
 
 def eww_open():
-    subprocess.run(["eww", "open", "dock-window"], capture_output=True)
+    try:
+        subprocess.run(["eww", "open", "dock-window"], capture_output=True, timeout=2)
+    except subprocess.TimeoutExpired:
+        pass
 
 
 def eww_close():
-    subprocess.run(["eww", "close", "dock-window"], capture_output=True)
+    try:
+        subprocess.run(["eww", "close", "dock-window"], capture_output=True, timeout=2)
+    except subprocess.TimeoutExpired:
+        pass
 
 
 # ─── Main ─────────────────────────────────────────────────────────────────────

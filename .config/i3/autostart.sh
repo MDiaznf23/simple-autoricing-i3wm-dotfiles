@@ -28,14 +28,9 @@ pgrep -x xsettingsd > /dev/null || xsettingsd &
 
 # 7. Widgets (Eww)
 killall eww 2>/dev/null
-sleep 0.5
-eww daemon &
-
-while ! eww ping &>/dev/null; do
-    sleep 0.3
-done
-
-eww open bar &
+eww daemon
+while ! eww ping &>/dev/null; do sleep 0.1; done
+eww open bar
 
 # 8. Monitor Scripts
 pkill -f fullscreen-monitor
