@@ -22,6 +22,9 @@ smart_borders on
 smart_borders no_gaps
 
 # FLOATING APPLICATIONS
+for_window [instance="FL64.exe"] floating enable
+for_window [instance="explorer.exe"] floating enable
+for_window [class="Wine"] floating enable
 for_window [class="Blueman-manager"] floating enable
 for_window [class="gwenview"] floating enable, sticky enable, resize set 960 540, move position center
 for_window [class="haruna"] floating enable, resize set 1090 615, move position center
@@ -36,9 +39,10 @@ set $mod Mod4
 
 set_from_resource $fg i3wm.m3onSurfaceVariant #f0f0f0
 set_from_resource $bg i3wm.m3outlineVariant #f0f0f0
+set_from_resource $ac i3wm.m3primary          #89b4fa
 
 # class                 border  backgr. text indicator child_border
-client.focused          $bg     $bg     $fg  $bg       $bg
+client.focused          $ac     $ac     $fg  $ac       $ac
 client.focused_inactive $bg     $bg     $fg  $bg       $bg
 client.unfocused        $bg     $bg     $fg  $bg       $bg
 client.urgent           $bg     $bg     $fg  $bg       $bg
@@ -246,8 +250,12 @@ exec --no-startup-id xset s 600 600
 # Auto lock dengan xss-lock
 exec --no-startup-id xss-lock -- lock
 
+exec --no-startup-id ~/m3-colors-switch.sh
+
 exec --no-startup-id kbuildsycoca6 --noincremental
 exec --no-startup-id /usr/bin/kded6
+
+exec --no-startup-id joystickwake
 
 # Jalankan semua aplikasi autostart
 exec --no-startup-id dex --autostart --environment i3
