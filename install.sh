@@ -60,7 +60,6 @@ fi
 echo "Installing AUR packages..."
 $AUR_HELPER -S --needed --noconfirm \
     eww-git \
-    mpdris2 \
     ttf-jetbrains-mono-nerd \
     ttf-iosevka-nerd \
     ttf-twemoji \
