@@ -42,7 +42,7 @@ sudo pacman -S --needed --noconfirm \
     i3-wm i3status alacritty pcmanfm rofi picom feh scrot xclip xdotool dex \
     brightnessctl firefox dolphin xorg-xdpyinfo playerctl lm_sensors imagemagick xsettingsd \
     python python-pip python-pipx lxsession fish redshift inotify-tools\
-    jq bc dunst rsync fastfetch pamixer python-i3ipc qt5ct cava tex-gyre-fonts 
+    jq bc dunst rsync fastfetch pamixer python-i3ipc cava tex-gyre-fonts kde-cli-tools konsole archlinux-xdg-menu 
 
 # Install fonts
 echo "Installing fonts..."
@@ -65,6 +65,7 @@ $AUR_HELPER -S --needed --noconfirm \
     ttf-iosevka-nerd \
     ttf-twemoji \
     ueberzugpp \
+    qt5ct-kde \
     qt6ct-kde \
     i3lock-color \
     m3wal
