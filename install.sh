@@ -42,7 +42,7 @@ sudo pacman -S --needed --noconfirm \
     i3-wm i3status alacritty pcmanfm rofi picom feh scrot xclip xdotool dex \
     brightnessctl firefox dolphin xorg-xdpyinfo playerctl lm_sensors imagemagick xsettingsd \
     python python-pip python-pipx lxsession fish redshift inotify-tools\
-    jq bc dunst rsync fastfetch pamixer python-i3ipc cava tex-gyre-fonts kde-cli-tools konsole archlinux-xdg-menu 
+    jq bc dunst rsync fastfetch pamixer python-i3ipc cava tex-gyre-fonts kde-cli-tools konsole archlinux-xdg-menu python-dbus
 
 # Install fonts
 echo "Installing fonts..."
