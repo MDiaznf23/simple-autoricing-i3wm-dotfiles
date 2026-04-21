@@ -53,7 +53,7 @@ sudo pacman -S --needed --noconfirm \
 
 if pacman -Qi i3lock &> /dev/null; then
     echo "Removing i3lock (will be replaced by i3lock-color)..."
-    sudo pacman -Rdd --noconfirm i3lock
+    sudo pacman -Rdd --noconfirm i3lock 2>/dev/null || warning "failed to erase i3lock, skip..."
 fi
 
 # Install AUR packages
@@ -89,8 +89,11 @@ success "Tela icon theme installed"
 
 # Set fish as default shell
 echo "Setting fish as default shell..."
-sudo chsh -s $(which fish) $USER
-export PATH="$HOME/.local/bin:$PATH"
+FISH_PATH=$(which fish)
+grep -qxF "$FISH_PATH" /etc/shells || echo "$FISH_PATH" | sudo tee -a /etc/shells
+sudo chsh -s "$FISH_PATH" "$USER"
+mkdir -p ~/.config/fish
+echo 'fish_add_path ~/.local/bin' >> ~/.config/fish/config.fish
 
 # Create necessary directories
 echo "Creating directories..."
