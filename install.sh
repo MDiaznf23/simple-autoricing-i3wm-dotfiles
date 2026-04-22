@@ -1,27 +1,38 @@
 #!/bin/bash
-set -e  # Exit on error
+set -e
 
 echo "================================"
 echo "Installing Dotfiles"
 echo "================================"
 
-# Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
+NC='\033[0m'
 
-# Helper functions
 error() { echo -e "${RED}✗ $1${NC}"; }
 success() { echo -e "${GREEN}✓ $1${NC}"; }
 warning() { echo -e "${YELLOW}⚠ $1${NC}"; }
+
+# Distro check
+if ! command -v pacman &>/dev/null; then
+    error "pacman not found. This script is for Arch-based distros only."
+    exit 1
+fi
+
+DISTRO=$(grep "^ID=" /etc/os-release | cut -d= -f2 | tr -d '"')
+if [[ "$DISTRO" == "cachyos" || "$DISTRO" == "endeavouros" || "$DISTRO" == "manjaro" ]]; then
+    warning "Distro '$DISTRO' detected. Some packages may conflict with distro defaults."
+    read -rp "Continue installation? (y/N): " confirm
+    [[ "$confirm" != "y" ]] && exit 1
+fi
 
 # Install base packages
 echo "Installing base-devel..."
 sudo pacman -S --needed --noconfirm base-devel git
 
 # Check for AUR helper
-if ! command -v yay &> /dev/null && ! command -v paru &> /dev/null; then
+if ! command -v yay &>/dev/null && ! command -v paru &>/dev/null; then
     echo "Installing yay (AUR helper)..."
     git clone https://aur.archlinux.org/yay.git /tmp/yay
     cd /tmp/yay && makepkg -si --noconfirm
@@ -32,16 +43,23 @@ AUR_HELPER=$(command -v yay || command -v paru)
 # Backup existing configs
 BACKUP_DIR=~/dotfiles_backup_$(date +%Y%m%d_%H%M%S)
 echo "Backing up existing configs to $BACKUP_DIR"
-mkdir -p $BACKUP_DIR
-[ -d ~/.config ] && cp -r ~/.config $BACKUP_DIR/
-[ -f ~/.Xresources ] && cp ~/.Xresources $BACKUP_DIR/
+mkdir -p "$BACKUP_DIR"
+[ -d ~/.config ] && cp -r ~/.config "$BACKUP_DIR/"
+[ -f ~/.Xresources ] && cp ~/.Xresources "$BACKUP_DIR/"
+
+if [ -d "$BACKUP_DIR" ]; then
+    success "Backup saved at $BACKUP_DIR"
+else
+    error "Backup failed! Aborting."
+    exit 1
+fi
 
 # Install system packages
 echo "Installing system packages..."
 sudo pacman -S --needed --noconfirm \
     i3-wm i3status alacritty pcmanfm rofi picom feh scrot xclip xdotool dex \
     brightnessctl firefox dolphin xorg-xdpyinfo playerctl lm_sensors imagemagick xsettingsd \
-    python python-pip python-pipx lxsession fish redshift inotify-tools\
+    python python-pip python-pipx lxsession fish redshift inotify-tools \
     jq bc dunst rsync fastfetch pamixer python-i3ipc cava tex-gyre-fonts kde-cli-tools konsole archlinux-xdg-menu python-dbus
 
 # Install fonts
@@ -51,9 +69,12 @@ sudo pacman -S --needed --noconfirm \
     ttf-jetbrains-mono ttf-fira-code ttf-dejavu \
     ttf-liberation ttf-font-awesome
 
-if pacman -Qi i3lock &> /dev/null; then
+# Handle i3lock -> i3lock-color
+if pacman -Qi i3lock &>/dev/null; then
     echo "Removing i3lock (will be replaced by i3lock-color)..."
-    sudo pacman -Rdd --noconfirm i3lock 2>/dev/null || warning "failed to erase i3lock, skip..."
+    sudo pacman -Rdd --noconfirm i3lock 2>/dev/null \
+        && success "i3lock removed" \
+        || warning "Failed to remove i3lock. Remove manually: sudo pacman -Rdd i3lock"
 fi
 
 # Install AUR packages
@@ -69,7 +90,7 @@ $AUR_HELPER -S --needed --noconfirm \
     i3lock-color \
     m3wal
 
-# Install custom fonts if available
+# Install custom fonts
 if [ -d "fonts" ]; then
     echo "Installing custom fonts..."
     FONT_DIR="$HOME/.local/share/fonts"
@@ -86,13 +107,23 @@ cd /tmp/Tela-icon-theme && ./install.sh
 cd -
 success "Tela icon theme installed"
 
-# Set fish as default shell
+# Set fish as default shell (safely)
 echo "Setting fish as default shell..."
 FISH_PATH=$(which fish)
-grep -qxF "$FISH_PATH" /etc/shells || echo "$FISH_PATH" | sudo tee -a /etc/shells
+if ! grep -qxF "$FISH_PATH" /etc/shells; then
+    echo "Registering fish to /etc/shells..."
+    echo "$FISH_PATH" | sudo tee -a /etc/shells
+    success "fish registered to /etc/shells"
+fi
 sudo chsh -s "$FISH_PATH" "$USER"
+success "Default shell changed to fish"
+
+# Persist PATH in fish config
 mkdir -p ~/.config/fish
-echo 'fish_add_path ~/.local/bin' >> ~/.config/fish/config.fish
+if ! grep -q "fish_add_path.*\.local/bin" ~/.config/fish/config.fish 2>/dev/null; then
+    echo 'fish_add_path ~/.local/bin' >> ~/.config/fish/config.fish
+    success "PATH persisted to fish config"
+fi
 
 # Create necessary directories
 echo "Creating directories..."
@@ -103,11 +134,11 @@ mkdir -p ~/.cache
 # Copy dotfiles
 echo "Copying dotfiles..."
 if [ -d ".config" ]; then
-    rsync -av --exclude='*.tmp' .config/ ~/.config/
+    rsync -av --backup --backup-dir="$BACKUP_DIR/rsync-overwritten" \
+        --exclude='*.tmp' .config/ ~/.config/
     success ".config copied"
 fi
 
-# Copy .local/share (excluding pipx venvs)
 if [ -d ".local/share" ]; then
     echo "Copying .local/share files..."
     mkdir -p ~/.local/share
@@ -115,16 +146,13 @@ if [ -d ".local/share" ]; then
     success ".local/share copied"
 fi
 
-# Copy scripts from .local/bin 
 if [ -d ".local/bin" ]; then
     echo "Copying scripts from .local/bin..."
     mkdir -p ~/.local/bin
-    # Copy only regular files (not symlinks)
     find .local/bin -maxdepth 1 -type f -exec cp {} ~/.local/bin/ \;
     success "Scripts copied"
 fi
 
-# Copy resource files
 [ -f ".Xresources" ] && cp .Xresources ~/
 [ -f ".xprofile" ] && cp .xprofile ~/
 
@@ -137,7 +165,7 @@ if [ -d "Wallpapers" ] || [ -d "wallpapers" ]; then
     success "Wallpapers copied"
 fi
 
-# Copy m3-colors configuration
+# m3-colors
 echo "Setting up m3-colors..."
 if [ -d "m3-colors" ]; then
     cp -r m3-colors/* ~/.config/m3-colors/
@@ -146,31 +174,35 @@ else
     warning "m3-colors directory not found, using defaults"
 fi
 
-# Make scripts executable
+# Permissions
 echo "Setting permissions..."
 find ~/.config -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod +x {} \; 2>/dev/null
 find ~/.config/Scripts -type f -name "*.py" -exec chmod +x {} \; 2>/dev/null
 chmod +x ~/.local/bin/* 2>/dev/null || true
 
-# Initialize m3wal with default wallpaper (if available)
+# Initialize m3wal
 echo ""
 echo "================================"
 echo "Initializing m3wal..."
 echo "================================"
 
-# Find first wallpaper
-WALLPAPER=$(find ~/Pictures/Wallpapers ~/Pictures/wallpapers -type f \( -iname "*.jpg" -o -iname "*.png" \) 2>/dev/null | head -n 1)
+WALLPAPER=$(find ~/Pictures/Wallpapers ~/Pictures/wallpapers -type f \
+    \( -iname "*.jpg" -o -iname "*.png" \) 2>/dev/null | head -n 1)
 
-if [ -n "$WALLPAPER" ]; then
-    echo "Applying wallpaper: $WALLPAPER"
-    m3wal "$WALLPAPER" --full
-    success "Wallpaper and theme applied"
+if command -v m3wal &>/dev/null; then
+    if [ -n "$WALLPAPER" ]; then
+        echo "Applying wallpaper: $WALLPAPER"
+        m3wal "$WALLPAPER" --full
+        success "Wallpaper and theme applied"
+    else
+        warning "No wallpaper found, skipping m3wal initialization"
+        echo "Run 'm3wal /path/to/wallpaper.jpg --full' manually later"
+    fi
 else
-    warning "No wallpaper found, skipping m3wal initialization"
-    echo "Run 'm3wal /path/to/wallpaper.jpg --full' manually later"
+    warning "m3wal not found. Install manually: yay -S m3wal"
 fi
 
-# Reload i3 if currently running
+# Reload i3
 echo ""
 echo "================================"
 echo "Reloading i3..."
@@ -184,7 +216,6 @@ else
     echo "Please logout and select i3 as your window manager"
 fi
 
-# Final message
 echo ""
 echo "================================"
 echo "Installation Complete!"
@@ -198,7 +229,7 @@ echo "  • firefox, eww, m3wal"
 echo "  • Nerd Fonts & icon fonts"
 echo ""
 echo "Next steps:"
-echo "  1. Logout and login again (or restart)"
+echo "  1. Logout and log back in (or restart)"
 echo "  2. Select i3 as your window manager"
 echo "  3. Change wallpaper: m3wal /path/to/wallpaper.jpg --full"
 echo "  4. Configure m3-colors: ~/.config/m3-colors/m3-colors.conf"
