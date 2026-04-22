@@ -87,6 +87,7 @@ $AUR_HELPER -S --needed --noconfirm \
     ueberzugpp \
     qt5ct-kde \
     qt6ct-kde \
+    mpd-mpris \
     i3lock-color \
     m3wal
 
