@@ -13,7 +13,7 @@
 ---
 
 > [!WARNING]
-> **⚠️ MAINTENANCE MODE — LIMITED UPDATES**
+> **MAINTENANCE MODE — LIMITED UPDATES**
 >
 > This project currently uses **[Eww](https://github.com/elkowar/eww)** as its bar/widget framework.
 > Eww has been effectively **abandoned** — no meaningful updates in years, and accumulated bugs with no fixes upstream.
